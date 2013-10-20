@@ -7,6 +7,18 @@ var digPath = '/sys/class/gpio/gpio',
         'AIN4'
     ];
 
+var obPin = function (id) {
+  var pin = new Pin(id);
+
+  return function(val) {
+      if(!typeof val === 'undefined') {
+          return pin.read();
+      } else {
+          pin.write(val);
+      }
+  }
+};
+
 var Pin = function (id) {
     if(ids.indexOf(id) < 0)
         return undefined;
@@ -65,12 +77,13 @@ setTimeout(function () {
 }, 1000);
 
 setInterval(function () {
-    var p = pins[1];
-    var v = p.value;
-    var nv = p.read();
+    //var p = pins[1];
+    var p = obPin(67);
+    var v = p();
+    var nv = p();
     if(nv.toString() !== v.toString()) {
         p.value = nv;
-        console.log(p.value);
+        console.log(p());
     }
 }, 250);
 
