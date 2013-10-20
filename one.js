@@ -15,9 +15,9 @@ var Pin = function (id) {
 
     self.id = id;
     if(typeof self.id === 'string')
-        self.path = digPath + self.id;
-    else
         self.path = anPath + self.id;
+    else
+        self.path = digPath + self.id;
 
     return self;
 };
