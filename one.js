@@ -29,7 +29,10 @@ Pin.prototype.read = function () {
 };
 
 Pin.prototype.write = function (val) {
-    return fs.writeFileSync(this.path + '/value', val);
+    var valPath = '/value';
+    if(typeof this.id === 'string')
+        valPath = '';
+    return fs.writeFileSync(this.path + valPath, val);
 };
 
 Pin.prototype.watch = function (freq) {
