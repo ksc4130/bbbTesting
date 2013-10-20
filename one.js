@@ -34,13 +34,16 @@ Pin.prototype.write = function (val) {
 
 Pin.prototype.watch = function (freq) {
     setTimeout(function () {
-        var p = pins[1];
+        var p = this;
         fs.readFile(p.path + '/value', function (err, data) {
             if(err)
                 return;
-            if(data.toString() !== p.value.toString())
+            if(data.toString() !== p.value.toString()) {
                 p.value = data;
-            this.watch(freq);
+                console.log(p.id, p.value)
+            }
+
+            p.watch(freq);
         });
     }, freq || 20);
 };
