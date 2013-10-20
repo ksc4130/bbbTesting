@@ -28,7 +28,7 @@ Pin.prototype.read = function () {
     var valPath = '/value';
     if(typeof this.id === 'string')
         valPath = '';
-    return fs.readFileSync(this.path + valPath);
+    return fs.readFileSync(this.path + valPath, 'string');
 };
 
 Pin.prototype.write = function (val) {
