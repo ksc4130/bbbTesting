@@ -14,6 +14,7 @@ var Pin = function (id) {
     var self = this;
 
     self.id = id;
+    self.value = null;
     if(typeof self.id === 'string')
         self.path = anPath + self.id;
     else
@@ -31,6 +32,19 @@ Pin.prototype.write = function (val) {
     return fs.writeFileSync(this.path + '/value', val);
 };
 
+Pin.prototype.watch = function (freq) {
+    setTimeout(function () {
+        var p = pins[1];
+        fs.readFile(p.path + '/value', function (err, data) {
+            if(err)
+                return;
+            if(data.toString() !== p.value.toString())
+                p.value = data;
+            this.watch(freq);
+        });
+    }, freq || 20);
+};
+
 var pins = [
     new Pin(67),
     new Pin('AIN4')
@@ -42,7 +56,8 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-fs.watchFile(pins[1].path + '/value', function (curr, prev) {
-    console.log('the current mtime is: ' + curr.mtime);
-    console.log('the previous mtime was: ' + prev.mtime);
-});
+
+//fs.watchFile(pins[1].path + '/value', function (curr, prev) {
+//    console.log('the current mtime is: ' + curr.mtime);
+//    console.log('the previous mtime was: ' + prev.mtime);
+//});
