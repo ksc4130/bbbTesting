@@ -84,8 +84,8 @@ Pin.prototype.writeSync = function (val) {
 };
 
 var pins = [
-    new Pin(67),
-    new Pin('AIN4')
+    new Pin(67)//,
+    //new Pin('AIN4')
 ];
 
 console.log(pins[0].readSync());
