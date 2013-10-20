@@ -49,8 +49,8 @@ Pin.prototype.read = function () {
         if(!exists) {
             fs.writeFileSync(digPath + '/export', this.id);
         }
+        return '' + fs.readFileSync(this.valuePath + valPath);
     });
-    return '' + fs.readFileSync(this.valuePath + valPath);
 };
 
 Pin.prototype.write = function (val) {
@@ -58,8 +58,8 @@ Pin.prototype.write = function (val) {
         if(!exists) {
             fs.writeFileSync(digPath + '/export', this.id);
         }
+        return '' + fs.writeFileSync(this.valuePath, val);
     });
-    return '' + fs.writeFileSync(this.valuePath, val);
 };
 
 Pin.prototype.watch = function (freq) {
