@@ -14,7 +14,7 @@ var Pin = function (id) {
     var self = this;
 
     self.id = id;
-    self.value = null;
+    self.value = '';
     if(typeof self.id === 'string')
         self.path = anPath + self.id;
     else
