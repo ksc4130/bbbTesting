@@ -89,7 +89,7 @@ var pins = [
 ];
 
 console.log(pins[0].readSync());
-pins[0].writeSync(1);
+pins[0].writeSync(0);
 //console.log(pins[0].readSync());
 
 
