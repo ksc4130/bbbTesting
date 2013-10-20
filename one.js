@@ -16,3 +16,7 @@ var pin = {
 }
 
 pin.write(1);
+
+setTimeout(function () {
+    pin.write(0);
+}, 1000);
