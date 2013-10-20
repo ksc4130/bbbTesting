@@ -50,15 +50,16 @@ var Pin = function (id) {
 
 
 Pin.prototype.read = function () {
+    var self = this;
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
                 fs.writeFileSync(self.directionPath, 'in');
-                return '' + fs.readFileSync(this.valuePath + valPath);
+                return '' + fs.readFileSync(self.valuePath + valPath);
             });
         } else {
             fs.writeFileSync(self.directionPath, 'in');
-            return '' + fs.readFileSync(this.valuePath + valPath);
+            return '' + fs.readFileSync(self.valuePath + valPath);
         }
     });
 };
