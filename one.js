@@ -55,11 +55,11 @@ Pin.prototype.read = function () {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
                 fs.writeFileSync(self.directionPath, 'in');
-                return '' + fs.readFileSync(self.valuePath + valPath);
+                return '' + fs.readFileSync(self.valuePath);
             });
         } else {
             fs.writeFileSync(self.directionPath, 'in');
-            return '' + fs.readFileSync(self.valuePath + valPath);
+            return '' + fs.readFileSync(self.valuePath);
         }
     });
 };
