@@ -13,10 +13,8 @@ var obPin = function (id) {
 
   return function(val) {
       if(typeof val === 'undefined') {
-          console.log('read');
           return pin.read();
       } else {
-          console.log('write', val);
           pin.write(val);
       }
   }
@@ -48,6 +46,20 @@ var Pin = function (id) {
     return self;
 };
 
+Pin.prototype.readSync = function () {
+    var self = this;
+    var exists = fs.existsSync(this.valuePath);
+    if(!exists) {
+        fs.writeFile(exportPath, self.id);//, function () {
+//                fs.writeFileSync(self.directionPath, 'in');
+//                return '' + fs.readFileSync(self.valuePath);
+//            });
+    }
+        //} else {
+        fs.writeFileSync(self.directionPath, 'in');
+        return '' + fs.readFileSync(self.valuePath);
+        //}
+};
 
 Pin.prototype.read = function () {
     var self = this;
@@ -95,9 +107,10 @@ setInterval(function () {
     var p = obPin(67);
     var v = p.value || '';
     var nv = p() || '';
+
     if(nv.toString() !== v.toString()) {
         p.value = nv;
-        console.log('val', p());
+        console.log('val new', nv);
     }
 }, 250);
 
