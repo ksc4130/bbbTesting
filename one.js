@@ -33,8 +33,8 @@ Pin.prototype.write = function (val) {
 };
 
 Pin.prototype.watch = function (freq) {
+    var p = this;
     setTimeout(function () {
-        var p = this;
         fs.readFile(p.path + '/value', function (err, data) {
             if(err)
                 return;
@@ -42,10 +42,9 @@ Pin.prototype.watch = function (freq) {
                 p.value = data;
                 console.log(p.id, p.value)
             }
-
-            p.watch(freq);
         });
     }, freq || 20);
+    p.watch(freq);
 };
 
 var pins = [
@@ -59,7 +58,7 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-pins[1].watch();
+//pins[1].watch();
 
 //fs.watchFile(pins[1].path + '/value', function (curr, prev) {
 //    console.log('the current mtime is: ' + curr.mtime);
