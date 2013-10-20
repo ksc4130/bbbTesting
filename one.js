@@ -1,4 +1,6 @@
-var fs = require('fs');
+var fs = require('fs'),
+    events = require('events'),
+    emitter = new events.EventEmitter;
 
 var exportPath = '/sys/class/gpio/export',
     digPath = '/sys/class/gpio/gpio',
@@ -24,7 +26,7 @@ var exportPin = function (pin) {
 
 };
 
-var Pin = function (id) {
+var Pin = function (id, direction) {
     if(ids.indexOf(id) < 0)
         return undefined;
 
@@ -43,59 +45,42 @@ var Pin = function (id) {
         self.directionPath = self.path + '/direction';
     }
 
-    return self;
-};
-
-Pin.prototype.readSync = function () {
-    var self = this;
     var exists = fs.existsSync(self.path);
     if(!exists) {
         console.log('doesn\'t exist', self.id);
         fs.writeFileSync(exportPath, self.id);
     }
+
+    self.value = self.readSync();
+
+    return self;
+};
+
+//Pin.prototype.setDirection = function (direction) {
+//    fs.writeFileSync(self.directionPath, direction);
+//};
+
+Pin.prototype.readSync = function () {
+    var self = this;
     fs.writeFileSync(self.directionPath, 'in');
     return '' + fs.readFileSync(self.valuePath);
 };
 
 Pin.prototype.read = function () {
     var self = this;
-    fs.exists(this.valuePath, function (exists) {
-        if(!exists) {
-            fs.writeFile(exportPath, self.id, function () {
-                fs.writeFileSync(self.directionPath, 'in');
-                return '' + fs.readFileSync(self.valuePath);
-            });
-        } else {
-            fs.writeFileSync(self.directionPath, 'in');
-            return '' + fs.readFileSync(self.valuePath);
-        }
-    });
+    return '' + fs.readFileSync(self.valuePath);
 };
 
 Pin.prototype.write = function (val) {
     var self = this;
-    fs.exists(this.valuePath, function (exists) {
-        if(!exists) {
-            fs.writeFile(exportPath, self.id, function () {
-                fs.writeFileSync(self.directionPath, 'out');
-                return '' + fs.writeFileSync(self.valuePath, val);
-            });
-        } else {
-            fs.writeFileSync(self.directionPath, 'out');
-            return '' + fs.writeFileSync(self.valuePath, val || 0);
-        }
-    });
+    fs.writeFileSync(self.directionPath, 'out');
+    return '' + fs.writeFileSync(self.valuePath, val || 0);
 };
 
 Pin.prototype.writeSync = function (val) {
     var self = this;
-    var exists = fs.existsSync(this.valuePath);
-        if(!exists) {
-            console.log('doesn\'t exist', self.id);
-            fs.writeFile(exportPath, self.id)
-        }
-        fs.writeFileSync(self.directionPath, 'out');
-        return '' + fs.writeFileSync(self.valuePath, val || 0);
+    fs.writeFileSync(self.directionPath, 'out');
+    return '' + fs.writeFileSync(self.valuePath, val || 0);
 };
 
 var pins = [
@@ -104,8 +89,8 @@ var pins = [
 ];
 
 console.log(pins[0].readSync());
-//pins[0].writeSync(1);
-console.log(pins[0].readSync());
+pins[0].writeSync(1);
+//console.log(pins[0].readSync());
 
 
 setTimeout(function () {
