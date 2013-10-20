@@ -76,21 +76,6 @@ Pin.prototype.write = function (val) {
     });
 };
 
-Pin.prototype.watch = function (freq) {
-    var p = this;
-    setTimeout(function () {
-        fs.readFile(p.path + '/value', function (err, data) {
-            if(err)
-                return;
-            if(data.toString() !== p.value.toString()) {
-                p.value = data;
-                console.log(p.id, p.value)
-            }
-        });
-    }, freq || 20);
-    p.watch(freq);
-};
-
 var pins = [
     new Pin(67),
     new Pin('AIN4')
@@ -102,16 +87,16 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-//setInterval(function () {
-//    //var p = pins[1];
-//    var p = obPin(67);
-//    var v = p();
-//    var nv = p();
-//    if(nv.toString() !== v.toString()) {
-//        p.value = nv;
-//        console.log(p());
-//    }
-//}, 250);
+setInterval(function () {
+    //var p = pins[1];
+    var p = obPin(67);
+    var v = p() || '';
+    var nv = p() || '';
+    if(nv.toString() !== v.toString()) {
+        p.value = nv;
+        console.log('val', p());
+    }
+}, 250);
 
 //pins[1].watch(250);
 
