@@ -50,6 +50,7 @@ Pin.prototype.readSync = function () {
     var self = this;
     var exists = fs.existsSync(this.valuePath);
     if(!exists) {
+        console.log('doesn\'t exist', self.id);
         fs.writeFileSync(exportPath, self.id);
     }
     fs.writeFileSync(self.directionPath, 'in');
@@ -90,6 +91,7 @@ Pin.prototype.writeSync = function (val) {
     var self = this;
     var exists = fs.existsSync(this.valuePath);
         if(!exists) {
+            console.log('doesn\'t exist', self.id);
             fs.writeFile(exportPath, self.id)
         }
         fs.writeFileSync(self.directionPath, 'out');
