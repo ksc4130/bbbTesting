@@ -71,7 +71,7 @@ Pin.prototype.write = function (val) {
             });
         } else {
             fs.writeFileSync(self.directionPath, 'out');
-            return '' + fs.writeFileSync(self.valuePath, val);
+            return '' + fs.writeFileSync(self.valuePath, val || 0);
         }
     });
 };
