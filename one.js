@@ -40,7 +40,7 @@ var Pin = function (id) {
     else {
         self.path = digPath + self.id;
         self.valuePath = self.path + '/value';
-        self.directionPath = self.path + 'direction';
+        self.directionPath = self.path + '/direction';
     }
 
     return self;
