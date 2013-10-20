@@ -58,7 +58,17 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-pins[1].watch(250);
+setInterval(function () {
+    var p = pins[1];
+    var v = p.value;
+    var nv = p.read();
+    if(nv.toString() !== v.toString()) {
+        p.value = nv;
+        console.log(p.value);
+    }
+}, 250);
+
+//pins[1].watch(250);
 
 //fs.watchFile(pins[1].path + '/value', function (curr, prev) {
 //    console.log('the current mtime is: ' + curr.mtime);
