@@ -19,6 +19,10 @@ var obPin = function (id) {
   }
 };
 
+var exportPin = function (pin) {
+
+};
+
 var Pin = function (id) {
     if(ids.indexOf(id) < 0)
         return undefined;
@@ -27,27 +31,35 @@ var Pin = function (id) {
 
     self.id = id;
     self.value = '';
-    if(typeof self.id === 'string')
+    if(typeof self.id === 'string') {
         self.path = anPath + self.id;
-    else
+        self.valuePath = self.path;
+    }
+    else {
         self.path = digPath + self.id;
+        self.valuePath = self.path + '/value';
+    }
 
     return self;
 };
 
 
 Pin.prototype.read = function () {
-    var valPath = '/value';
-    if(typeof this.id === 'string')
-        valPath = '';
-    return '' + fs.readFileSync(this.path + valPath);
+    fs.exists(this.valuePath, function (exists) {
+        if(!exists) {
+            fs.writeFileSync(digPath, this.id);
+        }
+    });
+    return '' + fs.readFileSync(this.valuePath + valPath);
 };
 
 Pin.prototype.write = function (val) {
-    var valPath = '/value';
-    if(typeof this.id === 'string')
-        valPath = '';
-    return '' + fs.writeFileSync(this.path + valPath, val);
+    fs.exists(this.valuePath, function (exists) {
+        if(!exists) {
+            fs.writeFileSync(digPath, this.id);
+        }
+    });
+    return '' + fs.writeFileSync(this.valuePath, val);
 };
 
 Pin.prototype.watch = function (freq) {
