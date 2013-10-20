@@ -88,7 +88,7 @@ Pin.prototype.write = function (val) {
 
 Pin.prototype.writeSync = function (val) {
     var self = this;
-    var exists = fs.existsSync(this.valuePath
+    var exists = fs.existsSync(this.valuePath);
         if(!exists) {
             fs.writeFile(exportPath, self.id)
         }
