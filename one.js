@@ -102,16 +102,16 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-setInterval(function () {
-    //var p = pins[1];
-    var p = obPin(67);
-    var v = p();
-    var nv = p();
-    if(nv.toString() !== v.toString()) {
-        p.value = nv;
-        console.log(p());
-    }
-}, 250);
+//setInterval(function () {
+//    //var p = pins[1];
+//    var p = obPin(67);
+//    var v = p();
+//    var nv = p();
+//    if(nv.toString() !== v.toString()) {
+//        p.value = nv;
+//        console.log(p());
+//    }
+//}, 250);
 
 //pins[1].watch(250);
 
