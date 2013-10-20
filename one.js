@@ -48,18 +48,25 @@ var Pin = function (id) {
 Pin.prototype.read = function () {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(exportPath, this.id);
+            fs.writeFile(exportPath, self.id, function () {
+                return '' + fs.readFileSync(this.valuePath + valPath);
+            });
+        } else {
+            return '' + fs.readFileSync(this.valuePath + valPath);
         }
-        return '' + fs.readFileSync(this.valuePath + valPath);
     });
 };
 
 Pin.prototype.write = function (val) {
+    var self = this;
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(exportPath, this.id);
+            fs.writeFile(exportPath, self.id, function () {
+                return '' + fs.writeFileSync(self.valuePath, val);
+            });
+        } else {
+            return '' + fs.writeFileSync(self.valuePath, val);
         }
-        return '' + fs.writeFileSync(this.valuePath, val);
     });
 };
 
