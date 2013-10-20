@@ -32,13 +32,15 @@ var Pin = function (id) {
 
     self.id = id;
     self.value = '';
-    if(typeof self.id === 'string') {
+    self.isAnalog = typeof self.id === 'string';
+    if(self.isAnalog) {
         self.path = anPath + self.id;
         self.valuePath = self.path;
     }
     else {
         self.path = digPath + self.id;
         self.valuePath = self.path + '/value';
+        self.directionPath = self.path + 'direction';
     }
 
     return self;
@@ -49,9 +51,11 @@ Pin.prototype.read = function () {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
+                fs.writeFileSync(self.directionPath, 'out');
                 return '' + fs.readFileSync(this.valuePath + valPath);
             });
         } else {
+            fs.writeFileSync(self.directionPath, 'out');
             return '' + fs.readFileSync(this.valuePath + valPath);
         }
     });
@@ -62,9 +66,11 @@ Pin.prototype.write = function (val) {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
+                fs.writeFileSync(self.directionPath, 'in');
                 return '' + fs.writeFileSync(self.valuePath, val);
             });
         } else {
+            fs.writeFileSync(self.directionPath, 'in');
             return '' + fs.writeFileSync(self.valuePath, val);
         }
     });
