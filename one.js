@@ -13,7 +13,7 @@ var obPin = function (id) {
 
   return function(val) {
       if(typeof val === 'undefined') {
-          return pin.read();
+          return pin.readSync();
       } else {
           pin.write(val);
       }
