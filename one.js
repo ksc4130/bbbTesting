@@ -42,12 +42,7 @@ setTimeout(function () {
     pins[0].write(0);
 }, 1000);
 
-
-fs.watch(pins[1].path + '/value', function (event, filename) {
-    console.log('event is: ' + event);
-    if (filename) {
-        console.log('filename provided: ' + filename);
-    } else {
-        console.log('filename not provided');
-    }
+fs.watchFile(pins[1].path + '/value', function (curr, prev) {
+    console.log('the current mtime is: ' + curr.mtime);
+    console.log('the previous mtime was: ' + prev.mtime);
 });
