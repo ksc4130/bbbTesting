@@ -1,6 +1,7 @@
 var fs = require('fs');
 
-var digPath = '/sys/class/gpio/gpio',
+var exportPath = '/sys/class/gpio/export',
+    digPath = '/sys/class/gpio/gpio',
     anPath = '/sys/devices/ocp.2/helper.14/',
     ids = [
         67,
@@ -47,7 +48,7 @@ var Pin = function (id) {
 Pin.prototype.read = function () {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(digPath + '/export', this.id);
+            fs.writeFileSync(exportPath, this.id);
         }
         return '' + fs.readFileSync(this.valuePath + valPath);
     });
@@ -56,7 +57,7 @@ Pin.prototype.read = function () {
 Pin.prototype.write = function (val) {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(digPath + '/export', this.id);
+            fs.writeFileSync(exportPath, this.id);
         }
         return '' + fs.writeFileSync(this.valuePath, val);
     });
