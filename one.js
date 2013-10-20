@@ -12,7 +12,7 @@ var obPin = function (id) {
   var pin = new Pin(id);
 
   return function(val) {
-      if(!typeof val === 'undefined') {
+      if(typeof val === 'undefined') {
           console.log('read');
           return pin.read();
       } else {
