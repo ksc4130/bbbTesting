@@ -47,7 +47,7 @@ var Pin = function (id) {
 Pin.prototype.read = function () {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(digPath, this.id);
+            fs.writeFileSync(digPath + '/export', this.id);
         }
     });
     return '' + fs.readFileSync(this.valuePath + valPath);
@@ -56,7 +56,7 @@ Pin.prototype.read = function () {
 Pin.prototype.write = function (val) {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
-            fs.writeFileSync(digPath, this.id);
+            fs.writeFileSync(digPath + '/export', this.id);
         }
     });
     return '' + fs.writeFileSync(this.valuePath, val);
