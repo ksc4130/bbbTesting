@@ -51,11 +51,11 @@ Pin.prototype.read = function () {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
-                fs.writeFileSync(self.directionPath, 'out');
+                fs.writeFileSync(self.directionPath, 'in');
                 return '' + fs.readFileSync(this.valuePath + valPath);
             });
         } else {
-            fs.writeFileSync(self.directionPath, 'out');
+            fs.writeFileSync(self.directionPath, 'in');
             return '' + fs.readFileSync(this.valuePath + valPath);
         }
     });
@@ -66,11 +66,11 @@ Pin.prototype.write = function (val) {
     fs.exists(this.valuePath, function (exists) {
         if(!exists) {
             fs.writeFile(exportPath, self.id, function () {
-                fs.writeFileSync(self.directionPath, 'in');
+                fs.writeFileSync(self.directionPath, 'out');
                 return '' + fs.writeFileSync(self.valuePath, val);
             });
         } else {
-            fs.writeFileSync(self.directionPath, 'in');
+            fs.writeFileSync(self.directionPath, 'out');
             return '' + fs.writeFileSync(self.valuePath, val);
         }
     });
