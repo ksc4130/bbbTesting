@@ -24,11 +24,11 @@ var Pin = function (id) {
 
 
 Pin.prototype.read = function () {
-    return fs.readFileSync(this.path() + '/value');
+    return fs.readFileSync(this.path + '/value');
 };
 
 Pin.prototype.write = function (val) {
-    return fs.writeFileSync(this.path() + '/value', val);
+    return fs.writeFileSync(this.path + '/value', val);
 };
 
 var pins = [
