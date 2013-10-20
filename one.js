@@ -13,8 +13,10 @@ var obPin = function (id) {
 
   return function(val) {
       if(!typeof val === 'undefined') {
+          console.log('read');
           return pin.read();
       } else {
+          console.log('write', val);
           pin.write(val);
       }
   }
@@ -90,7 +92,7 @@ setTimeout(function () {
 setInterval(function () {
     //var p = pins[1];
     var p = obPin(67);
-    var v = p.value;
+    var v = p.value || '';
     var nv = p() || '';
     if(nv.toString() !== v.toString()) {
         p.value = nv;
