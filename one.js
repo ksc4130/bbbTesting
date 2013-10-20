@@ -28,14 +28,14 @@ Pin.prototype.read = function () {
     var valPath = '/value';
     if(typeof this.id === 'string')
         valPath = '';
-    return fs.readFileSync(this.path + valPath, 'string');
+    return '' + fs.readFileSync(this.path + valPath);
 };
 
 Pin.prototype.write = function (val) {
     var valPath = '/value';
     if(typeof this.id === 'string')
         valPath = '';
-    return fs.writeFileSync(this.path + valPath, val);
+    return '' + fs.writeFileSync(this.path + valPath, val);
 };
 
 Pin.prototype.watch = function (freq) {
