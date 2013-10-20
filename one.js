@@ -8,17 +8,17 @@ var exportPath = '/sys/class/gpio/export',
         'AIN4'
     ];
 
-var obPin = function (id) {
-  var pin = new Pin(id);
-
-  return function(val) {
-      if(typeof val === 'undefined') {
-          return pin.readSync();
-      } else {
-          pin.write(val);
-      }
-  }
-};
+//var obPin = function (id) {
+//  var pin = new Pin(id);
+//
+//  return function(val) {
+//      if(typeof val === 'undefined') {
+//          return pin.readSync();
+//      } else {
+//          pin.write(val);
+//      }
+//  }
+//};
 
 var exportPin = function (pin) {
 
@@ -48,7 +48,7 @@ var Pin = function (id) {
 
 Pin.prototype.readSync = function () {
     var self = this;
-    var exists = fs.existsSync(this.valuePath);
+    var exists = fs.existsSync(self.path);
     if(!exists) {
         console.log('doesn\'t exist', self.id);
         fs.writeFileSync(exportPath, self.id);
@@ -104,7 +104,7 @@ var pins = [
 ];
 
 console.log(pins[0].readSync());
-pins[0].writeSync(1);
+//pins[0].writeSync(1);
 console.log(pins[0].readSync());
 
 
