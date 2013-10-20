@@ -86,15 +86,29 @@ Pin.prototype.write = function (val) {
     });
 };
 
+Pin.prototype.writeSync = function (val) {
+    var self = this;
+    var exists = fs.existsSync(this.valuePath
+        if(!exists) {
+            fs.writeFile(exportPath, self.id)
+        }
+        fs.writeFileSync(self.directionPath, 'out');
+        return '' + fs.writeFileSync(self.valuePath, val || 0);
+};
+
 var pins = [
     new Pin(67),
     new Pin('AIN4')
 ];
 
-pins[0].write(1);
+console.log(pins[0].readSync());
+pins[0].writeSync(1);
+console.log(pins[0].readSync());
+
 
 setTimeout(function () {
-    pins[0].write(0);
+    pins[0].writeSync(0);
+    console.log(pins[0].readSync());
 }, 1000);
 
 //setInterval(function () {
