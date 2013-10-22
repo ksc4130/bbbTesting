@@ -1,0 +1,7 @@
+{
+    "name": "bbbTesting",
+    "description": "bbbTesting",
+    "dependencies": {
+        "epoll": "*"
+    }
+}
