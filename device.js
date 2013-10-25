@@ -67,7 +67,7 @@
             return self;
         }
 
-        self.init = function (d) {
+        self.init = function (err) {
             console.log('init', self.pin);
             self.ready(self);
             if(self.actionType === 'switch') {

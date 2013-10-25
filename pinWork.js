@@ -3,7 +3,8 @@
         exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio';
 
-    exports.exportPin = function (pin, direction, value, edge, fn) {
+    var mod = {
+        exportPin: function (pin, direction, value, edge, fn) {
         var workingPath = gpioPath + pin;
 
         fs.exists(workingPath, function (exists) {
@@ -16,13 +17,13 @@
                         }
                         return;
                     }
-                    fn(null);
+                    this.setupPin(pin, direction, value, edge, fn);
                 });
             }
         });
-    };
+        },
 
-    exports.setupPin = function (pin, direction, value, edge, fn) {
+    setupPin: function (pin, direction, value, edge, fn) {
         var workingPath = gpioPath + pin;
 
         if(typeof direction === 'string') {
@@ -72,5 +73,8 @@
                 }
             });
         }
-    };
+    }
+}
+
+    module.exports = mod;
 }());
