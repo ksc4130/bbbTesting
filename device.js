@@ -32,7 +32,8 @@
             'P9_38',
             'P9_39',
             'P9_40'
-        ];
+        ],
+        idCnter = 0;
 
     function Device (pin, args) {
         if(this === global) {
@@ -45,7 +46,7 @@
 
         args = args || {};
 
-        self.id = args.id;
+        self.id = args.id || idCnter++;
         self.actionType = args.actionType;
         self.type = args.type;
 
