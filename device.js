@@ -31,6 +31,8 @@
             return new Device(pin, args);
         }
 
+        console.log('in device', pin, args);
+
         var self = this;
 
         args = args || {};
