@@ -101,13 +101,11 @@
                     }
                     self.value = buffer;
                 });
-            }
-
-            if(poller) {
                 fs.readSync(valuefd, buffer, 0, 1, 0);
 
                 poller.add(valuefd, Epoll.EPOLLPRI);
             }
+
         };
 
         if(self.actionType === 'onoff') {
