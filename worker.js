@@ -1,6 +1,6 @@
 var device = require('./device'),
     Device = device.Device;
-Device.on('switched', function (d) {
+device.on('switched', function (d) {
    console.log('switched', d);
 });
 var d = new Device('68', {
