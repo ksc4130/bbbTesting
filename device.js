@@ -16,6 +16,9 @@
             'onoff',
             'momentary'
         ],
+        edges = {
+          'switch': 'both'
+        },
         bbbAnalogPins = [
             'P9_33',
             'P9_35',
@@ -42,6 +45,7 @@
         self.type = args.type;
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
             (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
+        self.edge = edges[self.actionType];
         self.pin = pin || (args.pin || '');
         self.name = args.name || 'untitled';
         self.value = args.value;
@@ -57,11 +61,14 @@
             return self;
         }
 
-        if(self.type === 'light') {
-            if(self.actionType === 'onoff') {
-                pinWork.exportPin(self.pin, self.direction, self.value, 'both', args.ready);
-            }
-        }
+        pinWork.exportPin(self.pin, self.direction, self.value, self.edge, args.ready);
+//        if(self.type === 'light') {
+//            if(self.actionType === 'onoff') {
+//
+//            } else if(self.actionType === 'switch') {
+//                pinWork.exportPin(self.pin, self.direction, self.value, 'both', args.ready);
+//            }
+//        }
     }
 
     module.exports = Device;
