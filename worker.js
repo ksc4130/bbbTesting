@@ -27,8 +27,10 @@ device.on('onoff', function (d) {
 
 devices.push(
     new Device('67', {
+        name: 'Den Lights',
         type: 'light',
         actionType: 'onoff',
+        isVisible: true,
         ready: function () {
             //console.log('67 ready');
         }
@@ -42,12 +44,6 @@ devices.push(
         }
     })
 );
-
-var server = http.createServer(function (req, res) {
-
-}).listen(8080);
-
-
 
 
 var io = require('socket.io-client');

@@ -128,8 +128,8 @@
             poller.add(valuefd, Epoll.EPOLLPRI);
             console.log('add onoff');
             self.toggle = function (val, fn) {
-                console.log('toggle');
                 var v = val || (1 - self.value);
+                console.log('toggle', self.pin, v, gpioPath + self.pin +'/value');
                 fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
                     if(err) {
                         console.log('error setting value for pin', pin);
