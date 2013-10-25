@@ -55,8 +55,11 @@
         self.pin = pin || (args.pin || '');
         self.name = args.name || 'untitled';
 
-        args.value = args.value || '0';
-        self.value = new Buffer(args.value.toString());
+        if(!args.value === '0' && !args.value === '1') {
+            self.value = '0';
+        }
+
+        self.value = new Buffer(args.value);
         self.controls = args.controls;
         self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
