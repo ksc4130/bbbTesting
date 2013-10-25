@@ -85,7 +85,7 @@ conn.on('devices', function (data) {
 //                conn.emit('change', {id: d.id, state: d.state});
 //            });
 //        }
-        devices.push(dev);
+        //devices.push(dev);
     }
     //console.log(devices);
 });
