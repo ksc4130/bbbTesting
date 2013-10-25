@@ -86,7 +86,7 @@
                     fs.readSync(fd, buffer, 0, 1, 0);
                     //console.log('poller', buffer[0]);
                     if(self.value[0] === one[0]) {
-                        console.log('poller a');
+                        console.log('poller a', buffer.toString());
                         if(buffer[0] === zero[0]) {
                             console.log('poller b');
                             //button was pressed do work
