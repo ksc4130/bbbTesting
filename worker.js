@@ -9,7 +9,7 @@ device.on('switched', function (d) {
         il;
     for(i = 0, il = d.controls.length; i < il; i++) {
         for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-            console.log(devices[ic].pin);
+            console.log(devices[ic].pin, typeof devices[ic].toggle);
             if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
                 devices[ic].toggle();
             }
