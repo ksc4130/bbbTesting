@@ -4,7 +4,6 @@ var http = require('http'),
     devices = [];
 
 device.on('switched', function (d) {
-   console.log('switched', d.controls);
     var i,
         il;
     for(i = 0, il = d.controls.length; i < il; i++) {
@@ -97,7 +96,7 @@ conn.on('change', function (data) {
         }
     }
     if(typeof device !== 'undefined' && device !== null) {
-        device.toggle(function (x, d) {
+        device.toggle(null, function (x, d) {
             //if(d.isVisible)
             conn.emit('change', {id: device.id, state: d});
         });
