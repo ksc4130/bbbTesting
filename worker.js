@@ -71,6 +71,7 @@ conn.on('initWorker', function (data) {
 });
 
 conn.on('devices', function (data) {
+    console.log('device for io server');
     for(var i = 0, il = data.length; i < il; i++) {
         var dev = device(null, data[i]);
 
