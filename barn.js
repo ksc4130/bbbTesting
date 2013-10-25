@@ -11,7 +11,7 @@ var worker = require('./worker'),
             }
         }),
         new Device('17', {
-            name: 'Barn Flood Lights',
+            name: 'Flood Lights',
             type: 'light',
             actionType: 'onoff',
             isVisible: true,

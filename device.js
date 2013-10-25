@@ -84,7 +84,6 @@
             eventType;
 
         self.init = function (err) {
-            console.log('init' ,self.pin);
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
@@ -138,7 +137,6 @@
             self.toggle = function () {
 
                 fs.writeFile(gpioPath + self.pin +'/value', 1, function (err) {
-                    console.log(self.name, 1);
                     if(err) {
                         console.log('error setting value for pin', pin);
                         if(typeof fn === 'function') {
@@ -148,7 +146,6 @@
                     }
                     setTimeout(function (fn) {
                         fs.writeFile(gpioPath + self.pin +'/value', 0, function (err) {
-                            console.log(self.name, 0);
                             if(err) {
                                 console.log('error setting value for pin', pin);
                                 if(typeof fn === 'function') {
