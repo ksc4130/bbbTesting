@@ -56,31 +56,35 @@ var serverUrl = 'http://192.168.1.10:4131';
 var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 var util = require('util');
-var device = require('./device');
 var me = {};
 
 conn.on('initWorker', function (data) {
-    console.log('init', util.inspect(data));
-
-    me = data;
-    fs.writeFile('./meinfo.json', JSON.stringify(data), function (err) {
-        if(err) throw err;
-
-        console.log('created meinfo.json');
-    })
+    conn.emit('initWorker', devices);
+//    console.log('init', util.inspect(data));
+//
+//    me = data;
+//    fs.writeFile('./meinfo.json', JSON.stringify(data), function (err) {
+//        if(err) throw err;
+//
+//        console.log('created meinfo.json');
+//    });
 });
 
 conn.on('devices', function (data) {
     console.log('device for io server');
     for(var i = 0, il = data.length; i < il; i++) {
-        var dev = device(null, data[i]);
-
-        if(dev.name === 'Den') {
-            dev.on('change', function (d) {
-                console.log('change***********', d);
-                conn.emit('change', {id: d.id, state: d.state});
-            });
+        //var dev = device(null, data[i]);
+        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
+            if(devices[ic].pin === data[i].pin) {
+                devices[ic].id = data[i].id;
+            }
         }
+//        if(dev.name === 'Den') {
+//            dev.on('change', function (d) {
+//                console.log('change***********', d);
+//                conn.emit('change', {id: d.id, state: d.state});
+//            });
+//        }
         devices.push(dev);
     }
     //console.log(devices);
