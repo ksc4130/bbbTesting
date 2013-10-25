@@ -87,11 +87,12 @@
                     //console.log('poller', buffer[0]);
                     if(self.value[0] === one[0]) {
                         console.log('poller a', buffer.toString());
-                        if(buffer[0] === zero[0]) {
-                            console.log('poller b');
+                        emitter.emit('switched', self);
+                        //if(buffer[0] === zero[0]) {
+                            //console.log('poller b');
                             //button was pressed do work
-                            emitter.emit('switched', self);
-                        }
+                            //emitter.emit('switched', self);
+                        //}
                     }
 
                     self.value = buffer;
