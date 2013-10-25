@@ -59,7 +59,7 @@ var util = require('util');
 var me = {};
 
 conn.on('initWorker', function (data) {
-    conn.emit('initWorker', devices);
+    conn.emit('initWorker', {devices: devices});
 //    console.log('init', util.inspect(data));
 //
 //    me = data;
