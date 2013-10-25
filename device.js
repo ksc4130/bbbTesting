@@ -58,7 +58,7 @@
         if(!args.value === '0' && !args.value === '1') {
             args.value = '0';
         }
-
+        console.log(args.value);
         self.value = new Buffer(args.value, 'ascii');
         self.controls = args.controls;
         self.freq = args.freq || 5;
