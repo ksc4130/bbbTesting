@@ -12,7 +12,7 @@ device.on('switched', function (d) {
             console.log(devices[ic].pin, typeof devices[ic].toggle);
             if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
                 devices[ic].toggle(null, function (err, d) {
-                    conn.emit('change', {id: dev.id, state: d});
+                    conn.emit('change', {id: devices[ic].id, state: devices[ic].value});
                 });
             }
         }
