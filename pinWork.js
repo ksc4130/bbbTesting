@@ -26,33 +26,21 @@
                             }
                             return;
                         }
-                        if(typeof edge === 'string') {
-                            fs.writeFile(workingPath +'/edge', edge, function (err) {
-                                if(err) {
-                                    console.log('error setting edge for pin', pin);
-                                    if(typeof fn === 'function') {
-                                        fn(err);
-                                    }
-                                    return;
-                                }
-                                fn(null);
-                            });
-                        }
                     });
-                } else {
-                    if(typeof edge === 'string') {
-                        fs.writeFile(workingPath +'/edge', edge, function (err) {
-                            if(err) {
-                                console.log('error setting edge for pin', pin);
-                                if(typeof fn === 'function') {
-                                    fn(err);
-                                }
-                                return;
-                            }
-                            fn(null);
-                        });
-                    }
                 }
+                if(typeof edge === 'string') {
+                    fs.writeFile(workingPath +'/edge', edge, function (err) {
+                        if(err) {
+                            console.log('error setting edge for pin', pin);
+                            if(typeof fn === 'function') {
+                                fn(err);
+                            }
+                            return;
+                        }
+                        fn(null);
+                    });
+                }
+
             });
         }
     };
