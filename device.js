@@ -114,10 +114,11 @@
                 // Start watching for interrupts.
                 poller.add(valuefd, Epoll.EPOLLPRI);
             } else if(self.actionType === 'onoff') {
+                console.log('add onoff');
                 self.toggle = function (val, fn) {
                     console.log('toggle');
                     var v = val || (1 - self.value);
-                    fs.writeFile(workingPath +'/value', v, function (err) {
+                    fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
                         if(err) {
                             console.log('error setting value for pin', pin);
                             if(typeof fn === 'function') {
@@ -142,6 +143,7 @@
 //                pinWork.exportPin(self.pin, self.direction, self.value, 'both', args.ready);
 //            }
 //        }
+        return self;
     }
 
     exports.Device = Device;
