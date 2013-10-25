@@ -33,17 +33,19 @@ devices.push(
 
         }
     }),
-    new Device('44', {
-        type: 'light',
-        actionType: 'switch',
-        controls: ['67'],
+    new Device('68', {
+        name: 'Garage Door',
+        type: 'overheadDoor',
+        actionType: 'momentary',
+        isVisible: true,
         ready: function () {
 
         }
     }),
-    new Device('68', {
-        type: 'overheadDoor',
-        actionType: 'momentary',
+    new Device('44', {
+        type: 'light',
+        actionType: 'switch',
+        controls: ['67'],
         ready: function () {
 
         }
