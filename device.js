@@ -61,6 +61,7 @@
         self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
         self.gpio = null;
+        self.ready = args.ready;
 
         if(!self.direction) {
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
@@ -69,7 +70,10 @@
 
         self.init = function (err) {
             console.log('init', self.pin);
-            self.ready(self);
+            if(typeof self.ready === 'function') {
+                self.ready(self);
+            }
+
             if(self.actionType === 'switch') {
                 var Epoll = require('epoll').Epoll,
                     fs = require('fs'),
