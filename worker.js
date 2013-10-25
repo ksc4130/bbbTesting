@@ -1,4 +1,5 @@
-var Device = require('./device');
+var device = require('./device'),
+    Device = device.Device;
 Device.on('switched', function (d) {
    console.log('switched', d);
 });

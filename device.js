@@ -62,10 +62,6 @@
         self.isVisible = args.isVisible || false;
         self.gpio = null;
 
-        function on (event, fn) {
-            emitter.on(event, fn);
-        }
-
         if(!self.direction) {
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
             return self;
@@ -110,5 +106,8 @@
 //        }
     }
 
-    module.exports = Device;
+    exports.Device = Device;
+    exports.on = function (event, fn) {
+        emitter.on(event, fn);
+    };
 }());
