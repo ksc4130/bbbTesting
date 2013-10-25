@@ -1,6 +1,6 @@
 var Epoll = require('epoll').Epoll,
     fs = require('fs'),
-    valuefd = fs.openSync('/sys/class/gpio/gpio67/value', 'r'),
+    valuefd = fs.openSync('/sys/class/gpio/gpio44/value', 'r'),
     buffer = new Buffer(1);
 
 // Create a new Epoll. The callback is the interrupt handler.
