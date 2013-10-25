@@ -59,7 +59,12 @@
             args.value = '0';
         }
         console.log(args.value);
-        self.value = new Buffer(args.value, 'ascii');
+        if(self.actionType === 'switch') {
+            self.value = new Buffer(args.value, 'ascii')
+        } else {
+           self.value = parseInt(args.value);
+        }
+
         self.controls = args.controls;
         self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
@@ -108,6 +113,22 @@
 
                 // Start watching for interrupts.
                 poller.add(valuefd, Epoll.EPOLLPRI);
+            } else if(self.actionType === 'onoff') {
+                self.toggle = function (val, fn) {
+                    console.log('toggle');
+                    var v = val || (1 - self.value);
+                    fs.writeFile(workingPath +'/value', v, function (err) {
+                        if(err) {
+                            console.log('error setting value for pin', pin);
+                            if(typeof fn === 'function') {
+                                fn(err, null);
+                            }
+                            return;
+                        }
+                        self.value = v;
+                        fn(null, v);
+                    });
+                }
             }
         };
 

@@ -2,6 +2,7 @@
     var fs = require('fs'),
         setupPin,
         exportPin,
+        setPinValue,
         exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio';
 
