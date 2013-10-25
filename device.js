@@ -79,8 +79,11 @@
             var poller = new Epoll(function (err, fd, events) {
                 // Read GPIO value file. Reading also clears the interrupt.
                 fs.readSync(fd, buffer, 0, 1, 0);
+                console.log('poller', buffer[0]);
                 if(self.value[0] === one[0]) {
+                    console.log('poller a');
                     if(buffer[0] === zero[0]) {
+                        console.log('poller b');
                         //button was pressed do work
                         emitter.emit('switched', self);
                     }
