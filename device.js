@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    var pinWork = require('./pinWork'),
+    var fs = require('fs'),
+        pinWork = require('./pinWork'),
         EventEmitter = require('events').EventEmitter,
         emitter = new EventEmitter(),
         exportPath = '/sys/class/gpio/export',
