@@ -8,7 +8,7 @@
 
         fs.exists(workingPath, function (exists) {
             if(!exists) {
-                fs.write(exportPath, pin, function (err) {
+                fs.writeFile(exportPath, pin, function (err) {
                     if(err) {
                         console.log('error exporting pin', pin);
                         if(typeof fn === 'function') {
@@ -26,7 +26,7 @@
         var workingPath = gpioPath + pin;
 
         if(typeof direction === 'string') {
-            fs.write(workingPath +'/direction', direction, function (err) {
+            fs.writeFile(workingPath +'/direction', direction, function (err) {
                 if(err) {
                     console.log('error setting direction for pin', pin);
                     if(typeof fn === 'function') {
@@ -35,7 +35,7 @@
                     return;
                 }
                 if(typeof value !== 'undefined' && value !== null) {
-                    fs.write(workingPath +'/value', value, function (err) {
+                    fs.writeFile(workingPath +'/value', value, function (err) {
                         if(err) {
                             console.log('error setting value for pin', pin);
                             if(typeof fn === 'function') {
@@ -44,7 +44,7 @@
                             return;
                         }
                         if(typeof edge === 'string') {
-                            fs.write(workingPath +'/edge', edge, function (err) {
+                            fs.writeFile(workingPath +'/edge', edge, function (err) {
                                 if(err) {
                                     console.log('error setting edge for pin', pin);
                                     if(typeof fn === 'function') {
@@ -58,7 +58,7 @@
                     });
                 } else {
                     if(typeof edge === 'string') {
-                        fs.write(workingPath +'/edge', edge, function (err) {
+                        fs.writeFile(workingPath +'/edge', edge, function (err) {
                             if(err) {
                                 console.log('error setting edge for pin', pin);
                                 if(typeof fn === 'function') {
