@@ -7,7 +7,7 @@ var Epoll = require('epoll').Epoll,
 var poller = new Epoll(function (err, fd, events) {
     // Read GPIO value file. Reading also clears the interrupt.
     fs.readSync(fd, buffer, 0, 1, 0);
-    console.log(fd, buffer.toString() === '1' ? 'pressed' : 'released');
+    console.log(events, fd, buffer.toString() === '1' ? 'pressed' : 'released');
 });
 
 // Read the GPIO value file before watching to

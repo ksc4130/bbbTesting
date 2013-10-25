@@ -2,10 +2,14 @@
     'use strict';
 
     var pinWork = require('./pinWork'),
+        EventEmitter = require('events').EventEmitter,
+        emitter = new EventEmitter(),
         exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio',
         anPath = '/sys/devices/ocp.2/helper.14/',
         idDeviceCnt = 0,
+        zero = new Buffer('0'),
+        one = new Buffer('1'),
         device,
         bbbToggle,
         inputActionTypes = [
@@ -43,18 +47,24 @@
         self.id = args.id;
         self.actionType = args.actionType;
         self.type = args.type;
+
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
             (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
+
         self.edge = edges[self.actionType];
         self.pin = pin || (args.pin || '');
         self.name = args.name || 'untitled';
-        self.value = args.value;
+
+        args.value = args.value || '0';
+        self.value = new Buffer(args.value.toString());
         self.controls = args.controls;
         self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
         self.gpio = null;
 
-        self.subs = {};
+        function on (event, fn) {
+            emitter.on(event, fn);
+        }
 
         if(!self.direction) {
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
@@ -62,6 +72,35 @@
         }
 
         pinWork.exportPin(self.pin, self.direction, self.value, self.edge, args.ready);
+
+        if(self.type === 'switch') {
+            var Epoll = require('epoll').Epoll,
+                fs = require('fs'),
+                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r'),
+                buffer = new Buffer(1);
+
+            // Create a new Epoll. The callback is the interrupt handler.
+            var poller = new Epoll(function (err, fd, events) {
+                // Read GPIO value file. Reading also clears the interrupt.
+                fs.readSync(fd, buffer, 0, 1, 0);
+                if(self.value[0] === one[0]) {
+                    if(buffer[0] === zero[0]) {
+                        //button was pressed do work
+                        emitter.emit('switched', self);
+                    }
+                }
+
+                self.value = buffer;
+                //console.log(events, fd, buffer.toString() === '1' ? 'pressed' : 'released');
+            });
+
+            // Read the GPIO value file before watching to
+            // prevent an initial unauthentic interrupt.
+            fs.readSync(valuefd, buffer, 0, 1, 0);
+
+            // Start watching for interrupts.
+            poller.add(valuefd, Epoll.EPOLLPRI);
+        }
 //        if(self.type === 'light') {
 //            if(self.actionType === 'onoff') {
 //
