@@ -84,7 +84,7 @@
             eventType;
 
         self.init = function (err) {
-
+            console.log('init' ,self.pin);
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
