@@ -68,6 +68,7 @@
         }
 
         self.init = function (d) {
+            console.log('init', self.pin);
             self.ready(self);
             if(self.actionType === 'switch') {
                 var Epoll = require('epoll').Epoll,

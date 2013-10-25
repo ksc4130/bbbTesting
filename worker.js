@@ -6,11 +6,11 @@ device.on('switched', function (d) {
    console.log('switched', d);
 });
 
-var d = new Device('68', {
+var d = new Device('44', {
     type: 'light',
     actionType: 'switch',
     ready: function () {
-        console.log('68 ready');
+        console.log('44 ready');
     }
 });
 
