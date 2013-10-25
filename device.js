@@ -56,7 +56,7 @@
         self.name = args.name || 'untitled';
 
         if(!args.value === '0' && !args.value === '1') {
-            self.value = '0';
+            args.value = '0';
         }
 
         self.value = new Buffer(args.value, 'ascii');
