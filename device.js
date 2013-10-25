@@ -121,7 +121,9 @@
                         return;
                     }
                     self.value = v;
-                    fn(null, v);
+                    if(typeof fn === 'function') {
+                        fn(null, v);
+                    }
                 });
             }
         }
