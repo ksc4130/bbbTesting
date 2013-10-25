@@ -78,7 +78,7 @@
         }
 
         var Epoll = require('epoll').Epoll,
-            valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r'),
+            valuefd,
             buffer = new Buffer(1),
             poller,
             eventType;
@@ -90,6 +90,7 @@
             }
 
             if(self.actionType === 'switch') {
+                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
                 eventType = self.actionType === 'switch' ? 'switched' : '';
                 poller = new Epoll(function (err, fd, events) {
                     fs.readSync(fd, buffer, 0, 1, 0);
@@ -160,6 +161,7 @@
         }
 
         if(poller) {
+            valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
             fs.readSync(valuefd, buffer, 0, 1, 0);
 
             poller.add(valuefd, Epoll.EPOLLPRI);
