@@ -2,6 +2,11 @@ var device = require('./device'),
     Device = device.Device,
     devices = [];
 
+var io = require('socket.io-client');
+var serverUrl = 'http://192.168.1.10:4131';
+var conn = io.connect(serverUrl);
+var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
+
 device.on('switched', function (d) {
     var i,
         il;
@@ -25,10 +30,6 @@ device.on('onoff', function (d) {
 
 module.exports.init = function (devs) {
     devices = devs;
-    var io = require('socket.io-client');
-    var serverUrl = 'http://192.168.1.10:4131';
-    var conn = io.connect(serverUrl);
-    var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 
     conn.on('initWorker', function () {
         conn.emit('initWorker', {devices: devices});
