@@ -2,6 +2,7 @@
     "name": "bbbTesting",
     "description": "bbbTesting",
     "dependencies": {
-        "epoll": "*"
+        "epoll": "*",
+        "socket.io-client": "*"
     }
 }

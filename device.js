@@ -108,6 +108,23 @@
         };
 
         if(self.actionType === 'onoff') {
+            var Epoll = require('epoll').Epoll,
+                fs = require('fs'),
+                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r'),
+                buffer = new Buffer(1);
+
+            var poller = new Epoll(function (err, fd, events) {
+                fs.readSync(fd, buffer, 0, 1, 0);
+                if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
+                    //button was pressed do work
+                    self.value = parseInt(buffer.toString('ascii'));
+                    emitter.emit('onoff', self);
+                }
+            });
+
+            fs.readSync(valuefd, buffer, 0, 1, 0);
+
+            poller.add(valuefd, Epoll.EPOLLPRI);
             console.log('add onoff');
             self.toggle = function (val, fn) {
                 console.log('toggle');
