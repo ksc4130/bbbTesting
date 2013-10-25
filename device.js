@@ -69,7 +69,7 @@
 
         pinWork.exportPin(self.pin, self.direction, self.value, self.edge, args.ready);
 
-        if(self.type === 'switch') {
+        if(self.actionType === 'switch') {
             var Epoll = require('epoll').Epoll,
                 fs = require('fs'),
                 valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r'),
