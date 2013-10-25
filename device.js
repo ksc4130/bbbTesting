@@ -22,7 +22,8 @@
             'momentary'
         ],
         edges = {
-          'switch': 'both'
+          'switch': 'both',
+          'onoff': 'both'
         },
         bbbAnalogPins = [
             'P9_33',
