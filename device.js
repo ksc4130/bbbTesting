@@ -59,7 +59,7 @@
             self.value = '0';
         }
 
-        self.value = new Buffer(args.value);
+        self.value = new Buffer(args.value, 'ascii');
         self.controls = args.controls;
         self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
