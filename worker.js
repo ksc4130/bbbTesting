@@ -3,7 +3,7 @@ var http = require('http'),
     Device = device.Device;
 
 device.on('switched', function (d) {
-   console.log('switched', d);
+   console.log('switched', d.pin);
 });
 
 var d = new Device('44', {
