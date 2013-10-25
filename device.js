@@ -103,25 +103,27 @@
                 fs.readSync(valuefd, buffer, 0, 1, 0);
 
                 poller.add(valuefd, Epoll.EPOLLPRI);
-            } else if(self.actionType === 'onoff') {
-                console.log('add onoff');
-                self.toggle = function (val, fn) {
-                    console.log('toggle');
-                    var v = val || (1 - self.value);
-                    fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
-                        if(err) {
-                            console.log('error setting value for pin', pin);
-                            if(typeof fn === 'function') {
-                                fn(err, null);
-                            }
-                            return;
-                        }
-                        self.value = v;
-                        fn(null, v);
-                    });
-                }
             }
         };
+
+        if(self.actionType === 'onoff') {
+            console.log('add onoff');
+            self.toggle = function (val, fn) {
+                console.log('toggle');
+                var v = val || (1 - self.value);
+                fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
+                    if(err) {
+                        console.log('error setting value for pin', pin);
+                        if(typeof fn === 'function') {
+                            fn(err, null);
+                        }
+                        return;
+                    }
+                    self.value = v;
+                    fn(null, v);
+                });
+            }
+        }
 
         pinWork.exportPin(self.pin, self.direction, self.value, self.edge, self.init);
 

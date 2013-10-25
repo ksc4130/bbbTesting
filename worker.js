@@ -22,7 +22,7 @@ devices.push(
         type: 'light',
         actionType: 'onoff',
         ready: function () {
-            //console.log('44 ready');
+            //console.log('67 ready');
         }
     }),
     new Device('44', {
