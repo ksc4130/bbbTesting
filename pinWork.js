@@ -1,7 +1,8 @@
 (function () {
-    var exportPath = '/sys/class/gpio/export',
+    var fs = require('fs'),
+        exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio';
-    
+
     exports.exportPin = function (pin, direction, value, edge, fn) {
         var workingPath = gpioPath + pin;
 
