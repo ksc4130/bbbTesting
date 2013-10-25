@@ -27,7 +27,7 @@ devices.push(
     new Device('44', {
         type: 'light',
         actionType: 'switch',
-        controls: [67],
+        controls: ['67'],
         ready: function () {
             //console.log('44 ready');
         }
