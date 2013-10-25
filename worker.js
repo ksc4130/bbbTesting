@@ -1,5 +1,4 @@
-var http = require('http'),
-    device = require('./device'),
+var device = require('./device'),
     Device = device.Device,
     devices = [];
 
@@ -20,7 +19,6 @@ device.on('switched', function (d) {
 });
 
 device.on('onoff', function (d) {
-   console.log('onoff', d.pin);
     if(d.isVisible)
         conn.emit('change', {id: d.id, state: d.value});
 });
@@ -32,7 +30,7 @@ devices.push(
         actionType: 'onoff',
         isVisible: true,
         ready: function () {
-            //console.log('67 ready');
+
         }
     }),
     new Device('44', {
@@ -40,19 +38,23 @@ devices.push(
         actionType: 'switch',
         controls: ['67'],
         ready: function () {
-            //console.log('44 ready');
+
+        }
+    }),
+    new Device('68', {
+        type: 'overheadDoor',
+        actionType: 'momentary',
+        ready: function () {
+
         }
     })
 );
 
 
 var io = require('socket.io-client');
-var fs = require('fs');
 var serverUrl = 'http://192.168.1.10:4131';
 var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
-var util = require('util');
-var me = {};
 
 conn.on('initWorker', function () {
     conn.emit('initWorker', {devices: devices});
@@ -80,10 +82,6 @@ conn.on('change', function (data) {
     }
     if(typeof device !== 'undefined' && device !== null) {
         device.toggle(null);
-//            function (x, d) {
-//            if(device.isVisible)
-//                conn.emit('change', {id: device.id, state: d});
-//        });
     } else
         console.log("can't find device for id ", data.id);
 
