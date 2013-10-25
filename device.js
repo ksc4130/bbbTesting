@@ -103,9 +103,11 @@
                 });
             }
 
-            fs.readSync(valuefd, buffer, 0, 1, 0);
+            if(poller) {
+                fs.readSync(valuefd, buffer, 0, 1, 0);
 
-            poller.add(valuefd, Epoll.EPOLLPRI);
+                poller.add(valuefd, Epoll.EPOLLPRI);
+            }
         };
 
         if(self.actionType === 'onoff') {
