@@ -55,7 +55,7 @@
         self.pin = pin || (args.pin || '');
         self.name = args.name || 'untitled';
 
-        if(!args.value === '0' && !args.value === '1') {
+        if(args.value !== '0' && args.value !== '1') {
             args.value = '0';
         }
         console.log(args.value);
