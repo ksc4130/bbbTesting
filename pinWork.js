@@ -48,7 +48,7 @@
 
     exportPin = function (pin, direction, value, edge, fn) {
         var workingPath = gpioPath + pin;
-
+        console.log(workingPath);
         fs.exists(workingPath, function (exists) {
             if(!exists) {
                 fs.writeFile(exportPath, pin, function (err) {
