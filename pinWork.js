@@ -73,7 +73,7 @@
                     setupPin(pin, direction, value, edge, fn);
                 });
             } else {
-                this.setupPin(pin, direction, value, edge, fn);
+                setupPin(pin, direction, value, edge, fn);
             }
         });
     };
