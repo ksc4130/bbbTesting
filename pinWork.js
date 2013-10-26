@@ -38,6 +38,8 @@
                             doCallbackCheck(null);
                         }
                     });
+                } else {
+                    doCallbackCheck(null);
                 }
                 if(typeof edge === 'string') {
                     fs.writeFile(workingPath +'/edge', edge, function (err) {
@@ -48,6 +50,8 @@
                             doCallbackCheck(null);
                         }
                     });
+                } else {
+                    doCallbackCheck(null);
                 }
 
             });
