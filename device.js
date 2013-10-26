@@ -82,10 +82,10 @@
             return self;
         }
 
-        var Epoll = require('epoll').Epoll,
-            valuefd,
-            buffer = new Buffer(1),
-            poller;
+        self.Epoll = require('epoll').Epoll;
+        self.valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
+        self.buffer = new Buffer(1);
+        self.poller = null;
 
         self.init = function (err) {
             if(typeof self.ready === 'function') {
@@ -94,9 +94,8 @@
 
             if(self.actionType === 'switch') {
                 console.log('switch init');
-                valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
 
-                poller = new Epoll(function (err, fd, events) {
+                self.poller = new Epoll(function (err, fd, events) {
                     var buffer = new Buffer(1);
                     fs.readSync(fd, buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
@@ -109,11 +108,10 @@
                 });
                 fs.readSync(valuefd, buffer, 0, 1, 0);
 
-                poller.add(valuefd, Epoll.EPOLLPRI);
+                self.poller.add(valuefd, Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
-                valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
                 console.log('sensor init');
-                poller = new Epoll(function (err, fd, events) {
+                self.poller = new Epoll(function (err, fd, events) {
                     var buffer = new Buffer(1);
                     fs.readSync(fd, buffer, 0, 1, 0);
                     console.log('sensor', buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
@@ -127,7 +125,7 @@
         };
 
         if(self.actionType === 'onoff') {
-             poller = new Epoll(function (err, fd, events) {
+             self.poller = new Epoll(function (err, fd, events) {
                 fs.readSync(fd, buffer, 0, 1, 0);
                 if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
                     self.value = parseInt(buffer.toString('ascii'));
@@ -152,15 +150,13 @@
                     }
                 });
             }
-            if(poller) {
-                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+            if(self.poller) {
                 fs.readSync(valuefd, buffer, 0, 1, 0);
 
-                poller.add(valuefd, Epoll.EPOLLPRI);
+                self.poller.add(valuefd, Epoll.EPOLLPRI);
             }
         } else if(self.actionType === 'momentary') {
             self.toggle = function () {
-
                 fs.writeFile(gpioPath + self.pin +'/value', 1, function (err) {
                     if(err) {
                         console.log('error setting value for pin', pin);
@@ -182,11 +178,10 @@
                     }, 150);
                 });
             }
-            if(poller) {
-                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+            if(self.poller) {
                 fs.readSync(valuefd, buffer, 0, 1, 0);
 
-                poller.add(valuefd, Epoll.EPOLLPRI);
+                self.poller.add(valuefd, Epoll.EPOLLPRI);
             }
         }
 
