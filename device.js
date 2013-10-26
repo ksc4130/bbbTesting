@@ -96,27 +96,27 @@
                 console.log('switch init');
 
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    var buffer = new Buffer(1);
-                    fs.readSync(fd, buffer, 0, 1, 0);
+                    var self.buffer = new Buffer(1);
+                    fs.readSync(fd, self.buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
-                        if(buffer[0] === zero[0]) {
+                        if(self.buffer[0] === zero[0]) {
                             //button was pressed do work
                             emitter.emit('switched', self);
                         }
                     }
-                    self.value = buffer;
+                    self.value = self.buffer;
                 });
-                fs.readSync(self.valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
                 self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
                 console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    var buffer = new Buffer(1);
-                    fs.readSync(fd, buffer, 0, 1, 0);
-                    console.log('sensor', buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
-                    if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
-                        self.value = parseInt(buffer.toString('ascii'));
+                    var self.buffer = new Buffer(1);
+                    fs.readSync(fd, self.buffer, 0, 1, 0);
+                    console.log('sensor', self.buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
+                    if(new Buffer(self.value, 'ascii')[0] !== self.buffer[0]) {
+                        self.value = parseInt(self.buffer.toString('ascii'));
                         emitter.emit('sensor', self);
                     }
                 });
@@ -126,9 +126,9 @@
 
         if(self.actionType === 'onoff') {
              self.poller = new self.Epoll(function (err, fd, events) {
-                fs.readSync(fd, buffer, 0, 1, 0);
-                if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
-                    self.value = parseInt(buffer.toString('ascii'));
+                fs.readSync(fd, self.buffer, 0, 1, 0);
+                if(new Buffer(self.value, 'ascii')[0] !== self.buffer[0]) {
+                    self.value = parseInt(self.buffer.toString('ascii'));
                     emitter.emit('onoff', self);
                 }
             });
@@ -151,7 +151,7 @@
                 });
             }
             if(self.poller) {
-                fs.readSync(self.valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
                 self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             }
@@ -179,7 +179,7 @@
                 });
             }
             if(self.poller) {
-                fs.readSync(self.valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
                 self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             }
