@@ -103,7 +103,7 @@
                 }
             }
 
-            var poller = new self.Epoll(function (err, fd, events) {
+            var poller = new Epoll(function (err, fd, events) {
                 var buffer = new Buffer(1),
                     val;
                 fs.readSync(fd, buffer, 0, 1, 0);
