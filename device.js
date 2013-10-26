@@ -82,7 +82,7 @@
             return self;
         }
 
-        self.Epoll = require('epoll').self.Epoll;
+        self.Epoll = require('epoll').Epoll;
         self.valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
         self.buffer = new Buffer(1);
         self.poller = null;
