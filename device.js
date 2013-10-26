@@ -13,6 +13,10 @@
         one = new Buffer('1'),
         device,
         bbbToggle,
+        dontInitValActionTypes = [
+            'switch',
+            'sensor'
+        ],
         inputActionTypes = [
             'switch',
             'sensor'
@@ -176,7 +180,7 @@
             poller.add(valuefd, Epoll.EPOLLPRI);
         }
 
-        pinWork.exportPin(self.pin, self.direction, (self.actionType === 'switch' ? undefined : self.value), self.edge, self.init);
+        pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         return self;
     }
 
