@@ -28,7 +28,8 @@
         edges = {
           'switch': 'both',
           'onoff': 'both',
-          'momentary': 'both'
+          'momentary': 'both',
+          'sensor': 'both'
         },
         bbbAnalogPins = [
             'P9_33',
