@@ -76,7 +76,7 @@
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
             return self;
         }
-
+        console.log('init', self.pin, self.actionType);
         self.valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
 
         self.init = function (err) {
@@ -98,6 +98,7 @@
                     });
                 }
             }
+
             var buffer = new Buffer(1),
                 val;
             var poller = new Epoll(function (err, fd, events) {
