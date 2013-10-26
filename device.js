@@ -120,6 +120,7 @@
 
             self.toggle = function (val, fn) {
                 var v = val || (1 - self.value);
+                console.log(v);
                 fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
                     if(err) {
                         console.log('error setting value for pin', pin);

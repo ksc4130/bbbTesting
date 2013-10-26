@@ -23,7 +23,6 @@ var worker = require('./worker'),
             type: 'light',
             actionType: 'switch',
             controls: ['67'],
-            isVisible: true,
             ready: function () {
 
             }
