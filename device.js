@@ -98,10 +98,10 @@
                     });
                 }
             }
-
+            var buffer = new Buffer(1),
+                val;
             var poller = new Epoll(function (err, fd, events) {
-                var buffer = new Buffer(1),
-                    val;
+
                 fs.readSync(fd, buffer, 0, 1, 0);
                 val = parseInt(buffer.toString('ascii'));
                 //if(self.value[0] === one[0]) {
