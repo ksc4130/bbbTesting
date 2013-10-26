@@ -106,9 +106,9 @@
                     }
                     self.value = buffer;
                 });
-                fs.readSync(valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, buffer, 0, 1, 0);
 
-                self.poller.add(valuefd, self.Epoll.EPOLLPRI);
+                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
                 console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
@@ -151,9 +151,9 @@
                 });
             }
             if(self.poller) {
-                fs.readSync(valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, buffer, 0, 1, 0);
 
-                self.poller.add(valuefd, self.Epoll.EPOLLPRI);
+                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             }
         } else if(self.actionType === 'momentary') {
             self.toggle = function () {
@@ -179,9 +179,9 @@
                 });
             }
             if(self.poller) {
-                fs.readSync(valuefd, buffer, 0, 1, 0);
+                fs.readSync(self.valuefd, buffer, 0, 1, 0);
 
-                self.poller.add(valuefd, self.Epoll.EPOLLPRI);
+                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             }
         }
 
