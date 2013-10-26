@@ -111,6 +111,7 @@
                 poller.add(valuefd, Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
                 poller = new Epoll(function (err, fd, events) {
+                    var buffer = new Buffer(1);
                     fs.readSync(fd, buffer, 0, 1, 0);
                     if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
                         self.value = parseInt(buffer.toString('ascii'));
