@@ -119,12 +119,12 @@
             var buffer = new Buffer(1),
                 val;
             var poller = new Epoll(function (err, fd, events) {
-
                 fs.readSync(fd, buffer, 0, 1, 0);
                 val = parseInt(buffer.toString('ascii'));
                 var hasChanged = (self.value !== val);
                 //if(self.value[0] === one[0]) {
                     //if(buffer[0] === zero[0]) {
+                console.log('poller', val, self.value);
                 if(self.actionType === 'switch' && val < self.value) {
                     //button was pressed do work
                     emitter.emit('switched', self);
