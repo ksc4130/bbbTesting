@@ -96,10 +96,10 @@
                 console.log('switch init');
 
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    //var self.buffer = new Buffer(1);
-                    fs.readSync(fd, self.buffer, 0, 1, 0);
+                    var buffer = new Buffer(1);
+                    fs.readSync(fd, buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
-                        if(self.buffer[0] === zero[0]) {
+                        if(buffer[0] === zero[0]) {
                             //button was pressed do work
                             emitter.emit('switched', self);
                         }
@@ -112,10 +112,10 @@
             } else if(self.actionType === 'sensor') {
                 console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    //var self.buffer = new Buffer(1);
-                    fs.readSync(fd, self.buffer, 0, 1, 0);
-                    console.log('sensor', self.buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
-                    if(new Buffer(self.value, 'ascii')[0] !== self.buffer[0]) {
+                    var buffer = new Buffer(1);
+                    fs.readSync(fd, buffer, 0, 1, 0);
+                    console.log('sensor', buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
+                    if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
                         self.value = parseInt(self.buffer.toString('ascii'));
                         emitter.emit('sensor', self);
                     }
@@ -135,7 +135,6 @@
 
             self.toggle = function (val, fn) {
                 var v = val || (1 - self.value);
-                console.log(v);
                 fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
                     if(err) {
                         console.log('error setting value for pin', pin);
