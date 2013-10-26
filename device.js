@@ -120,7 +120,7 @@
                 self.value = buffer;
             });
 
-            fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
+            fs.readSync(self.valuefd, buffer, 0, 1, 0);
 
             poller.add(self.valuefd, Epoll.EPOLLPRI);
         };
