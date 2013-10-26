@@ -13,6 +13,7 @@
 
         var doCallbackCheck = function (err) {
             cnt++;
+            console.log('do callback check', cnt);
             if(err) {
                 errAll = err;
             }
