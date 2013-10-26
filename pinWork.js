@@ -44,7 +44,7 @@
                         if(err) {
                             console.log('error setting edge for pin', pin);
                             doCallbackCheck(err);
-x                        } else {
+                        } else {
                             doCallbackCheck(null);
                         }
                     });

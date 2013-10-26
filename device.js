@@ -66,11 +66,7 @@
             args.value = '0';
         }
 
-        if(self.actionType === 'switch') {
-            self.value = new Buffer(args.value, 'ascii')
-        } else {
-           self.value = parseInt(args.value);
-        }
+       self.value = parseInt(args.value);
 
         self.controls = args.controls;
         self.isVisible = args.isVisible || false;
