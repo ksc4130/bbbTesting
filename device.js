@@ -80,8 +80,7 @@
         var Epoll = require('epoll').Epoll,
             valuefd,
             buffer = new Buffer(1),
-            poller,
-            eventType;
+            poller;
 
         self.init = function (err) {
             if(typeof self.ready === 'function') {
@@ -94,6 +93,7 @@
 
                 poller = new Epoll(function (err, fd, events) {
                     fs.readSync(fd, buffer, 0, 1, 0);
+                    console.log('switch aaaaaa*****');
                     if(self.value[0] === one[0]) {
                         if(buffer[0] === zero[0]) {
                             //button was pressed do work
@@ -134,12 +134,6 @@
                     }
                 });
             }
-            if(poller) {
-                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
-                fs.readSync(valuefd, buffer, 0, 1, 0);
-
-                poller.add(valuefd, Epoll.EPOLLPRI);
-            }
         } else if(self.actionType === 'momentary') {
             self.toggle = function () {
 
@@ -164,12 +158,13 @@
                     }, 150);
                 });
             }
-            if(poller) {
-                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
-                fs.readSync(valuefd, buffer, 0, 1, 0);
+        }
 
-                poller.add(valuefd, Epoll.EPOLLPRI);
-            }
+        if(poller) {
+            valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+            fs.readSync(valuefd, buffer, 0, 1, 0);
+
+            poller.add(valuefd, Epoll.EPOLLPRI);
         }
 
         pinWork.exportPin(self.pin, self.direction, self.value, self.edge, self.init);
