@@ -95,7 +95,7 @@
                     fs.readSync(fd, buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
                         emitter.emit('switched', self);
-                        //console.log('switch aaaaaa*****', buffer[0], zero[0]);
+                        console.log('switch aaaaaa*****', buffer[0], zero[0]);
 //                        if(buffer[0] === zero[0]) {
 //                            //button was pressed do work
 //                            emitter.emit('switched', self);
