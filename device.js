@@ -64,7 +64,6 @@
         if(args.value !== '0' && args.value !== '1') {
             args.value = '0';
         }
-        console.log(args.value);
         if(self.actionType === 'switch') {
             self.value = new Buffer(args.value, 'ascii')
         } else {
@@ -91,6 +90,8 @@
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
+
+            console.log('init', self.pin, self.actionType);
 
             if(self.actionType === 'switch') {
                 console.log('switch init');

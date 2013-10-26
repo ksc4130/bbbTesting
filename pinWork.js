@@ -7,25 +7,35 @@
         gpioPath = '/sys/class/gpio/gpio';
 
     setupPin = function (pin, direction, value, edge, fn) {
-        var workingPath = gpioPath + pin;
+        var workingPath = gpioPath + pin,
+            cnt = 0,
+            errAll = null;
+
+        var doCallbackCheck = function (err) {
+            cnt++;
+            if(err) {
+                errAll = err;
+            }
+            if(cnt === 3 && typeof fn === 'function') {
+                fn(errAll);
+            }
+        };
 
         if(typeof direction === 'string') {
             fs.writeFile(workingPath +'/direction', direction, function (err) {
                 if(err) {
                     console.log('error setting direction for pin', pin);
-                    if(typeof fn === 'function') {
-                        fn(err);
-                    }
-                    return;
+                    doCallbackCheck(err);
+                } else {
+                    doCallbackCheck(null);
                 }
                 if(typeof value !== 'undefined' && value !== null) {
                     fs.writeFile(workingPath +'/value', value, function (err) {
                         if(err) {
                             console.log('error setting value for pin', pin);
-                            if(typeof fn === 'function') {
-                                fn(err);
-                            }
-                            return;
+                            doCallbackCheck(err);
+                        } else {
+                            doCallbackCheck(null);
                         }
                     });
                 }
@@ -34,11 +44,11 @@
                         if(err) {
                             console.log('error setting edge for pin', pin);
                             if(typeof fn === 'function') {
-                                fn(err);
+                                doCallbackCheck(err);
+                            } else {
+                                doCallbackCheck(null);
                             }
-                            return;
-                        }
-                        fn(null);
+x                        }
                     });
                 }
 
