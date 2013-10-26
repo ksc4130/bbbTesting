@@ -89,7 +89,8 @@
             }
 
             if(self.actionType === 'switch') {
-                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+                console.log('switch init');
+                valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
                 eventType = self.actionType === 'switch' ? 'switched' : '';
                 poller = new Epoll(function (err, fd, events) {
                     fs.readSync(fd, buffer, 0, 1, 0);
