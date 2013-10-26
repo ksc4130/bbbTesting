@@ -24,6 +24,11 @@ device.on('switched', function (d) {
     }
 });
 
+device.on('sensor', function (d) {
+    if(d.isVisible)
+        conn.emit('change', {id: d.id, state: d.value});
+});
+
 device.on('onoff', function (d) {
     if(d.isVisible)
         conn.emit('change', {id: d.id, state: d.value});

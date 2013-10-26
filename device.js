@@ -135,6 +135,14 @@
                     }
                 });
             }
+        } else if(self.actionType === 'sensor') {
+            poller = new Epoll(function (err, fd, events) {
+                fs.readSync(fd, buffer, 0, 1, 0);
+                if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
+                    self.value = parseInt(buffer.toString('ascii'));
+                    emitter.emit('sensor', self);
+                }
+            });
         } else if(self.actionType === 'momentary') {
             self.toggle = function () {
 
