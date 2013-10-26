@@ -92,6 +92,7 @@
                 valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
 
                 poller = new Epoll(function (err, fd, events) {
+                    var buffer = new Buffer(1);
                     fs.readSync(fd, buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
                         emitter.emit('switched', self);
