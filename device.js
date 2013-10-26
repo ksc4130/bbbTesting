@@ -96,7 +96,7 @@
                 console.log('switch init');
 
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    var self.buffer = new Buffer(1);
+                    //var self.buffer = new Buffer(1);
                     fs.readSync(fd, self.buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
                         if(self.buffer[0] === zero[0]) {
@@ -112,7 +112,7 @@
             } else if(self.actionType === 'sensor') {
                 console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
-                    var self.buffer = new Buffer(1);
+                    //var self.buffer = new Buffer(1);
                     fs.readSync(fd, self.buffer, 0, 1, 0);
                     console.log('sensor', self.buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
                     if(new Buffer(self.value, 'ascii')[0] !== self.buffer[0]) {
