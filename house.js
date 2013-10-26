@@ -26,12 +26,6 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('26', {
-            name: 'Barn Motion',
-            type: 'motion',
-            actionType: 'sensor',
-            isVisible: true
         })
     ];
 
