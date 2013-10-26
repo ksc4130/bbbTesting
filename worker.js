@@ -24,7 +24,7 @@ device.on('switched', function (d) {
     }
 });
 
-device.on('change', function (d) {
+device.on('change', function (d, oldVal) {
     console.log('change', d);
     if(d.isVisible)
         conn.emit('change', {id: d.id, state: d.value});

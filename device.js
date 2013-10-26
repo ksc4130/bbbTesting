@@ -99,6 +99,8 @@
                 self.ready(self);
             }
 
+            console.log('init device', self.pin, self.actionType)
+
             if(self.actionType === 'onoff') {
                 self.toggle = function (val, fn) {
                     var v = val || (1 - self.value);
@@ -134,7 +136,7 @@
                     //}
                     self.value = val;
                     if(hasChanged) {
-                        emitter.emit('change', self);
+                        emitter.emit('change', self, val);
                     }
                 });
 
