@@ -168,7 +168,7 @@
             poller.add(valuefd, Epoll.EPOLLPRI);
         }
 
-        pinWork.exportPin(self.pin, self.direction, self.value, self.edge, self.init);
+        pinWork.exportPin(self.pin, self.direction, (self.actionType === 'switch' ? undefined : self.value), self.edge, self.init);
         return self;
     }
 
