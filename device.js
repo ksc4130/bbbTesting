@@ -93,8 +93,9 @@
 
                 poller = new Epoll(function (err, fd, events) {
                     fs.readSync(fd, buffer, 0, 1, 0);
-                    console.log('switch aaaaaa*****');
+
                     if(self.value[0] === one[0]) {
+                        console.log('switch aaaaaa*****');
                         if(buffer[0] === zero[0]) {
                             //button was pressed do work
                             emitter.emit('switched', self);
