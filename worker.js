@@ -8,6 +8,7 @@ var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 
 device.on('switched', function (d) {
+    console.log('switched', d.pin);
     var i,
         il;
     for(i = 0, il = d.controls.length; i < il; i++) {
