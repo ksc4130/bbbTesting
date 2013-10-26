@@ -4,6 +4,7 @@
     var fs = require('fs'),
         pinWork = require('./pinWork'),
         EventEmitter = require('events').EventEmitter,
+        Epoll = require('epoll').Epoll,
         emitter = new EventEmitter(),
         exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio',
@@ -64,6 +65,7 @@
         if(args.value !== '0' && args.value !== '1') {
             args.value = '0';
         }
+
         if(self.actionType === 'switch') {
             self.value = new Buffer(args.value, 'ascii')
         } else {
@@ -71,9 +73,7 @@
         }
 
         self.controls = args.controls;
-        self.freq = args.freq || 5;
         self.isVisible = args.isVisible || false;
-        self.gpio = null;
         self.ready = args.ready;
 
         if(!self.direction) {
@@ -81,113 +81,74 @@
             return self;
         }
 
-        self.Epoll = require('epoll').Epoll;
         self.valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
-        self.buffer = new Buffer(1);
-        self.poller = null;
 
         self.init = function (err) {
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
 
-            console.log('init', self.pin, self.actionType);
-
-            if(self.actionType === 'switch') {
-                console.log('switch init');
-
-                self.poller = new self.Epoll(function (err, fd, events) {
-                    var buffer = new Buffer(1);
-                    fs.readSync(fd, buffer, 0, 1, 0);
-                    if(self.value[0] === one[0]) {
-                        if(buffer[0] === zero[0]) {
-                            //button was pressed do work
-                            emitter.emit('switched', self);
-                        }
-                    }
-                    self.value = buffer;
-                });
-                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
-
-                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
-            } else if(self.actionType === 'sensor') {
-                self.poller = new self.Epoll(function (err, fd, events) {
-                    var buffer = new Buffer(1);
-                    fs.readSync(fd, buffer, 0, 1, 0);
-                    if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
-                        self.value = parseInt(buffer.toString('ascii'));
-                        emitter.emit('sensor', self);
-                    }
-                });
-                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
-
-                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
+            if(self.actionType === 'onoff') {
+                self.toggle = function (val, fn) {
+                    var v = val || (1 - self.value);
+                    self.setVal(v, fn);
+                }
+            } else if(self.actionType === 'momentary') {
+                self.toggle = function () {
+                    self.setVal(1, function (err, fn) {
+                        setTimeout(function (fn) {
+                            self.setVal(0, fn);
+                        }, 150);
+                    });
+                }
             }
 
-        };
-
-        if(self.actionType === 'onoff') {
-             self.poller = new self.Epoll(function (err, fd, events) {
-                fs.readSync(fd, self.buffer, 0, 1, 0);
-                if(new Buffer(self.value, 'ascii')[0] !== self.buffer[0]) {
-                    self.value = parseInt(self.buffer.toString('ascii'));
-                    emitter.emit('onoff', self);
+            var poller = new self.Epoll(function (err, fd, events) {
+                var buffer = new Buffer(1),
+                    val;
+                fs.readSync(fd, buffer, 0, 1, 0);
+                val = parseInt(buffer.toString());
+                //if(self.value[0] === one[0]) {
+                    //if(buffer[0] === zero[0]) {
+                if(self.actionType === 'switch' && val < self.value) {
+                    //button was pressed do work
+                    emitter.emit('switched', self);
                 }
+
+                    //}
+                //}
+                if(self.value !== val) {
+                    emitter.emit('change', self);
+                }
+
+                self.value = buffer;
             });
 
-            self.toggle = function (val, fn) {
-                var v = val || (1 - self.value);
-                fs.writeFile(gpioPath + self.pin +'/value', v, function (err) {
-                    if(err) {
-                        console.log('error setting value for pin', pin);
-                        if(typeof fn === 'function') {
-                            fn(err, null);
-                        }
-                        return;
-                    }
-                    self.value = v;
-                    if(typeof fn === 'function') {
-                        fn(null, v);
-                    }
-                });
-            }
-            if(self.poller) {
-                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
-                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
-            }
-        } else if(self.actionType === 'momentary') {
-            self.toggle = function () {
-                fs.writeFile(gpioPath + self.pin +'/value', 1, function (err) {
-                    if(err) {
-                        console.log('error setting value for pin', pin);
-                        if(typeof fn === 'function') {
-                            fn(err, null);
-                        }
-                        return;
-                    }
-                    setTimeout(function (fn) {
-                        fs.writeFile(gpioPath + self.pin +'/value', 0, function (err) {
-                            if(err) {
-                                console.log('error setting value for pin', pin);
-                                if(typeof fn === 'function') {
-                                    fn(err, null);
-                                }
-                                return;
-                            }
-                        });
-                    }, 150);
-                });
-            }
-            if(self.poller) {
-                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
+            fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
-                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
-            }
-        }
+            poller.add(self.valuefd, Epoll.EPOLLPRI);
+        };
 
         pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         return self;
     }
+
+    Device.prototype.setVal = function (val, fn) {
+        var self = this;
+        fs.writeFile(gpioPath + self.pin +'/value', val, function (err) {
+            if(err) {
+                console.log('error setting value for pin', pin);
+                if(typeof fn === 'function') {
+                    fn(err, null);
+                }
+                return;
+            }
+            self.value = val;
+            if(typeof fn === 'function') {
+                fn(null, val);
+            }
+        });
+    };
 
     exports.Device = Device;
     exports.on = function (event, fn) {
