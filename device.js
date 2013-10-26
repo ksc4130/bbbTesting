@@ -107,7 +107,7 @@
                 var buffer = new Buffer(1),
                     val;
                 fs.readSync(fd, buffer, 0, 1, 0);
-                val = parseInt(buffer.toString());
+                val = parseInt(buffer.toString('ascii'));
                 //if(self.value[0] === one[0]) {
                     //if(buffer[0] === zero[0]) {
                 if(self.actionType === 'switch' && val < self.value) {
