@@ -104,6 +104,7 @@
 
                 fs.readSync(fd, buffer, 0, 1, 0);
                 val = parseInt(buffer.toString('ascii'));
+                var hasChanged = (self.value !== val);
                 //if(self.value[0] === one[0]) {
                     //if(buffer[0] === zero[0]) {
                 if(self.actionType === 'switch' && val < self.value) {
@@ -113,11 +114,10 @@
 
                     //}
                 //}
-                if(self.value !== val) {
+                self.value = val;
+                if(hasChanged) {
                     emitter.emit('change', self);
                 }
-
-                self.value = buffer;
             });
 
             fs.readSync(self.valuefd, buffer, 0, 1, 0);
