@@ -99,8 +99,6 @@
                 self.ready(self);
             }
 
-            console.log('init device', self.pin, self.actionType)
-
             if(self.actionType === 'onoff') {
                 self.toggle = function (val, fn) {
                     var v = val || (1 - self.value);
@@ -124,16 +122,10 @@
                     fs.readSync(fd, buffer, 0, 1, 0);
                     val = parseInt(buffer.toString('ascii'));
                     var hasChanged = (self.value !== val);
-                    //if(self.value[0] === one[0]) {
-                    //if(buffer[0] === zero[0]) {
-                    console.log('poller', val, self.value);
                     if(self.actionType === 'switch' && val < self.value) {
                         //button was pressed do work
                         emitter.emit('switched', self);
                     }
-
-                    //}
-                    //}
                     self.value = val;
                     if(hasChanged) {
                         emitter.emit('change', self, val);
