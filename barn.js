@@ -18,6 +18,22 @@ var worker = require('./worker'),
             ready: function () {
 
             }
+        }),
+        new Device('22', {
+            type: 'light',
+            actionType: 'switch',
+            controls: ['17'],
+            ready: function () {
+
+            }
+        }),
+        new Device('23', {
+            type: 'light',
+            actionType: 'switch',
+            controls: ['27'],
+            ready: function () {
+
+            }
         })
     ];
 
