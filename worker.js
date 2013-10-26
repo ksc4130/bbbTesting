@@ -25,6 +25,7 @@ device.on('switched', function (d) {
 });
 
 device.on('sensor', function (d) {
+    console.log('sensor on', d.pin, d.isVisible);
     if(d.isVisible)
         conn.emit('change', {id: d.id, state: d.value});
 });
