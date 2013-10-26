@@ -151,6 +151,12 @@
                     }
                 });
             }
+            if(poller) {
+                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+                fs.readSync(valuefd, buffer, 0, 1, 0);
+
+                poller.add(valuefd, Epoll.EPOLLPRI);
+            }
         } else if(self.actionType === 'momentary') {
             self.toggle = function () {
 
@@ -175,13 +181,12 @@
                     }, 150);
                 });
             }
-        }
+            if(poller) {
+                valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
+                fs.readSync(valuefd, buffer, 0, 1, 0);
 
-        if(poller) {
-            valuefd = fs.openSync( gpioPath + self.pin + '/value', 'r');
-            fs.readSync(valuefd, buffer, 0, 1, 0);
-
-            poller.add(valuefd, Epoll.EPOLLPRI);
+                poller.add(valuefd, Epoll.EPOLLPRI);
+            }
         }
 
         pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
