@@ -44,12 +44,10 @@
                     fs.writeFile(workingPath +'/edge', edge, function (err) {
                         if(err) {
                             console.log('error setting edge for pin', pin);
-                            if(typeof fn === 'function') {
-                                doCallbackCheck(err);
-                            } else {
-                                doCallbackCheck(null);
-                            }
-x                        }
+                            doCallbackCheck(err);
+x                        } else {
+                            doCallbackCheck(null);
+                        }
                     });
                 }
 
