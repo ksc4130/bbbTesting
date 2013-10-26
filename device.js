@@ -110,11 +110,9 @@
 
                 self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
-                console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
                     var buffer = new Buffer(1);
                     fs.readSync(fd, buffer, 0, 1, 0);
-                    console.log('sensor', buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
                     if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
                         self.value = parseInt(buffer.toString('ascii'));
                         emitter.emit('sensor', self);
@@ -154,7 +152,6 @@
             }
             if(self.poller) {
                 fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
-
                 self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             }
         } else if(self.actionType === 'momentary') {

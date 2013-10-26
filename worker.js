@@ -8,7 +8,6 @@ var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 
 device.on('switched', function (d) {
-    console.log('switched', d.pin);
     var i,
         il;
     for(i = 0, il = d.controls.length; i < il; i++) {
@@ -25,7 +24,6 @@ device.on('switched', function (d) {
 });
 
 device.on('sensor', function (d) {
-    console.log('sensor on', d.pin, d.isVisible);
     if(d.isVisible)
         conn.emit('change', {id: d.id, state: d.value});
 });
@@ -39,7 +37,7 @@ module.exports.init = function (devs) {
     devices = devs;
 
     conn.on('initWorker', function () {
-        conn.emit('initWorker', {devices: devices});
+        conn.emit('initWorker', {secret: secret, devices: devices});
     });
 
     conn.on('devices', function (data) {
