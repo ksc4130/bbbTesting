@@ -76,6 +76,24 @@
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
             return self;
         }
+
+        self.setVal = function (val, fn) {
+            var self = this;
+            fs.writeFile(gpioPath + self.pin +'/value', val, function (err) {
+                if(err) {
+                    console.log('error setting value for pin', pin);
+                    if(typeof fn === 'function') {
+                        fn(err, null);
+                    }
+                    return;
+                }
+                self.value = val;
+                if(typeof fn === 'function') {
+                    fn(null, val);
+                }
+            });
+        };
+
         self.valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
 
         self.init = function (err) {
@@ -128,23 +146,6 @@
         pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         return self;
     }
-
-    Device.prototype.setVal = function (val, fn) {
-        var self = this;
-        fs.writeFile(gpioPath + self.pin +'/value', val, function (err) {
-            if(err) {
-                console.log('error setting value for pin', pin);
-                if(typeof fn === 'function') {
-                    fn(err, null);
-                }
-                return;
-            }
-            self.value = val;
-            if(typeof fn === 'function') {
-                fn(null, val);
-            }
-        });
-    };
 
     exports.Device = Device;
     exports.on = function (event, fn) {
