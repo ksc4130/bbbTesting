@@ -104,7 +104,7 @@
                             emitter.emit('switched', self);
                         }
                     }
-                    self.value = self.buffer;
+                    self.value = buffer;
                 });
                 fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
@@ -116,7 +116,7 @@
                     fs.readSync(fd, buffer, 0, 1, 0);
                     console.log('sensor', buffer[0], self.value, new Buffer(self.value, 'ascii')[0]);
                     if(new Buffer(self.value, 'ascii')[0] !== buffer[0]) {
-                        self.value = parseInt(self.buffer.toString('ascii'));
+                        self.value = parseInt(buffer.toString('ascii'));
                         emitter.emit('sensor', self);
                     }
                 });
