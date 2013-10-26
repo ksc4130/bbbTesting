@@ -91,13 +91,13 @@
             if(self.actionType === 'switch') {
                 console.log('switch init');
                 valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
-                eventType = self.actionType === 'switch' ? 'switched' : '';
+
                 poller = new Epoll(function (err, fd, events) {
                     fs.readSync(fd, buffer, 0, 1, 0);
                     if(self.value[0] === one[0]) {
                         if(buffer[0] === zero[0]) {
                             //button was pressed do work
-                            emitter.emit(eventType, self);
+                            emitter.emit('switched', self);
                         }
                     }
                     self.value = buffer;
