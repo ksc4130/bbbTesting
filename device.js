@@ -106,9 +106,7 @@
                     }
                     self.value = buffer;
                 });
-                fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
-                self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
                 console.log('sensor init');
                 self.poller = new self.Epoll(function (err, fd, events) {
@@ -121,7 +119,9 @@
                     }
                 });
             }
+            fs.readSync(self.valuefd, self.buffer, 0, 1, 0);
 
+            self.poller.add(self.valuefd, self.Epoll.EPOLLPRI);
         };
 
         if(self.actionType === 'onoff') {
