@@ -111,6 +111,7 @@
 
                 poller.add(valuefd, Epoll.EPOLLPRI);
             } else if(self.actionType === 'sensor') {
+                valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
                 console.log('sensor init');
                 poller = new Epoll(function (err, fd, events) {
                     var buffer = new Buffer(1);
