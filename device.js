@@ -87,7 +87,9 @@
                     }
                     return;
                 }
+                var valO = self.value;
                 self.value = val;
+                emitter.emit('change', self, valO);
                 if(typeof fn === 'function') {
                     fn(null, val);
                 }
@@ -114,28 +116,30 @@
                 }
             }
 
-            (function () {
-                var buffer = new Buffer(1),
-                    val,
-                    valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');;
-                var poller = new Epoll(function (err, fd, events) {
-                    fs.readSync(fd, buffer, 0, 1, 0);
-                    val = parseInt(buffer.toString('ascii'));
-                    var hasChanged = (self.value !== val);
-                    if(self.actionType === 'switch' && val < self.value) {
-                        //button was pressed do work
-                        emitter.emit('switched', self);
-                    }
-                    self.value = val;
-                    if(hasChanged) {
-                        emitter.emit('change', self, val);
-                    }
-                });
+            if(self.direction === 'in') {
+                (function () {
+                    var buffer = new Buffer(1),
+                        val,
+                        valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');;
+                    var poller = new Epoll(function (err, fd, events) {
+                        fs.readSync(fd, buffer, 0, 1, 0);
+                        val = parseInt(buffer.toString('ascii'));
+                        var hasChanged = (self.value !== val);
+                        if(self.actionType === 'switch' && val < self.value) {
+                            //button was pressed do work
+                            emitter.emit('switched', self);
+                        }
+                        self.value = val;
+                        if(hasChanged) {
+                            emitter.emit('change', self, val);
+                        }
+                    });
 
-                fs.readSync(valuefd, buffer, 0, 1, 0);
+                    fs.readSync(valuefd, buffer, 0, 1, 0);
 
-                poller.add(valuefd, Epoll.EPOLLPRI);
-            }());
+                    poller.add(valuefd, Epoll.EPOLLPRI);
+                }());
+            }
         };
 
         pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
