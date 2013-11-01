@@ -15,7 +15,7 @@ device.on('switched', function (d) {
             if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
                 (function (dev) {
                     dev.toggle(null, function (err, d) {
-                        conn.emit('change', {id: dev.id, state: d});
+                        conn.emit('change', {id: dev.id, value: d});
                     });
                 }(devices[ic]));
             }
@@ -25,7 +25,7 @@ device.on('switched', function (d) {
 
 device.on('change', function (d, oldVal) {
     if(d.isVisible)
-        conn.emit('change', {id: d.id, state: d.value});
+        conn.emit('change', {id: d.id, value: d.value});
 });
 
 module.exports.init = function (devs) {
