@@ -96,6 +96,26 @@
             });
         };
 
+        self.getVal = function (fn) {
+            var self = this;
+            fs.readFile(gpioPath + self.pin +'/value', function (err, val) {
+                if(err) {
+                    console.log('error setting value for pin', pin);
+                    if(typeof fn === 'function') {
+                        fn(err, null);
+                    }
+                    return;
+                }
+                var valO = self.value;
+                self.value = val;
+                if(valO != val)
+                    emitter.emit('change', self, valO);
+                if(typeof fn === 'function') {
+                    fn(null, val);
+                }
+            });
+        };
+
         self.init = function (err) {
             if(typeof self.ready === 'function') {
                 self.ready(self);
