@@ -152,8 +152,11 @@
                                 val = (val - 500) / 10;
                                 val = (val * 9/5) + 32;
                             }
-                            console.log(val + '');
-                        }, 250);
+                            if(self.value !== val) {
+                                self.value = val;
+                                emitter.emit('change', self, val);
+                            }
+                        }, 150);
                     } else {
                         var buffer = new Buffer(1),
                             val,
