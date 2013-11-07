@@ -177,7 +177,10 @@
         };
 
         if(bbbAnalogPins.indexOf(pin) > -1) {
-            fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
+            var exists = fs.existsSync(anPath + 'AIN1');
+            if(!exists) {
+                fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
+            }
         } else {
             pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         }
