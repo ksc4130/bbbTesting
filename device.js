@@ -178,6 +178,7 @@
 
         if(bbbAnalogPins.indexOf(pin) > -1) {
             var exists = fs.existsSync(anPath + 'AIN1');
+            console.log(exists);
             if(!exists) {
                 fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
             }
