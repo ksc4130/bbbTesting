@@ -14,6 +14,7 @@
         one = new Buffer('1'),
         device,
         bbbToggle,
+        ainInited = false,
         dontInitValActionTypes = [
             'switch',
             'sensor'
@@ -39,7 +40,13 @@
             'P9_37',
             'P9_38',
             'P9_39',
-            'P9_40'
+            'P9_40',
+            'AIN0',
+            'AIN1',
+            'AIN2',
+            'AIN3',
+            'AIN4',
+            'AIN5',
         ],
         idCnter = 0;
 
@@ -138,31 +145,43 @@
 
             if(self.direction === 'in') {
                 (function () {
-                    var buffer = new Buffer(1),
-                        val,
-                        valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');;
-                    var poller = new Epoll(function (err, fd, events) {
-                        fs.readSync(fd, buffer, 0, 1, 0);
-                        val = parseInt(buffer.toString('ascii'));
-                        var hasChanged = (self.value !== val);
-                        if(self.actionType === 'switch' && val < self.value) {
-                            //button was pressed do work
-                            emitter.emit('switched', self);
-                        }
-                        self.value = val;
-                        if(hasChanged) {
-                            emitter.emit('change', self, val);
-                        }
-                    });
+                    if(bbbAnalogPins.indexOf(pin) > -1) {
+                        setInterval(function () {
+                            var val = fs.readFileSync(anPath + self.pin);
+                            console.log(val);
+                        }, 250);
+                    } else {
+                        var buffer = new Buffer(1),
+                            val,
+                            valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');;
+                        var poller = new Epoll(function (err, fd, events) {
+                            fs.readSync(fd, buffer, 0, 1, 0);
+                            val = parseInt(buffer.toString('ascii'));
+                            var hasChanged = (self.value !== val);
+                            if(self.actionType === 'switch' && val < self.value) {
+                                //button was pressed do work
+                                emitter.emit('switched', self);
+                            }
+                            self.value = val;
+                            if(hasChanged) {
+                                emitter.emit('change', self, val);
+                            }
+                        });
 
-                    fs.readSync(valuefd, buffer, 0, 1, 0);
+                        fs.readSync(valuefd, buffer, 0, 1, 0);
 
-                    poller.add(valuefd, Epoll.EPOLLPRI);
+                        poller.add(valuefd, Epoll.EPOLLPRI);
+                    }
                 }());
             }
         };
 
-        pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
+        if(bbbAnalogPins.indexOf(pin) > -1) {
+            fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
+        } else {
+            pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
+        }
+
         return self;
     }
 
