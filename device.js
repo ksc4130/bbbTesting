@@ -150,7 +150,7 @@
                             var val = fs.readFileSync(anPath + self.pin).toString();
                             if(self.type === 'temp') {
                                 val = (val - 500) / 10;
-                                val = (val * 9/5) + 32;
+                                val = ((val * 9/5) + 32).toFixed(2);
                             } else {
 
                             }
