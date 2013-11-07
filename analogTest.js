@@ -9,6 +9,15 @@ var worker = require('./worker'),
             ready: function () {
 
             }
+        }),
+        new Device('AIN1', {
+            name: 'Light',
+            type: 'light',
+            actionType: 'sensor',
+            isVisible: true,
+            ready: function () {
+
+            }
         })
     ];
 

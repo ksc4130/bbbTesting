@@ -151,6 +151,8 @@
                             if(self.type === 'temp') {
                                 val = (val - 500) / 10;
                                 val = (val * 9/5) + 32;
+                            } else {
+
                             }
                             if(self.value !== val) {
                                 self.value = val;
