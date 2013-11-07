@@ -148,7 +148,7 @@
                     if(bbbAnalogPins.indexOf(pin) > -1) {
                         setInterval(function () {
                             var val = fs.readFileSync(anPath + self.pin);
-                            console.log(val);
+                            console.log(val + '');
                         }, 250);
                     } else {
                         var buffer = new Buffer(1),
