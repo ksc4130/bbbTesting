@@ -148,6 +148,10 @@
                     if(bbbAnalogPins.indexOf(pin) > -1) {
                         setInterval(function () {
                             var val = fs.readFileSync(anPath + self.pin);
+                            if(self.type === 'temp') {
+                                val = (val - 500) / 10;
+                                val = (val * 9/5) + 32;
+                            }
                             console.log(val + '');
                         }, 250);
                     } else {
