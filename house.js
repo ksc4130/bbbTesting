@@ -1,3 +1,7 @@
+var exists = fs.existsSync(anPath + 'AIN1');
+if(!exists) {
+    fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
+}
 var worker = require('./worker'),
     Device = require('./device').Device,
     devices = [
