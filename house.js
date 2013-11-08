@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+    anPath = '/sys/devices/ocp.2/helper.14/';
 var exists = fs.existsSync(anPath + 'AIN1');
 if(!exists) {
     fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
