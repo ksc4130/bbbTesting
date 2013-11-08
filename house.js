@@ -1,3 +1,4 @@
+var fs = require('fs');
 var exists = fs.existsSync(anPath + 'AIN1');
 if(!exists) {
     fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
