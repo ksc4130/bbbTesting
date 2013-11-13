@@ -8,7 +8,7 @@ var worker = require('./worker'),
     Device = require('./device').Device,
     devices = [
         new Device('67', {
-            name: 'Den Lights',
+            name: 'Den',
             type: 'light',
             actionType: 'onoff',
             isVisible: true,
@@ -34,7 +34,7 @@ var worker = require('./worker'),
             }
         }),
         new Device('26', {
-            name: 'Garage Lights',
+            name: 'Garage',
             type: 'light',
             actionType: 'onoff',
             isVisible: true,
