@@ -73,7 +73,7 @@
             args.value = '0';
         }
 
-       self.value = parseInt(args.value);
+        self.value = parseInt(args.value);
 
         self.controls = args.controls;
         self.isVisible = args.isVisible || false;
@@ -154,6 +154,7 @@
                             } else {
 
                             }
+
                             if(self.value !== val) {
                                 self.value = val;
                                 emitter.emit('change', self, val);

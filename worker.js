@@ -26,6 +26,42 @@ device.on('switched', function (d) {
 device.on('change', function (d, oldVal) {
     if(d.isVisible)
         conn.emit('change', {id: d.id, value: d.value});
+
+    if(d.actionType === 'thermo') {
+        var c,
+            cv,
+            h,
+            hv;
+        if(d.value >= d.trigger + d.threshold) {
+            c = d.pin;
+            cv = 1;
+        } else if(d.value <= d.trigger){
+            c = d.pin;
+            cv = 0;
+        }
+        if(d.value <= d.trigger - d.threshold) {
+            h = d.pin;
+            hv = 1;
+        } else if(d.value >= d.trigger){
+            h = d.pin;
+            hv = 0;
+        }
+
+        if(c || h) {
+            for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
+                if(c && devices[ic].pin === c) {
+                    (function (dev) {
+                        dev.setVal(cv);
+                    }(devices[ic]));
+                }
+                if(h && devices[ic].pin === h) {
+                    (function (dev) {
+                        dev.setVal(hv);
+                    }(devices[ic]));
+                }
+            }
+        }
+    }
 });
 
 module.exports.init = function (devs) {

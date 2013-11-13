@@ -51,6 +51,18 @@ var worker = require('./worker'),
             }
         }),
         new Device('AIN3', {
+            name: 'Thermo',
+            type: 'temp',
+            actionType: 'thermo',
+            cool: '67',
+            heat: '67',
+            trigger: 74,
+            threshold:.5,
+            ready: function () {
+
+            }
+        }),
+        new Device('AIN3', {
             name: 'Temp',
             type: 'temp',
             actionType: 'sensor',
