@@ -87,6 +87,7 @@
 
         self.setVal = function (val, fn) {
             var self = this;
+            console.log('setting', self.pin, val);
             fs.writeFile(gpioPath + self.pin +'/value', val, function (err) {
                 if(err) {
                     console.log('error setting value for pin', pin);
