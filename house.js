@@ -36,7 +36,7 @@ var worker = require('./worker'),
         new Device('46', {
             type: 'light',
             actionType: 'switch',
-            controls: ['67'],
+            controls: ['26'],
             ready: function () {
 
             }
