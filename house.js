@@ -33,6 +33,15 @@ var worker = require('./worker'),
 
             }
         }),
+        new Device('26', {
+            name: 'Garage Lights',
+            type: 'light',
+            actionType: 'onoff',
+            isVisible: true,
+            ready: function () {
+
+            }
+        }),
         new Device('AIN3', {
             name: 'Temp',
             type: 'temp',
