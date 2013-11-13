@@ -21,7 +21,8 @@
         ],
         inputActionTypes = [
             'switch',
-            'sensor'
+            'sensor',
+            'thermo'
         ],
         outputActionTypes = [
             'onoff',
