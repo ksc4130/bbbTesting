@@ -33,6 +33,14 @@ var worker = require('./worker'),
 
             }
         }),
+        new Device('46', {
+            type: 'light',
+            actionType: 'switch',
+            controls: ['67'],
+            ready: function () {
+
+            }
+        }),
         new Device('26', {
             name: 'Garage',
             type: 'light',
