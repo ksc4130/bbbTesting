@@ -28,6 +28,7 @@ device.on('change', function (d, oldVal) {
         conn.emit('change', {id: d.id, value: d.value});
 
     if(d.actionType === 'thermo') {
+
         var c,
             cv,
             h,
@@ -46,6 +47,8 @@ device.on('change', function (d, oldVal) {
             h = d.pin;
             hv = 0;
         }
+
+        console.log('thermo', c, cv, h, hv);
 
         if(c || h) {
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
