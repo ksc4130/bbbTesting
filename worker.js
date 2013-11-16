@@ -48,7 +48,7 @@ device.on('change', function (d, oldVal) {
             hv = 0;
         }
 
-        console.log('thermo', c, cv, h, hv);
+        console.log('thermo', c, cv, h, hv, d);
 
         if(c || h) {
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
