@@ -34,17 +34,17 @@ device.on('change', function (d, oldVal) {
             h,
             hv;
         if(d.value >= d.trigger + d.threshold) {
-            c = d.pin;
+            c = d.cool;
             cv = 1;
         } else if(d.value <= d.trigger){
-            c = d.pin;
+            c = d.cool;
             cv = 0;
         }
         if(d.value <= d.trigger - d.threshold) {
-            h = d.pin;
+            h = d.heat;
             hv = 1;
         } else if(d.value >= d.trigger){
-            h = d.pin;
+            h = d.heat;
             hv = 0;
         }
 
