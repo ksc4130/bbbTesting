@@ -54,12 +54,14 @@ device.on('change', function (d, oldVal) {
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
                 if(c && devices[ic].pin === c) {
                     (function (dev) {
-                        dev.setVal(cv);
+                        if(dev.value !== cv)
+                            dev.setVal(cv);
                     }(devices[ic]));
                 }
                 if(h && devices[ic].pin === h) {
                     (function (dev) {
-                        dev.setVal(hv);
+                        if(dev.value !== hv)
+                            dev.setVal(hv);
                     }(devices[ic]));
                 }
             }
