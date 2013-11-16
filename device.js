@@ -80,6 +80,11 @@
         self.isVisible = args.isVisible || false;
         self.ready = args.ready;
 
+        self.cool = args.cool;
+        self.heat = args.heat;
+        self.trigger = args.trigger;
+        self.threshold = args.threshold;
+
         if(!self.direction) {
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
             return self;
