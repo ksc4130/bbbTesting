@@ -26,7 +26,6 @@ device.on('switched', function (d) {
 device.on('change', function (d, oldVal) {
     if(d.isVisible) {
         conn.emit('change', {id: d.id, value: d.value});
-        console.log('change', d.id, d.value, d.actionType);
     }
 
     if(d.actionType === 'thermo') {
@@ -57,7 +56,7 @@ device.on('change', function (d, oldVal) {
             isC = (cv === 1);
             isH = (hv === 1);
             conn.emit('thermo', {id: d.id, isCool: isC, isHeat: isH});
-
+            console.log({id: d.id, isCool: isC, isHeat: isH});
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
                 if(c && devices[ic].pin === c) {
                     (function (dev) {
