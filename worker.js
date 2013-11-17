@@ -83,6 +83,7 @@ module.exports.init = function (devs) {
 
         if(typeof device !== 'undefined' && device !== null) {
             device.trigger = data.trigger;
+            console.log(device.id, device.trigger);
         } else
             console.log("can't find device for id ", data.id);
     });
