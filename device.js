@@ -6,15 +6,8 @@
         EventEmitter = require('events').EventEmitter,
         Epoll = require('epoll').Epoll,
         emitter = new EventEmitter(),
-        exportPath = '/sys/class/gpio/export',
         gpioPath = '/sys/class/gpio/gpio',
         anPath = '/sys/devices/ocp.2/helper.14/',
-        idDeviceCnt = 0,
-        zero = new Buffer('0'),
-        one = new Buffer('1'),
-        device,
-        bbbToggle,
-        ainInited = false,
         dontInitValActionTypes = [
             'switch',
             'sensor'
@@ -32,7 +25,8 @@
           'switch': 'both',
           'onoff': 'both',
           'momentary': 'both',
-          'sensor': 'both'
+          'sensor': 'both',
+          'thermo': 'both'
         },
         bbbAnalogPins = [
             'P9_33',
@@ -152,9 +146,10 @@
 
             if(self.direction === 'in') {
                 (function () {
-                    if(bbbAnalogPins.indexOf(pin) > -1) {
+                    if(bbbAnalogPins.indexOf(self.pin) > -1) {
                         setInterval(function () {
-                            var val = fs.readFileSync(anPath + self.pin).toString();
+                            var val = fs.readFileSync(anPath + self.pin).toString(),
+                                valO = self.value;
                             if(self.type === 'temp') {
                                 val = (val - 500) / 10;
                                 val = ((val * 9/5) + 32).toFixed(2);
@@ -164,14 +159,16 @@
 
                             if(self.value !== val) {
                                 self.value = val;
-                                emitter.emit('change', self, val);
+                                emitter.emit('change', self, valO);
                             }
                         }, 150);
                     } else {
                         var buffer = new Buffer(1),
                             val,
-                            valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');;
+                            valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
+
                         var poller = new Epoll(function (err, fd, events) {
+                            var valO = self.value;
                             fs.readSync(fd, buffer, 0, 1, 0);
                             val = parseInt(buffer.toString('ascii'));
                             var hasChanged = (self.value !== val);
@@ -179,9 +176,10 @@
                                 //button was pressed do work
                                 emitter.emit('switched', self);
                             }
+
                             self.value = val;
                             if(hasChanged) {
-                                emitter.emit('change', self, val);
+                                emitter.emit('change', self, valO);
                             }
                         });
 
