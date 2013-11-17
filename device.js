@@ -160,7 +160,7 @@
 
                                 }
                                 for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-                                    anSubs[self.pin](val);
+                                    anSubs[self.pin][i](val);
                                 }
                             }, 150);
                         }
