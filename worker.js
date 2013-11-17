@@ -27,49 +27,27 @@ device.on('change', function (d, oldVal) {
     if(d.isVisible) {
         conn.emit('change', {id: d.id, value: d.value});
     }
+});
 
-    if(d.actionType === 'thermo') {
+device.on('thermo', function (d, oldVal) {
+    if(d.cool || d.heat) {
+        var cv = d.isCool ? 1 : 0,
+            hv = d.isHeat ? 1 : 0;
+        
+        conn.emit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
 
-        var c,
-            cv,
-            h,
-            hv,
-            isC,
-            isH ;
-        if(d.value >= d.trigger + d.threshold) {
-            c = d.cool;
-            cv = 1;
-        } else if(d.value <= d.trigger){
-            c = d.cool;
-            cv = 0;
-        }
-        if(d.value <= d.trigger - d.threshold) {
-            h = d.heat;
-            hv = 1;
-        } else if(d.value >= d.trigger){
-            h = d.heat;
-            hv = 0;
-        }
-
-        if(c || h) {
-
-            isC = (cv === 1);
-            isH = (hv === 1);
-            conn.emit('thermo', {id: d.id, isCool: isC, isHeat: isH});
-            console.log({id: d.id, isCool: isC, isHeat: isH});
-            for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-                if(c && devices[ic].pin === c) {
-                    (function (dev) {
-                        if(dev.value !== cv)
-                            dev.setVal(cv);
-                    }(devices[ic]));
-                }
-                if(h && devices[ic].pin === h) {
-                    (function (dev) {
-                        if(dev.value !== hv)
-                            dev.setVal(hv);
-                    }(devices[ic]));
-                }
+        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
+            if(d.cool && devices[ic].pin === d.cool) {
+                (function (dev) {
+                    if(dev.value !== cv)
+                        dev.setVal(cv);
+                }(devices[ic]));
+            }
+            if(d.heat && devices[ic].pin === d.heat) {
+                (function (dev) {
+                    if(dev.value !== hv)
+                        dev.setVal(hv);
+                }(devices[ic]));
             }
         }
     }

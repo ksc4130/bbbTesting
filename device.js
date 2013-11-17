@@ -170,7 +170,25 @@
                             var valO = self.value;
                             if(self.value !== val) {
                                 self.value = val;
-                                emitter.emit('change', self, valO);
+                                if(self.actionType === 'thermo') {
+                                    var cv,
+                                        hv;
+                                    if(self.value >= self.trigger + self.threshold) {
+                                        cv = 1;
+                                    } else if(self.value <= self.trigger){
+                                        cv = 0;
+                                    }
+                                    if(self.value <= self.trigger - self.threshold) {
+                                        hv = 1;
+                                    } else if(self.value >= self.trigger){
+                                        hv = 0;
+                                    }
+                                    self.isCool = (cv === 1);
+                                    self.isHeat = (hv === 1);
+                                    emitter.emit('thermo', self, valO);
+                                } else {
+                                    emitter.emit('change', self, valO);
+                                }
                             }
                         });
                     } else {
