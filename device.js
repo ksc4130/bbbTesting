@@ -149,7 +149,7 @@
             if(self.direction === 'in') {
                 (function () {
                     if(bbbAnalogPins.indexOf(self.pin) > -1) {
-                        if(anSubs[self.pin]) {
+                        if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
                             setInterval(function () {
                                 var val = fs.readFileSync(anPath + self.pin).toString();
