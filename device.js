@@ -83,6 +83,7 @@
         self.trigger = args.trigger;
         self.lastTrigger = args.lastTrigger;
         self.threshold = args.threshold;
+        self.forceTrigger = args.forceTrigger || false;
 
         if(self.cool) {
             pinWork.exportPin(self.cool, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
@@ -190,7 +191,7 @@
                             var valO = self.value;
                             self.value = val;
                                 if(self.actionType === 'thermo') {
-                                    if(!self.lastTrigger || Math.abs(self.lastTrigger - val) > .25 || valO !== val) {
+                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > .25 || valO !== val) {
                                         var cv,
                                             hv;
                                         if(self.value >= self.trigger + self.threshold) {
@@ -206,6 +207,7 @@
                                         self.isCool = (cv === 1);
                                         self.isHeat = (hv === 1);
                                         self.lastTrigger = self.value;
+                                        self.forceTrigger = false;
                                         emitter.emit('thermo', self, valO);
                                     }
 
