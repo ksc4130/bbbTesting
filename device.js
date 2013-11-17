@@ -167,7 +167,7 @@
                                 }
                                 setTimeout(checkAn, 150);
                             };
-
+                            checkAn();
                         }
                         anSubs[self.pin].push(function (val) {
                             var valO = self.value;
