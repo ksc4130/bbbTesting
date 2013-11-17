@@ -71,6 +71,10 @@ module.exports.init = function (devs) {
         }
     });
 
+    conn.on('setTrigger', function(data) {
+        console.log('setTrigger', data);
+    });
+
     conn.on('change', function (data) {
         var device;
 
