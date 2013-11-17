@@ -72,8 +72,18 @@ module.exports.init = function (devs) {
     });
 
     conn.on('setTrigger', function(data) {
-        console.log('setTrigger', data);
+        var device;
 
+        for(var i = 0, il = devices.length; i < il; i++) {
+            if(devices[i].id.toString() === data.id.toString()) {
+                device = devices[i];
+                break;
+            }
+        }
+        if(typeof device !== 'undefined' && device !== null) {
+            device.trigger = data.trigger;
+        } else
+            console.log("can't find device for id ", data.id);
     });
 
     conn.on('change', function (data) {
