@@ -43,7 +43,8 @@
             'AIN4',
             'AIN5',
         ],
-        idCnter = 0;
+        idCnter = 0,
+        anSubs = {};
 
     function Device (pin, args) {
         if(this === global) {
@@ -148,21 +149,28 @@
             if(self.direction === 'in') {
                 (function () {
                     if(bbbAnalogPins.indexOf(self.pin) > -1) {
-                        setInterval(function () {
-                            var val = fs.readFileSync(anPath + self.pin).toString(),
-                                valO = self.value;
-                            if(self.type === 'temp') {
-                                val = (val - 500) / 10;
-                                val = ((val * 9/5) + 32).toFixed(2);
-                            } else {
+                        if(anSubs[self.pin]) {
+                            anSubs[self.pin] = [];
+                            setInterval(function () {
+                                var val = fs.readFileSync(anPath + self.pin).toString();
+                                if(self.type === 'temp') {
+                                    val = (val - 500) / 10;
+                                    val = ((val * 9/5) + 32).toFixed(2);
+                                } else {
 
-                            }
-
+                                }
+                                for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
+                                    anSubs[self.pin](val);
+                                }
+                            }, 150);
+                        }
+                        anSubs[self.pin].push(function (val) {
+                            var valO = self.value;
                             if(self.value !== val) {
                                 self.value = val;
                                 emitter.emit('change', self, valO);
                             }
-                        }, 150);
+                        });
                     } else {
                         var buffer = new Buffer(1),
                             val,
