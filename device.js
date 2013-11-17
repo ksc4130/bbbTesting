@@ -155,17 +155,20 @@
                         if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
                             var checkAn = function () {
-                                var val = fs.readFileSync(anPath + self.pin).toString();
-                                if(self.type === 'temp') {
-                                    val = (val - 500) / 10;
-                                    val = ((val * 9/5) + 32).toFixed(2);
-                                } else {
+                                fs.readFile(anPath + self.pin, function (err, val) {
+                                    val = val.toString();
+                                    if(self.type === 'temp') {
+                                        val = (val - 500) / 10;
+                                        val = ((val * 9/5) + 32).toFixed(2);
+                                    } else {
 
-                                }
-                                for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-                                    anSubs[self.pin][i](val);
-                                }
-                                setTimeout(checkAn, 150);
+                                    }
+                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
+                                        anSubs[self.pin][i](val);
+                                    }
+                                    setTimeout(checkAn, 500);
+                                });
+
                             };
                             checkAn();
                         }
