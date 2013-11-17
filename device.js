@@ -76,6 +76,8 @@
         self.isVisible = args.isVisible || false;
         self.ready = args.ready;
 
+        self.isCool = args.isCool || false;
+        self.isHeat = args.isHeat || false;
         self.cool = args.cool;
         self.heat = args.heat;
         self.trigger = args.trigger;

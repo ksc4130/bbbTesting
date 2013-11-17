@@ -34,7 +34,9 @@ device.on('change', function (d, oldVal) {
         var c,
             cv,
             h,
-            hv;
+            hv,
+            isC,
+            isH ;
         if(d.value >= d.trigger + d.threshold) {
             c = d.cool;
             cv = 1;
@@ -51,6 +53,11 @@ device.on('change', function (d, oldVal) {
         }
 
         if(c || h) {
+
+            isC = (cv === 1);
+            isH = (hv === 1);
+            conn.emit('thermo', {id: d.id, isCool: isC, isHeat: isH});
+
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
                 if(c && devices[ic].pin === c) {
                     (function (dev) {
