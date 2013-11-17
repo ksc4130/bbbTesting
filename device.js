@@ -181,7 +181,7 @@
                                         console.log(self.pin, val, self.trigger);
                                         anSubs[self.pin][i](val);
                                     }
-                                    setTimeout(checkAn, 500);
+                                    setTimeout(checkAn, 150);
                                 });
 
                             };
