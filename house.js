@@ -63,15 +63,15 @@ var worker = require('./worker'),
 
             }
         }),
-        new Device('AIN3', {
-            name: 'Temp',
-            type: 'temp',
-            actionType: 'sensor',
-            isVisible: true,
-            ready: function () {
-
-            }
-        }),
+//        new Device('AIN3', {
+//            name: 'Temp',
+//            type: 'temp',
+//            actionType: 'sensor',
+//            isVisible: true,
+//            ready: function () {
+//
+//            }
+//        }),
         new Device('AIN1', {
             name: 'Light',
             type: 'light',
