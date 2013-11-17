@@ -26,7 +26,7 @@ device.on('switched', function (d) {
 device.on('change', function (d, oldVal) {
     if(d.isVisible) {
         conn.emit('change', {id: d.id, value: d.value});
-        console.log('change', {id: d.id, value: d.value});
+        console.log('change', d.id, d.value, d.actionType);
     }
 
     if(d.actionType === 'thermo') {
