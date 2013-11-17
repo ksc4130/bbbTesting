@@ -80,6 +80,7 @@ module.exports.init = function (devs) {
                 break;
             }
         }
+        console.log(data, device);
         if(typeof device !== 'undefined' && device !== null) {
             device.trigger = data.trigger;
         } else
