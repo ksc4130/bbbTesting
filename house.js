@@ -53,7 +53,7 @@ var worker = require('./worker'),
         new Device('AIN3', {
             name: 'Thermo',
             type: 'temp',
-            actionType: 'thermo',
+            actionType: 'sensor',
             cool: '67',
             heat: '26',
             trigger: 75.5,
