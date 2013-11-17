@@ -175,10 +175,9 @@
                         }
                         anSubs[self.pin].push(function (val) {
                             var valO = self.value;
-                            if(self.value !== val) {
-                                self.value = val;
+                            self.value = val;
                                 if(self.actionType === 'thermo') {
-                                    if(!self.lastTrigger || Math.abs(self.lastTrigger - val) > .25) {
+                                    if(!self.lastTrigger || Math.abs(self.lastTrigger - val) > .25 || valO !== val) {
                                         var cv,
                                             hv;
                                         if(self.value >= self.trigger + self.threshold) {
@@ -194,13 +193,14 @@
                                         self.isCool = (cv === 1);
                                         self.isHeat = (hv === 1);
                                         self.lastTrigger = self.value;
+                                        emitter.emit('thermo', self, valO);
                                     }
 
-                                    emitter.emit('thermo', self, valO);
-                                } else {
+
+                                } else if(self.value !== val) {
                                     emitter.emit('change', self, valO);
                                 }
-                            }
+
                         });
                     } else {
                         var buffer = new Buffer(1),
