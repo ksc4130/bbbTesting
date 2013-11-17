@@ -80,7 +80,7 @@ module.exports.init = function (devs) {
         console.log('device for io server');
         for(var i = 0, il = data.length; i < il; i++) {
             for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-                if(devices[ic].pin === data[i].pin) {
+                if(devices[ic].oId === data[i].oId) {
                     devices[ic].id = data[i].id;
                 }
             }

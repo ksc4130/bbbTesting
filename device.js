@@ -53,7 +53,8 @@
 
         args = args || {};
 
-        self.id = args.id || idCnter++;
+        self.id = args.id || 0;
+        self.oId = idCnter++;
         self.actionType = args.actionType;
         self.type = args.type;
 
