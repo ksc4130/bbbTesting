@@ -154,7 +154,7 @@
                     if(bbbAnalogPins.indexOf(self.pin) > -1) {
                         if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
-                            setInterval(function () {
+                            var checkAn = function () {
                                 var val = fs.readFileSync(anPath + self.pin).toString();
                                 if(self.type === 'temp') {
                                     val = (val - 500) / 10;
@@ -165,7 +165,9 @@
                                 for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
                                     anSubs[self.pin][i](val);
                                 }
-                            }, 150);
+                                setTimeout(checkAn, 150);
+                            };
+
                         }
                         anSubs[self.pin].push(function (val) {
                             var valO = self.value;
