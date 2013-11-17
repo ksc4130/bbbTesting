@@ -84,6 +84,19 @@
         self.lastTrigger = args.lastTrigger;
         self.threshold = args.threshold;
 
+        if(self.cool) {
+            pinWork.exportPin(self.cool, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
+        }
+        if(self.heat) {
+            pinWork.exportPin(self.heat, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
+        }
+
+        if(self.controls && self.controls.length > 0) {
+            for(var icc = 0, ilcc = self.controls.length; icc < ilcc; icc++) {
+                pinWork.exportPin(self.controls[icc], 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
+            }
+        }
+
         if(!self.direction) {
             console.log('unknown action type unable to set direction', self.actionType, self.direction);
             return self;
