@@ -33,7 +33,7 @@ device.on('thermo', function (d, oldVal) {
     if(d.cool || d.heat) {
         var cv = d.isCool ? 1 : 0,
             hv = d.isHeat ? 1 : 0;
-        
+
         conn.emit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
 
         for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {

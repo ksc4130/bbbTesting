@@ -81,6 +81,7 @@
         self.cool = args.cool;
         self.heat = args.heat;
         self.trigger = args.trigger;
+        self.lastTrigger = args.lastTrigger;
         self.threshold = args.threshold;
 
         if(!self.direction) {
@@ -171,20 +172,23 @@
                             if(self.value !== val) {
                                 self.value = val;
                                 if(self.actionType === 'thermo') {
-                                    var cv,
-                                        hv;
-                                    if(self.value >= self.trigger + self.threshold) {
-                                        cv = 1;
-                                    } else if(self.value <= self.trigger){
-                                        cv = 0;
+                                    if(!self.lastTrigger || Math.abs(self.value - val) > .5) {
+                                        var cv,
+                                            hv;
+                                        if(self.value >= self.trigger + self.threshold) {
+                                            cv = 1;
+                                        } else if(self.value <= self.trigger){
+                                            cv = 0;
+                                        }
+                                        if(self.value <= self.trigger - self.threshold) {
+                                            hv = 1;
+                                        } else if(self.value >= self.trigger){
+                                            hv = 0;
+                                        }
+                                        self.isCool = (cv === 1);
+                                        self.isHeat = (hv === 1);
                                     }
-                                    if(self.value <= self.trigger - self.threshold) {
-                                        hv = 1;
-                                    } else if(self.value >= self.trigger){
-                                        hv = 0;
-                                    }
-                                    self.isCool = (cv === 1);
-                                    self.isHeat = (hv === 1);
+
                                     emitter.emit('thermo', self, valO);
                                 } else {
                                     emitter.emit('change', self, valO);
