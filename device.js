@@ -197,7 +197,7 @@
                                     }
 
 
-                                } else if(self.value !== val) {
+                                } else if(valO !== val) {
                                     emitter.emit('change', self, valO);
                                 }
 
