@@ -172,7 +172,7 @@
                             if(self.value !== val) {
                                 self.value = val;
                                 if(self.actionType === 'thermo') {
-                                    if(!self.lastTrigger || Math.abs(self.lastTrigger - val) > .5) {
+                                    if(!self.lastTrigger || Math.abs(self.lastTrigger - val) > .25) {
                                         var cv,
                                             hv;
                                         if(self.value >= self.trigger + self.threshold) {
