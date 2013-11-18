@@ -54,8 +54,8 @@ var worker = require('./worker'),
             name: 'Thermo',
             type: 'temp',
             actionType: 'thermo',
-            cool: '67',
-            heat: '26',//65
+            cool: '65',
+            heat: '65',//65
             trigger: 75.5,
             threshold:.5,
             isVisible: true,
