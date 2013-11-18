@@ -50,6 +50,15 @@ var worker = require('./worker'),
 
             }
         }),
+        new Device('65', {
+            name: 'Cool',
+            type: 'cool',
+            actionType: 'onoff',
+            isVisible: false,
+            ready: function () {
+
+            }
+        }),
         new Device('AIN3', {
             name: 'Thermo',
             type: 'temp',
