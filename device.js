@@ -181,7 +181,9 @@
 		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
+	                                console.log('a', val.toString());
                                     val = parseFloat(val.toString());
+	                                console.log('b', val.toString());
 	                                samples.push(val);
                                     if(samples.length === samplesLimit) {
 	                                    var average = 0.0;
@@ -190,7 +192,7 @@
 	                                    }
 
 	                                    val = average/(samples - 1);
-
+	                                    console.log('c', val.toString());
 	                                    if(self.type === 'temp') {
 		                                    val = (val - 500) / 10;
 		                                    val = ((val * 9/5) + 32).toFixed(2);
