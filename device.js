@@ -196,8 +196,8 @@
 		                                	average += parseFloat(samples[iSamples]);
 	                                    }
 
-	                                    val = (average/(samples.length - 1)).toFixed(2);
-	                                    console.log('c', average, (samples.length - 1), val.toString());
+	                                    val = (average/samples.length).toFixed(2);
+	                                    console.log('c', average, samples.length, val.toString());
 
 	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
 		                                    console.log(self.pin, val, self.trigger);
