@@ -191,7 +191,7 @@
 		                                	average += samples[iSamples];
 	                                    }
 
-	                                    val = average/(samples - 1);
+	                                    val = average/(samples.length - 1);
 	                                    console.log('c', val.toString());
 	                                    if(self.type === 'temp') {
 		                                    val = (val - 500) / 10;
