@@ -181,9 +181,14 @@
 		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
-	                                console.log('a', val.toString());
-                                    val = parseFloat(val.toString());
-	                                console.log('b', val.toString());
+	                                val = parseFloat(val.toString());
+	                                if(self.type === 'temp') {
+		                                val = (val - 500) / 10;
+		                                val = ((val * 9/5) + 32).toFixed(2);
+	                                } else {
+
+	                                }
+
 	                                samples.push(val);
                                     if(samples.length === samplesLimit) {
 	                                    var average = 0.0;
@@ -192,13 +197,8 @@
 	                                    }
 
 	                                    val = average/(samples.length - 1);
-	                                    console.log('c', val.toString());
-	                                    if(self.type === 'temp') {
-		                                    val = (val - 500) / 10;
-		                                    val = ((val * 9/5) + 32).toFixed(2);
-	                                    } else {
+	                                    console.log('c', average, (samples.length - 1), val.toString());
 
-	                                    }
 	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
 		                                    console.log(self.pin, val, self.trigger);
 		                                    anSubs[self.pin][i](val);
