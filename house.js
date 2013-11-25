@@ -75,7 +75,7 @@ var worker = require('./worker'),
             cool: '65',
             heat: '61',//65
             trigger: 75.5,
-            threshold:.5,
+            threshold:1.25,
             isVisible: true,
             ready: function () {
 

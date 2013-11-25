@@ -1,3 +1,7 @@
+
+//TODO: average temp reading fix thresh
+
+
 (function () {
     'use strict';
 
@@ -78,6 +82,10 @@
 
         self.isCool = args.isCool || false;
         self.isHeat = args.isHeat || false;
+
+        self.highThreshold = args.highThreshold || false;
+        self.lowThreshold = args.lowThreshold || false;
+
         self.cool = args.cool;
         self.heat = args.heat;
         self.trigger = args.trigger;
@@ -191,7 +199,7 @@
                             var valO = self.value;
                             self.value = val;
                                 if(self.actionType === 'thermo') {
-                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > .25 || valO !== val) {
+                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > .75 || valO !== val) {
                                         var cv,
                                             hv;
                                         if(self.value >= self.trigger + self.threshold) {
