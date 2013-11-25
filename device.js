@@ -193,10 +193,10 @@
                                     if(samples.length === samplesLimit) {
 	                                    var average = 0.0;
 	                                    for(var iSamples = 0, ilSamples = samples.length; iSamples < ilSamples; iSamples++) {
-		                                	average += samples[iSamples];
+		                                	average += parseFloat(samples[iSamples]);
 	                                    }
 
-	                                    val = average/(samples.length - 1);
+	                                    val = (average/(samples.length - 1)).toFixed(2);
 	                                    console.log('c', average, (samples.length - 1), val.toString());
 
 	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
