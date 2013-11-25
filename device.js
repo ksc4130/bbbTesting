@@ -197,10 +197,8 @@
 	                                    }
 
 	                                    val = (average/samples.length).toFixed(2);
-	                                    console.log('c', average, samples.length, val.toString());
 
 	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-		                                    console.log(self.pin, val, self.trigger);
 		                                    anSubs[self.pin][i](val);
 	                                    }
 	                                    samples = [];
