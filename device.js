@@ -91,6 +91,7 @@
         self.trigger = args.trigger;
         self.lastTrigger = args.lastTrigger;
         self.threshold = args.threshold;
+        self.tolerance = args.tolerance;
         self.forceTrigger = args.forceTrigger || false;
 
         if(self.cool) {
