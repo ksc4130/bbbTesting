@@ -231,11 +231,13 @@
                                         self.lastTrigger = self.value;
                                         self.forceTrigger = false;
                                         emitter.emit('thermo', self, valO);
+                                    } else if(valO !== val) {
+                                        emitter.emit('change', self, valO);
                                     }
 
 
                                 } else if(valO !== val) {
-                                    emitter.emit('thermo', self, valO);
+                                    emitter.emit('change', self, valO);
                                 }
 
                         });
