@@ -176,20 +176,34 @@
                     if(bbbAnalogPins.indexOf(self.pin) > -1) {
                         if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
+	                        var samplesLimit = 10,
+		                        sampleRate = 25,
+		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
-                                    val = val.toString();
-                                    if(self.type === 'temp') {
-                                        val = (val - 500) / 10;
-                                        val = ((val * 9/5) + 32).toFixed(2);
-                                    } else {
+	                                val = parseFloat(val.toString());
+	                                if(self.type === 'temp') {
+		                                val = (val - 500) / 10;
+		                                val = ((val * 9/5) + 32).toFixed(2);
+	                                } else {
 
+	                                }
+
+	                                samples.push(val);
+                                    if(samples.length === samplesLimit) {
+	                                    var average = 0.0;
+	                                    for(var iSamples = 0, ilSamples = samples.length; iSamples < ilSamples; iSamples++) {
+		                                	average += parseFloat(samples[iSamples]);
+	                                    }
+
+	                                    val = (average/samples.length).toFixed(2);
+
+	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
+		                                    anSubs[self.pin][i](val);
+	                                    }
+	                                    samples = [];
                                     }
-                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-                                        console.log(self.pin, val, self.trigger);
-                                        anSubs[self.pin][i](val);
-                                    }
-                                    setTimeout(checkAn, 150);
+                                    setTimeout(checkAn, sampleRate);
                                 });
 
                             };
