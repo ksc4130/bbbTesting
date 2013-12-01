@@ -1,5 +1,6 @@
 var device = require('./device'),
     Device = device.Device,
+    id,
     devices = [];
 
 var io = require('socket.io-client');
@@ -53,8 +54,9 @@ device.on('thermo', function (d, oldVal) {
     }
 });
 
-module.exports.init = function (devs) {
-    devices = devs;
+module.exports.init = function (args) {
+    id = args.id;
+    devices = args.devices;
 
     conn.on('initWorker', function () {
         conn.emit('initWorker', {secret: secret, devices: devices});

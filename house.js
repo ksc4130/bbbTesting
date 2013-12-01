@@ -16,6 +16,15 @@ var worker = require('./worker'),
 
             }
         }),
+        new Device('30', {
+            name: 'Living Room',
+            type: 'light',
+            actionType: 'onoff',
+            isVisible: true,
+            ready: function () {
+
+            }
+        }),
         new Device('68', {
             name: 'Garage Door',
             type: 'overheadDoor',
@@ -102,4 +111,7 @@ var worker = require('./worker'),
 //        })
     ];
 
-worker.init(devices);
+worker.init({
+    id: '315e5058-1e20-4cd4-9a25-16e64eb1188a',
+    devices: devices
+});
