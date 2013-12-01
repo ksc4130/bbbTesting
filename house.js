@@ -42,6 +42,14 @@ var worker = require('./worker'),
 
             }
         }),
+        new Device('31', {
+            type: 'light',
+            actionType: 'switch',
+            controls: ['30'],//living room light
+            ready: function () {
+
+            }
+        }),
         new Device('46', {
             type: 'light',
             actionType: 'switch',
