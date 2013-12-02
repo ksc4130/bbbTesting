@@ -182,7 +182,7 @@
 		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
-	                                val = parseFloat(val.toString());
+	                                val = parseFloat(val ? val.toString() : '0');
 	                                if(self.type === 'temp') {
 		                                val = (val - 500) / 10;
 		                                val = ((val * 9/5) + 32).toFixed(2);
