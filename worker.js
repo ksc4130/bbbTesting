@@ -1,7 +1,8 @@
 var device = require('./device'),
     Device = device.Device,
     id,
-    devices = [];
+    devices = [],
+    transmit = false;;
 
 var io = require('socket.io-client');
 var serverUrl = 'http://162.243.52.16:4131';
@@ -16,7 +17,8 @@ device.on('switched', function (d) {
             if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
                 (function (dev) {
                     dev.toggle(null, function (err, d) {
-                        conn.emit('change', {id: dev.id, value: d});
+                        if(transmit)
+                            conn.emit('change', {id: dev.id, value: d});
                     });
                 }(devices[ic]));
             }
@@ -26,7 +28,8 @@ device.on('switched', function (d) {
 
 device.on('change', function (d, oldVal) {
     if(d.isVisible) {
-        conn.emit('change', {id: d.id, value: d.value});
+        if(transmit)
+            conn.emit('change', {id: d.id, value: d.value});
     }
 });
 
@@ -34,8 +37,8 @@ device.on('thermo', function (d, oldVal) {
     if(d.cool || d.heat) {
         var cv = d.isCool ? 1 : 0,
             hv = d.isHeat ? 1 : 0;
-
-        conn.emit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
+        if(transmit)
+            conn.emit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
 
         for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
             if(d.cool && devices[ic].pin === d.cool) {
@@ -54,12 +57,17 @@ device.on('thermo', function (d, oldVal) {
     }
 });
 
+
 module.exports.init = function (args) {
     id = args.id;
     devices = args.devices;
 
     conn.on('initWorker', function () {
         conn.emit('initWorker', {secret: secret, devices: devices});
+    });
+
+    conn.on('transmit', function (data) {
+        transmit = data;
     });
 
     conn.on('devices', function (data) {
