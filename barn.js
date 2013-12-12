@@ -43,4 +43,7 @@ var worker = require('./worker'),
         })
     ];
 
-worker.init(devices);
+worker.init({
+    id: '36af9e74-2344-44d4-bc02-1608a851e1b0',
+    devices: devices
+});
