@@ -4,7 +4,7 @@ var device = require('./device'),
     devices = [];
 
 var io = require('socket.io-client');
-var serverUrl = 'http://192.168.1.10:4131';
+var serverUrl = 'http://162.243.52.16:4131';
 var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 

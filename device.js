@@ -1,7 +1,3 @@
-
-//TODO: average temp reading fix thresh
-
-
 (function () {
     'use strict';
 
@@ -45,7 +41,7 @@
             'AIN2',
             'AIN3',
             'AIN4',
-            'AIN5',
+            'AIN5'
         ],
         idCnter = 0,
         anSubs = {};
