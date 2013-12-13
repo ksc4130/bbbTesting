@@ -135,6 +135,10 @@ module.exports.init = function (args) {
                 curDev = cursor.object();
                 found.push(new Device(curDev.pin, curDev));
             }
+            console.log('init found', found);
+            devices = found;
+
+            init();
         } else {
             for(var i = 0, il = args.devices.length; i < il; i++) {
                 curDev = args.devices[i];
@@ -142,10 +146,14 @@ module.exports.init = function (args) {
                 curDev.workerId = id;
                 found.push(new Device(curDev.pin, curDev));
             }
-            db.save('devices', found);
-        }
-        devices = found;
+            db.save('devices', found, function (err) {
+                console.log('init created', found);
+                devices = found;
 
-        init();
+                init();
+            });
+
+        }
+
     });
 };
