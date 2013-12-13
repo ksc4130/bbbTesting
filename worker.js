@@ -2,12 +2,24 @@ var device = require('./device'),
     Device = device.Device,
     id,
     devices = [],
-    transmit = false;;
+    transmit = false;
+
+var ejdb = require('ejdb'),
+    uuid = require('node-uuid');
+
+var db = ejdb.open('worker', ejdb.DEFAULT_OPEN_MODE);
+
 
 var io = require('socket.io-client');
 var serverUrl = 'http://162.243.52.16:4131';
 var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
+
+function Transmit(event, data) {
+    if(transmit)
+        conn.emit(event, data);
+}
+
 
 device.on('switched', function (d) {
     var i,
@@ -17,8 +29,7 @@ device.on('switched', function (d) {
             if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
                 (function (dev) {
                     dev.toggle(null, function (err, d) {
-                        if(transmit)
-                            conn.emit('change', {id: dev.id, value: d});
+                        Transmit('change', {id: dev.id, value: d});
                     });
                 }(devices[ic]));
             }
@@ -28,8 +39,7 @@ device.on('switched', function (d) {
 
 device.on('change', function (d, oldVal) {
     if(d.isVisible) {
-        if(transmit)
-            conn.emit('change', {id: d.id, value: d.value});
+        Transmit('change', {id: d.id, value: d.value});
     }
 });
 
@@ -37,8 +47,7 @@ device.on('thermo', function (d, oldVal) {
     if(d.cool || d.heat) {
         var cv = d.isCool ? 1 : 0,
             hv = d.isHeat ? 1 : 0;
-        if(transmit)
-            conn.emit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
+        Transmit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value});
 
         for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
             if(d.cool && devices[ic].pin === d.cool) {
@@ -57,13 +66,10 @@ device.on('thermo', function (d, oldVal) {
     }
 });
 
-
-module.exports.init = function (args) {
-    id = args.id;
-    devices = args.devices;
+var init = function () {
 
     conn.on('initWorker', function () {
-        conn.emit('initWorker', {secret: secret, devices: devices});
+        conn.emit('initWorker', {secret: secret, workerId: id,  devices: devices});
     });
 
     conn.on('transmit', function (data) {
@@ -72,13 +78,13 @@ module.exports.init = function (args) {
 
     conn.on('devices', function (data) {
         console.log('device for io server');
-        for(var i = 0, il = data.length; i < il; i++) {
-            for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-                if(devices[ic].oId === data[i].oId) {
-                    devices[ic].id = data[i].id;
-                }
-            }
-        }
+//        for(var i = 0, il = data.length; i < il; i++) {
+//            for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
+//                if(devices[ic].oId === data[i].oId) {
+//                    devices[ic].id = data[i].id;
+//                }
+//            }
+//        }
     });
 
     conn.on('setTrigger', function(data) {
@@ -114,4 +120,35 @@ module.exports.init = function (args) {
             console.log("can't find device for id ", data.id);
 
     });
+}
+
+
+module.exports.init = function (args) {
+    id = args.id;
+    db.find('devices', {isVisible: true}, function (err, cursor, cnt) {
+        var found = [],
+            curDev;
+
+        if(err)
+            console.log('error pulling device from db', err);
+        else if(cnt > 0) {
+            while(cursor.next()) {
+                curDev = cursor.object();
+                found.push(new Device(curDev.pin, curDev));
+            }
+        } else {
+            for(var i = 0, il = args.devices.length; i < il; i++) {
+                curDev = args.devices[i];
+                curDev.id = uuid.v4();
+                curDev.workerId = id;
+                found.push(new Device(curDev.pin, curDev));
+            }
+            db.save('devices', found);
+        }
+        devices = found;
+
+        init();
+    });
+
+
 };
