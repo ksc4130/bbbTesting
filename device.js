@@ -215,11 +215,13 @@
                                             hv;
                                         if(self.value >= self.trigger + self.threshold) {
                                             cv = 1;
+                                            hv = 0;
                                         } else if(self.value <= self.trigger){
                                             cv = 0;
                                         }
                                         if(self.value <= self.trigger - self.threshold) {
                                             hv = 1;
+                                            cv = 0;
                                         } else if(self.value >= self.trigger){
                                             hv = 0;
                                         }
