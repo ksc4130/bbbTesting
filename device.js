@@ -226,7 +226,7 @@
                                         }
                                         self.isCool = (cv === 1);
                                         self.isHeat = (hv === 1);
-                                        self.lastTrigger = self.value;
+                                        self.lastTrigger = val;
                                         self.forceTrigger = false;
                                         emitter.emit('thermo', self, valO);
                                     } else if(valO !== val) {
