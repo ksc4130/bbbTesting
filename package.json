@@ -3,6 +3,8 @@
     "description": "bbbTesting",
     "dependencies": {
         "epoll": "*",
-        "socket.io-client": "*"
+        "ejdb": "*",
+        "socket.io-client": "*",
+        "node-uuid": "*"
     }
 }
