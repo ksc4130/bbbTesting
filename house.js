@@ -7,7 +7,8 @@ if(!exists) {
 var worker = require('./worker'),
     Device = require('./device').Device,
     devices = [
-        {pin: '67',
+        {
+            pin: '67',
             name: 'Den',
             type: 'light',
             actionType: 'onoff',
@@ -16,7 +17,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'30',
+        {
+            pin:'30',
             name: 'Living Room',
             type: 'light',
             actionType: 'onoff',
@@ -25,7 +27,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'68',
+        {
+            in:'68',
             name: 'Garage Door',
             type: 'overheadDoor',
             actionType: 'momentary',
@@ -34,7 +37,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'44',
+        {
+            pin:'44',
             type: 'light',
             actionType: 'switch',
             controls: ['67'],//den light
@@ -42,7 +46,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'31',
+        {
+            pin:'31',
             type: 'light',
             actionType: 'switch',
             controls: ['30'],//living room light
@@ -50,7 +55,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'46',
+        {
+            pin:'46',
             type: 'light',
             actionType: 'switch',
             controls: ['26'],
@@ -58,7 +64,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'26',
+        {
+            pin:'26',
             name: 'Garage',
             type: 'light',
             actionType: 'onoff',
@@ -67,7 +74,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'65',
+        {
+            pin:'65',
             name: 'Cool',
             type: 'cool',
             actionType: 'onoff',
@@ -76,7 +84,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'61',
+        {
+            pin:'61',
             name: 'Heat',
             type: 'heat',
             actionType: 'onoff',
@@ -85,7 +94,8 @@ var worker = require('./worker'),
 
             }
         },
-        {pin:'AIN3',
+        {
+            pin:'AIN3',
             name: 'Thermo',
             type: 'temp',
             actionType: 'thermo',
