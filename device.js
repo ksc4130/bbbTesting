@@ -58,7 +58,7 @@
         self.oId = idCnter++;
         self.actionType = args.actionType;
         self.type = args.type;
-
+        self.workerId = args.workerId;
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
             (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
 

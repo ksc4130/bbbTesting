@@ -7,7 +7,7 @@ if(!exists) {
 var worker = require('./worker'),
     Device = require('./device').Device,
     devices = [
-        new Device('67', {
+        {pin: '67',
             name: 'Den',
             type: 'light',
             actionType: 'onoff',
@@ -15,8 +15,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('30', {
+        },
+        {pin:'30',
             name: 'Living Room',
             type: 'light',
             actionType: 'onoff',
@@ -24,8 +24,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('68', {
+        },
+        {pin:'68',
             name: 'Garage Door',
             type: 'overheadDoor',
             actionType: 'momentary',
@@ -33,32 +33,32 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('44', {
+        },
+        {pin:'44',
             type: 'light',
             actionType: 'switch',
             controls: ['67'],//den light
             ready: function () {
 
             }
-        }),
-        new Device('31', {
+        },
+        {pin:'31',
             type: 'light',
             actionType: 'switch',
             controls: ['30'],//living room light
             ready: function () {
 
             }
-        }),
-        new Device('46', {
+        },
+        {pin:'46',
             type: 'light',
             actionType: 'switch',
             controls: ['26'],
             ready: function () {
 
             }
-        }),
-        new Device('26', {
+        },
+        {pin:'26',
             name: 'Garage',
             type: 'light',
             actionType: 'onoff',
@@ -66,8 +66,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('65', {
+        },
+        {pin:'65',
             name: 'Cool',
             type: 'cool',
             actionType: 'onoff',
@@ -75,8 +75,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('61', {
+        },
+        {pin:'61',
             name: 'Heat',
             type: 'heat',
             actionType: 'onoff',
@@ -84,8 +84,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        }),
-        new Device('AIN3', {
+        },
+        {pin:'AIN3',
             name: 'Thermo',
             type: 'temp',
             actionType: 'thermo',
@@ -98,8 +98,8 @@ var worker = require('./worker'),
             ready: function () {
 
             }
-        })//,
-//        new Device('AIN3', {
+        }//,
+//        {pin:'AIN3', {
 //            name: 'Temp',
 //            type: 'temp',
 //            actionType: 'sensor',
@@ -108,7 +108,7 @@ var worker = require('./worker'),
 //
 //            }
 //        }),
-//        new Device('AIN1', {
+//        {pin:'AIN1', {
 //            name: 'Light',
 //            type: 'light',
 //            actionType: 'sensor',
@@ -123,3 +123,96 @@ worker.init({
     id: '315e5058-1e20-4cd4-9a25-16e64eb1188a',
     devices: devices
 });
+
+
+//new Device('67', {
+//    name: 'Den',
+//    type: 'light',
+//    actionType: 'onoff',
+//    isVisible: true,
+//    ready: function () {
+//
+//    }
+//}),
+//    new Device('30', {
+//        name: 'Living Room',
+//        type: 'light',
+//        actionType: 'onoff',
+//        isVisible: true,
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('68', {
+//        name: 'Garage Door',
+//        type: 'overheadDoor',
+//        actionType: 'momentary',
+//        isVisible: true,
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('44', {
+//        type: 'light',
+//        actionType: 'switch',
+//        controls: ['67'],//den light
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('31', {
+//        type: 'light',
+//        actionType: 'switch',
+//        controls: ['30'],//living room light
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('46', {
+//        type: 'light',
+//        actionType: 'switch',
+//        controls: ['26'],
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('26', {
+//        name: 'Garage',
+//        type: 'light',
+//        actionType: 'onoff',
+//        isVisible: true,
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('65', {
+//        name: 'Cool',
+//        type: 'cool',
+//        actionType: 'onoff',
+//        isVisible: false,
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('61', {
+//        name: 'Heat',
+//        type: 'heat',
+//        actionType: 'onoff',
+//        isVisible: false,
+//        ready: function () {
+//
+//        }
+//    }),
+//    new Device('AIN3', {
+//        name: 'Thermo',
+//        type: 'temp',
+//        actionType: 'thermo',
+//        cool: '65',
+//        heat: '61',//65
+//        trigger: 75.5,
+//        threshold: 1,
+//        tolerance: .5,
+//        isVisible: true,
+//        ready: function () {
+//
+//        }
