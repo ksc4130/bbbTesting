@@ -53,7 +53,7 @@
         var self = this;
 
         args = args || {};
-        self._id = args._id || '';
+        //self._id = args._id || '';
         self.id = args.id || 0;
         self.oId = idCnter++;
         self.actionType = args.actionType;
