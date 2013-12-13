@@ -51,14 +51,18 @@ device.on('thermo', function (d, oldVal) {
         for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
             if(d.cool && devices[ic].pin === d.cool) {
                 (function (dev) {
-                    if(dev.value !== cv)
+                    if(dev.value !== cv) {
                         dev.setVal(cv);
+                        console.log('cool', dev.value, cv);
+                    }
                 }(devices[ic]));
             }
             if(d.heat && devices[ic].pin === d.heat) {
                 (function (dev) {
-                    if(dev.value !== hv)
+                    if(dev.value !== hv) {
+                        console.log('cool', dev.value, cv);
                         dev.setVal(hv);
+                    }
                 }(devices[ic]));
             }
         }
