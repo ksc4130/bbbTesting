@@ -174,7 +174,7 @@
                         if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
 	                        var samplesLimit = 10,
-		                        sampleRate = 100,
+		                        sampleRate = 50,
 		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
@@ -210,6 +210,7 @@
                             var valO = self.value;
                             self.value = val;
                                 if(self.actionType === 'thermo') {
+                                    console.log('force', self.forceTrigger);
                                     if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > self.threshold /*|| valO !== val*/) {
                                         console.log(self.forceTrigger, !self.lastTrigger, self.lastTrigger, val, Math.abs(self.lastTrigger - val), self.threshold);
                                         var cv,
