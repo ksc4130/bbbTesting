@@ -159,6 +159,7 @@ module.exports.init = function (args) {
             devices = found;
 
             init();
+            db.close();
         } else {
             for(var i = 0, il = args.devices.length; i < il; i++) {
                 curDev = args.devices[i];
