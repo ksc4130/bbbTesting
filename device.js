@@ -174,7 +174,7 @@
                         if(!anSubs[self.pin]) {
                             anSubs[self.pin] = [];
 	                        var samplesLimit = 10,
-		                        sampleRate = 25,
+		                        sampleRate = 100,
 		                        samples = [];
                             var checkAn = function () {
                                 fs.readFile(anPath + self.pin, function (err, val) {
