@@ -192,7 +192,7 @@
 	                                    for(var iSamples = 0, ilSamples = samples.length; iSamples < ilSamples; iSamples++) {
 		                                	average += parseFloat(samples[iSamples]);
 	                                    }
-
+                                        console.log(average, samples.length);
 	                                    val = (average/samples.length).toFixed(2);
 
 	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
@@ -226,7 +226,7 @@
                                         }
                                         self.isCool = (cv === 1);
                                         self.isHeat = (hv === 1);
-                                        self.lastTrigger = val;
+                                        self.lastTrigger = self.value;
                                         self.forceTrigger = false;
                                         emitter.emit('thermo', self, valO);
                                     } else if(valO !== val) {
