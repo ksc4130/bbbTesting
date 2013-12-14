@@ -116,6 +116,7 @@ var init = function () {
                     var found = cursor.object();
                     found.trigger = data.trigger;
                     db.save('devices', {_id: found._id, trigger: found.trigger}, function () {
+                        cursor.close();
                         db.close();
                     });
                 }
@@ -159,6 +160,7 @@ module.exports.init = function (args) {
             devices = found;
 
             init();
+            cursor.close();
             db.close();
         } else {
             for(var i = 0, il = args.devices.length; i < il; i++) {
@@ -172,6 +174,7 @@ module.exports.init = function (args) {
                 devices = found;
 
                 init();
+                cursor.close();
                 db.close()
             });
 
