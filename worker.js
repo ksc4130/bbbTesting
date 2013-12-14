@@ -104,6 +104,22 @@ var init = function () {
             device.trigger = data.trigger;
             device.forceTrigger = true;
             console.log(device.id, device.trigger);
+            if(!db.isOpen) {
+                db = ejdb.open('worker', ejdb.DEFAULT_OPEN_MODE);
+            }
+            db.find('devices', {id: device.id}, function (err, cursor, cnt) {
+                if(err) {
+                    console.log('updating trigger error', err);
+                    return;
+                }
+                if(cnt > 0) {
+                    var found = cursor.object();
+                    found.trigger = data.trigger;
+                    db.save('devices', {_id: found._id, trigger: found.trigger}, function () {
+                        db.close();
+                    });
+                }
+            })
         } else
             console.log("can't find device for id ", data.id);
     });
@@ -155,6 +171,7 @@ module.exports.init = function (args) {
                 devices = found;
 
                 init();
+                db.close()
             });
 
         }
