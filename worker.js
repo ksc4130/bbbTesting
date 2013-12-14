@@ -60,7 +60,7 @@ device.on('thermo', function (d, oldVal) {
             if(d.heat && devices[ic].pin === d.heat) {
                 (function (dev) {
                     if(dev.value !== hv) {
-                        console.log('cool', dev.value, cv);
+                        console.log('heat', dev.value, cv);
                         dev.setVal(hv);
                     }
                 }(devices[ic]));
