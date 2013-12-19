@@ -1,4 +1,5 @@
 var device = require('./device'),
+    ko = require('knockout'),
     io = require('socket.io-client'),
     Device = device.Device,
     id,
@@ -146,15 +147,14 @@ var init = function () {
 module.exports.init = function (args) {
     id = args.id;
     db.find('devices', {isVisible: true}, function (err, cursor, cnt) {
-        var found = [],
-            curDev;
+        var found = [];
 
         if(err)
             console.log('error pulling device from db', err);
         else if(cnt > 0) {
             while(cursor.next()) {
-                curDev = cursor.object();
-                found.push(new Device(curDev.pin, curDev));
+
+                found.push(new Device(cursor.object().pin, cursor.object()));
             }
             console.log('init found', found);
             devices = found;
@@ -163,12 +163,13 @@ module.exports.init = function (args) {
             cursor.close();
             db.close();
         } else {
-            for(var i = 0, il = args.devices.length; i < il; i++) {
+
+            found = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev = args.devices[i];
                 curDev.id = uuid.v4();
                 curDev.workerId = id;
                 found.push(new Device(curDev.pin, curDev));
-            }
+            });
             db.save('devices', found, function (err) {
                 console.log('init created', found);
                 devices = found;

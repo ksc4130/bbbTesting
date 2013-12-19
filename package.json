@@ -4,6 +4,7 @@
     "dependencies": {
         "epoll": "*",
         "ejdb": "*",
+        "knockout": "*",
         "socket.io-client": "*",
         "node-uuid": "*"
     }
