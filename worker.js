@@ -165,9 +165,10 @@ module.exports.init = function (args) {
         } else {
 
             found = ko.utils.arrayMap(args.devices, function (curDev){
+
                 curDev.id = uuid.v4();
                 curDev.workerId = id;
-                found.push(new Device(curDev.pin, curDev));
+                return new Device(curDev.pin, curDev);
             });
             db.save('devices', found, function (err) {
                 console.log('init created', found);
