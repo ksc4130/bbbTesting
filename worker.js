@@ -165,7 +165,6 @@ module.exports.init = function (args) {
         } else {
 
             found = ko.utils.arrayMap(args.devices, function (curDev){
-                curDev = args.devices[i];
                 curDev.id = uuid.v4();
                 curDev.workerId = id;
                 found.push(new Device(curDev.pin, curDev));
