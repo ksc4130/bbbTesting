@@ -147,14 +147,15 @@ var init = function () {
 module.exports.init = function (args) {
     id = args.id;
     db.find('devices', {isVisible: true}, function (err, cursor, cnt) {
-        var found = [];
+        var found = [],
+            curDev;
 
         if(err)
             console.log('error pulling device from db', err);
         else if(cnt > 0) {
             while(cursor.next()) {
-
-                found.push(new Device(cursor.object().pin, cursor.object()));
+                curDev = cursor.object();
+                found.push(new Device(curDev.pin, curDev));
             }
             console.log('init found', found);
             devices = found;
@@ -165,7 +166,6 @@ module.exports.init = function (args) {
         } else {
 
             found = ko.utils.arrayMap(args.devices, function (curDev){
-
                 curDev.id = uuid.v4();
                 curDev.workerId = id;
                 return new Device(curDev.pin, curDev);
