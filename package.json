@@ -3,7 +3,7 @@
     "description": "bbbTesting",
     "dependencies": {
         "epoll": "*",
-        "ejdb": "*",
+        "mongojs": "*",
         "knockout": "*",
         "socket.io-client": "*",
         "node-uuid": "*"

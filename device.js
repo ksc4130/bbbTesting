@@ -1,14 +1,14 @@
 (function () {
     'use strict';
 
-    var fs = require('fs'),
-        pinWork = require('./pinWork'),
-        EventEmitter = require('events').EventEmitter,
-        Epoll = require('epoll').Epoll,
-        emitter = new EventEmitter(),
-        gpioPath = '/sys/class/gpio/gpio',
-        anPath = '/sys/devices/ocp.2/helper.14/',
-        dontInitValActionTypes = [
+    var fs = require('fs')
+        , globals = require('globals')
+        , ko = require('knockout')
+        , pinWork = require('./pinWork')
+        , EventEmitter = require('events').EventEmitter
+        , Epoll = require('epoll').Epoll
+        , emitter = new EventEmitter()
+        , dontInitValActionTypes = [
             'switch',
             'sensor'
         ],
@@ -28,23 +28,9 @@
           'sensor': 'both',
           'thermo': 'both'
         },
-        bbbAnalogPins = [
-            'P9_33',
-            'P9_35',
-            'P9_36',
-            'P9_37',
-            'P9_38',
-            'P9_39',
-            'P9_40',
-            'AIN0',
-            'AIN1',
-            'AIN2',
-            'AIN3',
-            'AIN4',
-            'AIN5'
-        ],
-        idCnter = 0,
-        anSubs = {};
+        anSubs = {},
+        pinSubs = {},
+        digSubs = {};
 
     function Device (pin, args) {
         if(this === global) {
@@ -53,54 +39,68 @@
         var self = this;
 
         args = args || {};
-        //self._id = args._id || '';
-        self.id = args.id || 0;
-        self.oId = idCnter++;
+
+        self.deviceId = args.deviceId || 0;
+        self.workerId = args.workerId;
+        self.name = args.name || 'untitled';
         self.actionType = args.actionType;
         self.type = args.type;
-        self.workerId = args.workerId;
+        self.controls = args.controls;
+
+        //if it's an analog pin parse value as float else parse as int
+        self.value = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
+            return  item === self.pin;
+        }) ? parseFloat(args.value) : parseInt(args.value);
+
+        self.pin = pin || (args.pin || '');
+
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
             (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
-
         self.edge = edges[self.actionType];
-        self.pin = pin || (args.pin || '');
-        self.name = args.name || 'untitled';
 
-        if(args.value !== '0' && args.value !== '1') {
-            args.value = '0';
-        }
-
-        self.value = parseInt(args.value);
-
-        self.controls = args.controls;
-        self.isVisible = args.isVisible || false;
-        self.ready = args.ready;
-
-        self.isCool = args.isCool || false;
-        self.isHeat = args.isHeat || false;
-
-        self.highThreshold = args.highThreshold || false;
-        self.lowThreshold = args.lowThreshold || false;
-
-        self.cool = args.cool;
-        self.heat = args.heat;
-        self.trigger = args.trigger;
         self.lastTrigger = args.lastTrigger;
-        self.threshold = args.threshold;
-        self.tolerance = args.tolerance;
+        self.lastHighTrigger = args.lastTrigger;
+        self.lastLowTrigger = args.lastTrigger;
         self.forceTrigger = args.forceTrigger || false;
 
-        if(self.cool) {
-            pinWork.exportPin(self.cool, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
-        }
-        if(self.heat) {
-            pinWork.exportPin(self.heat, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
-        }
+        self.trigger = args.trigger;
+        //self.highTrigger = args.highTrigger || 1;
+        //self.lowTrigger = args.lowTrigger || 0;
+
+        self.thershold = args.thershold;
+        self.highThershold = args.highThershold || 1;
+        self.lowThershold = args.lowThershold || 0;
+
+        self.isLow = args.isLow || false;
+        self.isHigh = args.isHigh || false;
+
+        self.samplesLimit = args.samplesLimit || 10;
+        self.sampleRate = args.sampleRate || 50;
+        self.samples = args.samples || [];
+
+
+
+//        if(args.value !== '0' && args.value !== '1') {
+//            args.value = '0';
+//        }
+        //self.isVisible = args.isVisible || false;
+//        self.cool = args.cool;
+//        self.heat = args.heat;
+
+//        if(self.cool) {
+//            pinWork.exportPin(self.cool, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
+//        }
+//        if(self.heat) {
+//            pinWork.exportPin(self.heat, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
+//        }
 
         if(self.controls && self.controls.length > 0) {
-            for(var icc = 0, ilcc = self.controls.length; icc < ilcc; icc++) {
-                pinWork.exportPin(self.controls[icc], 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
-            }
+            var toExport = ko.utils.arrayFilter(self.controls, function (item) {
+                return item.workerId === self.workerId && !ko.utils.arrayFirst(globals.bbbAnalogPins, function (p) {return item.pin === p;});
+            });
+            ko.utils.arrayForEach(toExport, function(item) {
+                pinWork.exportPin(toExport.pin, 'out', 0, null, null);
+            });
         }
 
         if(!self.direction) {
@@ -109,42 +109,33 @@
         }
 
         self.setVal = function (val, fn) {
-            var self = this;
-            console.log('setting', self.pin, val);
-            fs.writeFile(gpioPath + self.pin +'/value', val, function (err) {
+            fn = typeof fn === 'function' ? fn : function () {};
+            pinWork.setVal(self.pin, val, function (err, val) {
                 if(err) {
-                    console.log('error setting value for pin', pin);
-                    if(typeof fn === 'function') {
-                        fn(err, null);
-                    }
+                    fn(err, null);
                     return;
                 }
                 var valO = self.value;
                 self.value = val;
-                emitter.emit('change', self, valO);
-                if(typeof fn === 'function') {
-                    fn(null, val);
-                }
+                if(valO !== val)
+                    emitter.emit('change', self, valO);
+                fn(null, val);
             });
         };
 
         self.getVal = function (fn) {
-            var self = this;
-            fs.readFile(gpioPath + self.pin +'/value', function (err, val) {
+            fn = typeof fn === 'function' ? fn : function () {};
+            pinWork.getVal(self.pin, function (err, val) {
                 if(err) {
-                    console.log('error setting value for pin', pin);
-                    if(typeof fn === 'function') {
-                        fn(err, null);
-                    }
+                    fn(err, null);
                     return;
                 }
                 var valO = self.value;
                 self.value = val;
-                if(valO != val)
+                if(valO !== val)
                     emitter.emit('change', self, valO);
-                if(typeof fn === 'function') {
-                    fn(null, val);
-                }
+
+                fn(null, val);
             });
         };
 
@@ -170,107 +161,220 @@
 
             if(self.direction === 'in') {
                 (function () {
-                    if(bbbAnalogPins.indexOf(self.pin) > -1) {
-                        if(!anSubs[self.pin]) {
-                            anSubs[self.pin] = [];
-	                        var samplesLimit = 10,
-		                        sampleRate = 50,
-		                        samples = [];
-                            var checkAn = function () {
-                                fs.readFile(anPath + self.pin, function (err, val) {
-	                                val = parseFloat(val ? val.toString() : '0');
-	                                if(self.type === 'temp') {
-		                                val = (val - 500) / 10;
-		                                val = ((val * 9/5) + 32).toFixed(2);
-	                                } else {
+                    if(!pinSubs[self.pin]) {
+                        pinSubs[self.pin] = [];
 
-	                                }
-
-	                                samples.push(val);
-                                    if(samples.length === samplesLimit) {
-	                                    var average = 0.0;
-	                                    for(var iSamples = 0, ilSamples = samples.length; iSamples < ilSamples; iSamples++) {
-		                                	average += parseFloat(samples[iSamples]);
-	                                    }
-                                        console.log(average, samples.length);
-	                                    val = (average/samples.length).toFixed(2);
-
-	                                    for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-		                                    anSubs[self.pin][i](val);
-	                                    }
-	                                    samples = [];
-                                    }
-                                    setTimeout(checkAn, sampleRate);
-                                });
-
-                            };
-                            checkAn();
-                        }
-                        anSubs[self.pin].push(function (val) {
-                            var valO = self.value;
-                            self.value = val;
-                                if(self.actionType === 'thermo') {
-                                    console.log('force', self.forceTrigger);
-                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > self.threshold /*|| valO !== val*/) {
-                                        console.log(self.forceTrigger, !self.lastTrigger, self.lastTrigger, val, Math.abs(self.lastTrigger - val), self.threshold);
-                                        var cv,
-                                            hv;
-                                        if(self.value >= self.trigger + self.threshold) {
-                                            cv = 1;
-                                        } else if(self.value <= self.trigger){
-                                            cv = 0;
-                                        }
-                                        if(self.value <= self.trigger - self.threshold) {
-                                            hv = 1;
-                                        } else if(self.value >= self.trigger){
-                                            hv = 0;
-                                        }
-                                        self.isCool = (cv === 1);
-                                        self.isHeat = (hv === 1);
-                                        self.lastTrigger = self.value;
-                                        self.forceTrigger = false;
-                                        emitter.emit('thermo', self, valO);
-                                    } else if(valO !== val) {
-                                        emitter.emit('change', self, valO);
-                                    }
-
-
-                                } else if(valO !== val) {
-                                    emitter.emit('change', self, valO);
+                        var checkVal = function () {
+                            pinWork.getVal(self.pin, function (err, val) {
+                                if(self.type === 'temp') {
+                                    val = (val - 500) / 10;
+                                    val = ((val * 9/5) + 32).toFixed(2);
                                 }
 
-                        });
-                    } else {
-                        var buffer = new Buffer(1),
-                            val,
-                            valuefd = fs.openSync(gpioPath + self.pin + '/value', 'r');
+                                self.samples.push(val);
+                                if(self.samples.length === self.samplesLimit) {
+                                    var average = 0.0;
+                                    for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
+                                        average += parseFloat(self.samples[iSamples]);
+                                    }
 
-                        var poller = new Epoll(function (err, fd, events) {
-                            var valO = self.value;
-                            fs.readSync(fd, buffer, 0, 1, 0);
-                            val = parseInt(buffer.toString('ascii'));
-                            var hasChanged = (self.value !== val);
-                            if(self.actionType === 'switch' && val < self.value) {
-                                //button was pressed do work
-                                emitter.emit('switched', self);
+                                    val = (average/self.samplesLimit).toFixed(2);
+
+                                    for(var i = 0, il = pinSubs[self.pin].length; i < il; i++) {
+                                        (function (sub, val) {
+                                            sub(val);
+                                        }(pinSubs[self.pin][i], val));
+                                    }
+                                    self.samples = [];
+                                }
+                                setTimeout(checkVal, self.sampleRate);
+                            });//end get val
+                        };
+                        checkVal();
+                    }
+                    pinSubs[self.pin].push(function (val) {
+                        var valO = self.value,
+                            isHighO = self.isHigh,
+                            isLowO = self.isLow;
+                        self.value = val;
+
+
+                        var lastTriggerDiff = Math.abs(self.lastTrigger - val);
+                        var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
+                        var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
+                        //set isHigh and isLow
+                        if(lastHighTriggerDiff >= self.highThershold) {
+                            self.isHigh = self.value >= (self.trigger + self.highThershold);
+                        }
+                        if(lastLowTriggerDiff >= self.lowThershold) {
+                            self.isLow = self.value <= (self.trigger - self.lowThershold);
+                        }
+
+
+                            //check controls and triggers
+                        if(self.controls.length) {
+
+                            //handle highs
+                            if(isHighO != self.isHigh) {
+                                self.lastHighTrigger = self.value;
+                                var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
+                                ko.utils.arrayForEach(highs, function (item) {
+                                    item.value = self.isHigh ? 1 : 0;
+                                    emitter.emit('changeControlled', item);
+                                });
                             }
 
-                            self.value = val;
-                            if(hasChanged) {
+                            //handle lows
+                            if(isLowO != self.isLow) {
+                                self.lastLowTrigger = self.value;
+                                var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                                ko.utils.arrayForEach(lows, function (item) {
+                                    item.value = self.isLow ? 1 : 0;
+                                    emitter.emit('changeControlled', item);
+                                });
+                            }
+
+                        }
+
+                        if(self.actionType === 'thermo') {
+
+                            if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
+                                self.lastTrigger = self.value;
+                                self.forceTrigger = false;
+                                emitter.emit('thermo', self, valO);
+                            } else if(valO !== val) {
                                 emitter.emit('change', self, valO);
                             }
-                        });
+                        } else if(valO !== val) {
+                            if(self.actionType === 'switch') {
+                                //button was pressed do work
+                                //emitter.emit('switched', self);
+                                if(self.value < valO) {
+                                    var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                                    ko.utils.arrayForEach(lowSwitched, function (item) {
+                                        emitter.emit('toggleControlled', item);
+                                    });
+                                } if(self.value > valO) {
+                                    var highSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger;});
+                                    ko.utils.arrayForEach(highSwitched, function (item) {
+                                        emitter.emit('toggleControlled', item);
+                                    });
+                                }
 
-                        fs.readSync(valuefd, buffer, 0, 1, 0);
+                            }
 
-                        poller.add(valuefd, Epoll.EPOLLPRI);
-                    }
+                            emitter.emit('change', self, valO);
+                        }
+
+                    });//end anSub push
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+//                    if(globals.bbbAnalogPins.indexOf(self.pin) > -1) {
+//                        if(!anSubs[self.pin]) {
+//                            anSubs[self.pin] = [];
+//
+//                            var checkAn = function () {
+//                                pinWork.getVal(self.pin, function (err, val) {
+//                                    val = parseFloat(val ? val.toString() : '0');
+//                                    if(self.type === 'temp') {
+//                                        val = (val - 500) / 10;
+//                                        val = ((val * 9/5) + 32).toFixed(2);
+//                                    } else {
+//
+//                                    }
+//
+//                                    self.samples.push(val);
+//                                    if(self.samples.length === self.samplesLimit) {
+//                                        var average = 0.0;
+//                                        for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
+//                                            average += parseFloat(self.samples[iSamples]);
+//                                        }
+//
+//                                        val = (average/self.samplesLimit).toFixed(2);
+//
+//                                        for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
+//                                            (function (sub, val) {
+//                                                sub(val);
+//                                            }(anSubs[self.pin][i], val));
+//                                        }
+//                                        self.samples = [];
+//                                    }
+//                                    setTimeout(checkAn, self.sampleRate);
+//                                });//end get val
+//                            };
+//                            checkAn();
+//                        }
+//                        anSubs[self.pin].push(function (val) {
+//                            var valO = self.value;
+//                            self.value = val;
+//
+//                                if(self.actionType === 'thermo') {
+//
+//                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > self.threshold) {
+//
+//                                        var cv,
+//                                            hv;
+//                                        if(self.value >= self.trigger + self.threshold) {
+//                                            cv = 1;
+//                                        } else if(self.value <= self.trigger){
+//                                            cv = 0;
+//                                        }
+//                                        if(self.value <= self.trigger - self.threshold) {
+//                                            hv = 1;
+//                                        } else if(self.value >= self.trigger){
+//                                            hv = 0;
+//                                        }
+//                                        self.isCool = (cv === 1);
+//                                        self.isHeat = (hv === 1);
+//                                        self.lastTrigger = self.value;
+//                                        self.forceTrigger = false;
+//                                        emitter.emit('thermo', self, valO);
+//                                    } else if(valO !== val) {
+//                                        emitter.emit('change', self, valO);
+//                                    }
+//
+//
+//                                } else if(valO !== val) {
+//                                    emitter.emit('change', self, valO);
+//                                }
+//
+//                        });//end anSub push
+                    //} else {
+//                        var buffer = new Buffer(1),
+//                            val,
+//                            valuefd = fs.openSync(globals.gpioPath + self.pin + '/value', 'r');
+//
+//                        var poller = new Epoll(function (err, fd, events) {
+//                            var valO = self.value;
+//                            fs.readSync(fd, buffer, 0, 1, 0);
+//                            val = parseInt(buffer.toString('ascii'));
+//                            var hasChanged = (self.value !== val);
+//                            if(self.actionType === 'switch' && val < self.value) {
+//                                //button was pressed do work
+//                                emitter.emit('switched', self);
+//                            }
+//
+//                            self.value = val;
+//                            if(hasChanged) {
+//                                emitter.emit('change', self, valO);
+//                            }
+//                        });
+//
+//                        fs.readSync(valuefd, buffer, 0, 1, 0);
+//
+//                        poller.add(valuefd, Epoll.EPOLLPRI);
+                    //}
                 }());
             }
         };
 
-        if(bbbAnalogPins.indexOf(pin) > -1) {
-            var exists = fs.existsSync(anPath + 'AIN1');
+        if(globals.bbbAnalogPins.indexOf(pin) > -1) {
+            var exists = fs.existsSync(globals.analogPath + 'AIN1');
             if(!exists) {
                 fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
             }

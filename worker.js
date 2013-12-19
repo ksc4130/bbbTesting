@@ -1,15 +1,14 @@
-var device = require('./device'),
-    ko = require('knockout'),
-    io = require('socket.io-client'),
-    Device = device.Device,
-    id,
-    devices = [],
+var device = require('./device')
+    , ko = require('knockout')
+    , globals = require('./globals')
+    , uuid = require('node-uuid')
+    , pinWork = require('./pinWork')
+    , db = require("mongojs").connect(globals.dbName, globals.collections)
+    , io = require('socket.io-client')
+    , Device = device.Device
+    , workerId
+    , devices = []
     transmit = false;
-
-var ejdb = require('ejdb'),
-    uuid = require('node-uuid');
-
-var db = ejdb.open('worker', ejdb.DEFAULT_OPEN_MODE);
 
 var serverUrl = 'http://kyngster.com:4131';
 var conn = io.connect(serverUrl);
@@ -20,21 +19,13 @@ function Transmit(event, data) {
         conn.emit(event, data);
 }
 
-
 device.on('switched', function (d) {
-    var i,
-        il;
-    for(i = 0, il = d.controls.length; i < il; i++) {
-        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-            if(devices[ic].pin === d.controls[i] && typeof devices[ic].toggle === 'function') {
-                (function (dev) {
-                    dev.toggle(null, function (err, d) {
-                        Transmit('change', {id: dev.id, value: d});
-                    });
-                }(devices[ic]));
-            }
-        }
-    }
+    var dev = ko.utils.arrayFirst(devices, function(item) {
+        return item.id === d.id;
+    });
+    dev.toggle(null, function (err, d) {
+        Transmit('change', {id: dev.id, value: d});
+    });
 });
 
 device.on('change', function (d, oldVal) {
@@ -43,37 +34,71 @@ device.on('change', function (d, oldVal) {
     }
 });
 
+device.on('changeControlled', function (d, oldVal) {
+    if(d.workerId !== workerId) {
+        conn.emit('changeControlled', d);
+    } else {
+        var dev = ko.utils.arrayFirst(devices, function (item) {
+           return item.id === d.id;
+        });
+        pinWork.setVal(d.pin, d.value, function (err, val) {
+            if(!err) {
+                if(dev && dev.isVisible) {
+                    Transmit('change', {id: d.id, value: d.value});
+                }
+            }
+        });
+    }
+});
+
+device.on('toggleControlled', function (d, oldVal) {
+    if(d.workerId !== workerId) {
+        conn.emit('toggleControlled', d);
+    } else {
+        var dev = ko.utils.arrayFirst(devices, function (item) {
+           return item.id === d.id;
+        });
+        pinWork.setVal(d.pin, d.value, function (err, val) {
+            if(!err) {
+                if(dev && dev.isVisible) {
+                    Transmit('change', {id: d.id, value: d.value});
+                }
+            }
+        });
+    }
+});
+
 device.on('thermo', function (d, oldVal) {
     if(d.cool || d.heat) {
         var cv = d.isCool ? 1 : 0,
             hv = d.isHeat ? 1 : 0;
-        Transmit('thermo', {id: d.id, isCool: d.isCool, isHeat: d.isHeat, value: d.value, trigger: d.trigger});
+        Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger});
 
-        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-            if(d.cool && devices[ic].pin === d.cool) {
-                (function (dev) {
-                    if(dev.value !== cv) {
-                        dev.setVal(cv);
-                        console.log('cool', dev.value, cv);
-                    }
-                }(devices[ic]));
-            }
-            if(d.heat && devices[ic].pin === d.heat) {
-                (function (dev) {
-                    if(dev.value !== hv) {
-                        console.log('heat', dev.value, cv);
-                        dev.setVal(hv);
-                    }
-                }(devices[ic]));
-            }
-        }
+//        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
+//            if(d.cool && devices[ic].pin === d.cool) {
+//                (function (dev) {
+//                    if(dev.value !== cv) {
+//                        dev.setVal(cv);
+//                        console.log('cool', dev.value, cv);
+//                    }
+//                }(devices[ic]));
+//            }
+//            if(d.heat && devices[ic].pin === d.heat) {
+//                (function (dev) {
+//                    if(dev.value !== hv) {
+//                        console.log('heat', dev.value, cv);
+//                        dev.setVal(hv);
+//                    }
+//                }(devices[ic]));
+//            }
+//        }
     }
 });
 
 var init = function () {
 
     conn.on('initWorker', function () {
-        conn.emit('initWorker', {secret: secret, workerId: id,  devices: devices});
+        conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
     });
 
     conn.on('transmit', function (data) {
@@ -141,42 +166,52 @@ var init = function () {
             console.log("can't find device for id ", data.id);
 
     });
+
+    conn.on('toggleControlled', function (data) {
+        var dev = ko.utils.arrayFirst(devices, function(item) {
+            return item.id === d.id;
+        });
+        dev.toggle(null, function (err, d) {
+            Transmit('change', {id: dev.id, value: d});
+        });
+    });
 }
 
 
 module.exports.init = function (args) {
-    id = args.id;
-    db.find('devices', {isVisible: true}, function (err, cursor, cnt) {
-        var found = [],
+    workerId = args.workerId;
+
+    //isVisible: true
+    db.devices.find({}, function (err, found) {
+        var mapped = [],
             curDev;
 
         if(err)
             console.log('error pulling device from db', err);
-        else if(cnt > 0) {
-            while(cursor.next()) {
-                curDev = cursor.object();
-                found.push(new Device(curDev.pin, curDev));
-            }
+
+        if(!err && found.length > 0) {
+
             console.log('init found', found);
+            mapped = ko.utils.arrayMap(found, function (curDev){
+                curDev.id = uuid.v4();
+                curDev.workerId = workerId;
+                return new Device(curDev.pin, curDev);
+            });
             devices = found;
 
             init();
-            cursor.close();
-            db.close();
         } else {
 
-            found = ko.utils.arrayMap(args.devices, function (curDev){
+            mapped = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev.id = uuid.v4();
-                curDev.workerId = id;
+                curDev.workerId = workerId;
                 return new Device(curDev.pin, curDev);
             });
-            db.save('devices', found, function (err) {
+            db.devices.save(found, function (err) {
                 console.log('init created', found);
-                devices = found;
+                devices = mapped;
 
                 init();
-                cursor.close();
-                db.close()
             });
 
         }

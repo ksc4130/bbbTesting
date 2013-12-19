@@ -130,7 +130,7 @@ var worker = require('./worker'),
     ];
 
 worker.init({
-    id: '315e5058-1e20-4cd4-9a25-16e64eb1188a',
+    workerId: '315e5058-1e20-4cd4-9a25-16e64eb1188a',
     devices: devices
 });
 
