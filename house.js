@@ -116,10 +116,6 @@ var worker = require('./worker'),
                 {
                     type: 'low',
                     pin: '61'
-                },
-                {
-                    type: 'low',
-                    pin: '67'
                 }
             ],
             cool: '65',
