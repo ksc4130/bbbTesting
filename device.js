@@ -40,6 +40,7 @@
         args = args || {};
 
         if(!pin || !args.pin || args.pin.trim() === '') {
+            console.log('rejected');
             self.id = null;
             return self;
         }
