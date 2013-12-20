@@ -88,6 +88,16 @@
         self.sampleRate = args.sampleRate || 50;
         self.samples = args.samples || [];
 
+        if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
+            return item === pin;
+        })) {
+            self.isAnalog = true;
+            self.path = globals.analogPath + pin;
+        } else {
+            self.isAnalog = false;
+            self.path = globals.gpioPath + pin +'/value';
+        }
+
 
         if(self.actionType === 'momentary') {
             self.toggle = function () {
@@ -154,7 +164,10 @@
                 self.ready(self);
             }
 
-
+            console.log('starting watch', self.pin);
+            fs.watchFile(self.path + self.pin, function () {
+                console.log('file change', self.pin);
+            });
 
             if(self.direction === 'in') {
                 (function () {
@@ -280,14 +293,13 @@
                 fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
             }
             self.init(null);
-            console.log('starting watch', self.pin);
-            fs.watchFile(globals.analogPath + self.pin, function () {
-                console.log('file change', self.pin);
-            });
+
         } else {
-            console.log('export', self.name, self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
+            console.log('export', self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
             pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         }
+
+
 
         return self;
     }
