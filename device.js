@@ -197,7 +197,7 @@
                             //check controls and triggers
                             if(self.controls.length) {
                                 //handle highs
-                                if(isHighO != self.isHigh) {
+                                if(self.forceTrigger || isHighO != self.isHigh) {
                                     self.lastHighTrigger = self.value;
                                     var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
                                     ko.utils.arrayForEach(highs, function (item) {
@@ -208,7 +208,7 @@
                                 }
 
                                 //handle lows
-                                if(isLowO != self.isLow) {
+                                if(self.forceTrigger || isLowO != self.isLow) {
                                     self.lastLowTrigger = self.value;
                                     var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
                                     console.log('lows', self.pin, lows);
