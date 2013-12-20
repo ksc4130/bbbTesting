@@ -29,7 +29,7 @@
         pinSubs = {},
         digSubs = {};
 
-    function Device (pin, args) {
+    function Device (args) {
         if(this === global) {
             return new Device(pin, args);
         }
@@ -37,7 +37,7 @@
 
         args = args || {};
 
-        if(!pin || !args.pin || args.pin.trim() === '') {
+        if(!args.pin || args.pin.trim() === '') {
             console.log('rejected');
             self.id = null;
             return self;
@@ -46,7 +46,7 @@
         self.deviceId = args.deviceId || 0;
         self.id = args.id || 0;
         self.workerId = args.workerId;
-        self.pin = pin || (args.pin || '');
+        self.pin = args.pin || '';
         self.name = args.name || 'untitled';
         self.actionType = args.actionType;
         self.type = args.type;
@@ -91,7 +91,7 @@
             self.path = globals.analogPath + pin;
         } else {
             self.isAnalog = false;
-            self.path = globals.gpioPath + pin +'/value';
+            self.path = globals.gpioPath + self.pin +'/value';
         }
 
 

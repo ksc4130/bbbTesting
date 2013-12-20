@@ -2,7 +2,6 @@ var device = require('./device')
     , fs = require('fs')
     , ko = require('knockout')
     , globals = require('./globals')
-    , uuid = require('node-uuid')
     , pinWork = require('./pinWork')
     , watch = require('watch')
     , db = require("mongojs").connect(globals.dbName, globals.collections)
@@ -98,12 +97,6 @@ var init = function () {
         db.devices.update({id: item.id}, {$set: {controls: item.controls}});
     });
 
-//    mapped = ko.utils.arrayMap(devices, function (curDev){
-//        curDev.id = uuid.v4();
-//        curDev.workerId = workerId;
-//        return new Device(curDev.pin, curDev);
-//    });
-
     conn.on('initWorker', function () {
         console.log('init worker');
         conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
@@ -176,20 +169,15 @@ module.exports.init = function (args) {
 
     //isVisible: true
     db.devices.find({}, function (err, found) {
-        var mapped = [],
-            guids = [];
+        var mapped = [];
 
         if(err)
             console.log('error pulling device from db', err);
 
         if(!err && found.length > 0) {
-            console.log('using saved devices');
 
             mapped = ko.utils.arrayMap(found, function (curDev){
-                //curDev.id = uuid.v4();
-                //curDev.workerId = workerId;
-                guids.push(curDev.id);
-                return new Device(curDev.pin, curDev);
+                return new Device(curDev);
             });
 
             console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
@@ -205,7 +193,7 @@ module.exports.init = function (args) {
                 curDev.workerId = workerId;
                 db.devices.save(curDev);
 
-                return new Device(curDev.pin, curDev);
+                return new Device(curDev);
             });
 
             console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
