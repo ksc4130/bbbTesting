@@ -204,20 +204,20 @@
 
                         self.forceTrigger =!self.lastTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
                         var lastTriggerDiff = Math.abs(self.lastTrigger - val);
-                        var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
-                        var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
+                        //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
+                        //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
                         //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
                         //set isHigh and isLow
                         if(self.forceTrigger || lastTriggerDiff >= self.highThershold) {
                             self.isHigh = self.value >= (self.trigger + self.highThershold);
-                            console.log('set ih high', self.isHigh);
+                            //console.log('set ih high', self.isHigh);
                         }
                         if(self.forceTrigger || lastTriggerDiff >= self.lowThershold) {
                             self.isLow = self.value <= (self.trigger - self.lowThershold);
-                            console.log('set ih low', self.isLow);
+                            //console.log('set ih low', self.isLow);
                         }
 
-                        console.log(self.forceTrigger, self.trigger, self.lowThershold, lastTriggerDiff, self.pin);
+                        //console.log(self.forceTrigger, self.trigger, self.lowThershold, lastTriggerDiff, self.pin);
 
 
                             //check controls and triggers
@@ -240,6 +240,7 @@
                                 ko.utils.arrayForEach(lows, function (item) {
                                     item.value = self.isLow ? 1 : 0;
                                     emitter.emit('changeControlled', item);
+                                    console.log('changing controlled', item);
                                 });
                             }
 
