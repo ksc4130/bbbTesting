@@ -180,7 +180,6 @@ module.exports.init = function (args) {
                 return new Device(curDev);
             });
 
-            console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
             devices = mapped;
             //console.log('init found', mapped);
             init();
@@ -189,14 +188,11 @@ module.exports.init = function (args) {
 
             mapped = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev.id = globals.guid();
-                guids.push(curDev.id);
                 curDev.workerId = workerId;
                 db.devices.save(curDev);
-
                 return new Device(curDev);
             });
 
-            console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
             //db.devices.save(found, function (err) {
                 //console.log('init created', found);
                 devices = ko.utils.arrayFilter(mapped, function (item) {
