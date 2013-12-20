@@ -171,7 +171,7 @@
                                     val = (val - 500) / 10;
                                     val = ((val * 9/5) + 32).toFixed(2);
                                 }
-
+                                console.log('sample', self.name, val);
                                 self.samples.push(val);
                                 if(self.samples.length === self.samplesLimit) {
                                     var average = 0.0;
