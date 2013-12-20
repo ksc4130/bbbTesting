@@ -79,23 +79,6 @@ device.on('thermo', function (d, oldVal) {
 });
 
 var init = function () {
-    var hasControls = ko.utils.arrayFilter(devices, function (item) {
-        return item.controls && item.controls.length > 0;
-    });
-
-    ko.utils.arrayForEach(hasControls, function(item) {
-        item.controls = ko.utils.arrayMap(item.controls, function (con) {
-            var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
-            return {
-                workerId: workerId,
-                id: first.id,
-                pin: con.pin,
-                type: con.type,
-                name: first.name
-            };
-        });
-        db.devices.update({id: item.id}, {$set: {controls: item.controls}});
-    });
 
     conn.on('initWorker', function () {
         console.log('init worker');
@@ -109,13 +92,27 @@ var init = function () {
 
     conn.on('devices', function (data) {
         console.log('device for io server');
-//        for(var i = 0, il = data.length; i < il; i++) {
-//            for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-//                if(devices[ic].oId === data[i].oId) {
-//                    devices[ic].id = data[i].id;
-//                }
-//            }
-//        }
+        devices = ko.utils.arrayMap(data, function (dev){
+            return new Device(dev);
+        });
+
+        var hasControls = ko.utils.arrayFilter(devices, function (item) {
+            return item.controls && item.controls.length > 0;
+        });
+
+        ko.utils.arrayForEach(hasControls, function(item) {
+            item.controls = ko.utils.arrayMap(item.controls, function (con) {
+                var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
+                return {
+                    workerId: workerId,
+                    id: first.id,
+                    pin: con.pin,
+                    type: con.type,
+                    name: first.name
+                };
+            });
+            db.devices.update({id: item.id}, {$set: {controls: item.controls}});
+        });
     });
 
     conn.on('setTrigger', function(data) {
@@ -166,43 +163,43 @@ var init = function () {
 
 module.exports.init = function (args) {
     workerId = args.workerId;
-
+    init();
     //isVisible: true
-    db.devices.find({}, function (err, found) {
-        var mapped = [];
-
-        if(err)
-            console.log('error pulling device from db', err);
-
-        if(!err && found.length > 0) {
-
-            mapped = ko.utils.arrayMap(found, function (curDev){
-                return new Device(curDev);
-            });
-
-            devices = mapped;
-            //console.log('init found', mapped);
-            init();
-        } else {
-            console.log('using args.devices');
-
-            mapped = ko.utils.arrayMap(args.devices, function (curDev){
-                curDev.id = globals.guid();
-                curDev.workerId = workerId;
-                db.devices.save(curDev);
-                return new Device(curDev);
-            });
-
-            //db.devices.save(found, function (err) {
-                //console.log('init created', found);
-                devices = ko.utils.arrayFilter(mapped, function (item) {
-                    return item.id;
-                });
-
-                init();
-            //});
-
-        }
-
-    });
+//    db.devices.find({}, function (err, found) {
+//        var mapped = [];
+//
+//        if(err)
+//            console.log('error pulling device from db', err);
+//
+//        if(!err && found.length > 0) {
+//
+//            mapped = ko.utils.arrayMap(found, function (curDev){
+//                return new Device(curDev);
+//            });
+//
+//            devices = mapped;
+//            //console.log('init found', mapped);
+//            init();
+//        } else {
+//            console.log('using args.devices');
+//
+//            mapped = ko.utils.arrayMap(args.devices, function (curDev){
+//                curDev.id = globals.guid();
+//                curDev.workerId = workerId;
+//                db.devices.save(curDev);
+//                return new Device(curDev);
+//            });
+//
+//            //db.devices.save(found, function (err) {
+//                //console.log('init created', found);
+//                devices = ko.utils.arrayFilter(mapped, function (item) {
+//                    return item.id;
+//                });
+//
+//                init();
+//            //});
+//
+//        }
+//
+//    });
 };
