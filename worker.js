@@ -102,7 +102,7 @@ var init = function () {
     });
 
     ko.utils.arrayForEach(hasControls, function(item) {
-        item.controls = ko.utils.map(item.controls, function (con) {
+        item.controls = ko.utils.arrayMap(item.controls, function (con) {
             var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
             return {
                 workerId: workerId,
