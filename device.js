@@ -88,7 +88,7 @@
             return item === self.pin;
         })) {
             self.isAnalog = true;
-            self.path = globals.analogPath + pin;
+            self.path = globals.analogPath + self.pin;
         } else {
             self.isAnalog = false;
             self.path = globals.gpioPath + self.pin +'/value';
