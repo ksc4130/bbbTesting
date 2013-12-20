@@ -216,7 +216,7 @@ module.exports.init = function (args) {
                 //curDev.workerId = workerId;
                 return new Device(curDev.pin, curDev);
             });
-            devices = found;
+            devices = mapped;
 
             init();
         } else {
