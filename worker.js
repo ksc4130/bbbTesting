@@ -1,8 +1,10 @@
 var device = require('./device')
+    , fs = require('fs')
     , ko = require('knockout')
     , globals = require('./globals')
     , uuid = require('node-uuid')
     , pinWork = require('./pinWork')
+    , watch = require('watch')
     , db = require("mongojs").connect(globals.dbName, globals.collections)
     , io = require('socket.io-client')
     , Device = device.Device
@@ -193,6 +195,23 @@ var init = function () {
 
 
 module.exports.init = function (args) {
+
+    watch.watchTree(globals.gpioPath, function (f, curr, prev) {
+        if (typeof f == "object" && prev === null && curr === null) {
+            // Finished walking the tree
+            console.log('watching');
+        } else if (prev === null) {
+            // f is a new file
+            console.log('created', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
+        } else if (curr.nlink === 0) {
+            // f was removed
+            console.log('removed', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
+        } else {
+            // f was changed
+            console.log('changed', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
+        }
+    });
+
     workerId = args.workerId;
 
     //isVisible: true

@@ -5,6 +5,7 @@
         "mongojs": "*",
         "knockout": "*",
         "socket.io-client": "*",
-        "node-uuid": "*"
+        "node-uuid": "*",
+        "watch": "*"
     }
 }

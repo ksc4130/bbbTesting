@@ -21,5 +21,17 @@ module.exports = (new function () {
         'AIN4',
         'AIN5'
     ]
+    self.pins = [
+      {
+        isBbb: true,
+        isRpi: false,
+        isAnalog: false,
+        direction: null,
+        edge: null,
+        value: null,
+        rail: 'P8_11',
+        gpio: 30
+      }
+    ];
     return self;
 });
