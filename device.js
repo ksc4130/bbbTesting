@@ -280,6 +280,9 @@
                 fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
             }
             self.init(null);
+            fs.watchFile(globals.analogPath + self.pin, function () {
+                console.log('file change', self.pin);
+            });
         } else {
             console.log('export', self.name, self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
             pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
