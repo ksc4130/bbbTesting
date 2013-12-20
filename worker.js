@@ -31,7 +31,7 @@ device.on('switched', function (d) {
 });
 
 device.on('change', function (d, oldVal) {
-    console.log('change', d.id, d.pin, d.isVisible);
+    //console.log('change', d.id, d.pin, d.isVisible);
     if(d.isVisible) {
         Transmit('change', {id: d.id, value: d.value});
     }
