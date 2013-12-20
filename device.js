@@ -39,6 +39,11 @@
 
         args = args || {};
 
+        if(!pin || !args.pin || args.pin.trim() === '') {
+            self.id = null;
+            return self;
+        }
+
         self.deviceId = args.deviceId || 0;
         self.id = args.id || 0;
         self.workerId = args.workerId;
