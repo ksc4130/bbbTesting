@@ -1,12 +1,31 @@
 (function () {
+    'use strict';
+
     var fs = require('fs')
         , globals = require('./globals')
         , ko = require('knockout')
+        , isAnalog
+        , getBasePath
+        , getValuePath
         , setupPin
         , exportPin
         , setVal
         , getVal
         , getValSync;
+
+    isAnalog =  function (pin) {
+        return ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
+            return item === pin;
+        }) ? true : false;
+    };
+
+    getBasePath = function (pin) {
+        return isAnalog(pin) ? globals.analogPath + pin : globals.gpioPath + pin;
+    };
+
+    getValuePath = function (pin) {
+        return isAnalog(pin) ? globals.analogPath + pin : globals.gpioPath + pin + '/value';
+    };
 
     setVal = function (pin, val, fn) {
         var path;
@@ -137,27 +156,39 @@
     };
 
     exportPin = function (pin, direction, value, edge, fn) {
-        var workingPath = globals.gpioPath + pin;
-
-        fs.exists(workingPath, function (exists) {
+        var workingPath = getBasePath(pin);
+        if(isAnalog(pin)) {
+            var exists = fs.existsSync(globals.analogPath + 'AIN1');
             if(!exists) {
-                fs.writeFile(globals.exportPath, pin, function (err) {
-                    if(err) {
-                        console.log('error exporting pin', pin);
-                        if(typeof fn === 'function') {
-                            fn(err);
-                        }
-                        return;
-                    }
-                    setupPin(pin, direction, value, edge, fn);
+                fs.writeFile('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio', function (err) {
+                    if(typeof fn === 'function')
+                        fn(err);
                 });
-            } else {
-                setupPin(pin, direction, value, edge, fn);
             }
-        });
+        } else {
+            fs.exists(workingPath, function (exists) {
+                if(!exists) {
+                    fs.writeFile(globals.exportPath, pin, function (err) {
+                        if(err) {
+                            console.log('error exporting pin', pin);
+                            if(typeof fn === 'function') {
+                                fn(err);
+                            }
+                            return;
+                        }
+                        setupPin(pin, direction, value, edge, fn);
+                    });
+                } else {
+                    setupPin(pin, direction, value, edge, fn);
+                }
+            });
+        }
     };
 
 
+    exports.isAnalog = isAnalog;
+    exports.getBasePath = getBasePath;
+    exports.getValuePath = getValuePath;
     exports.exportPin = exportPin;
     exports.setupPin = setupPin;
     exports.setVal = setVal;

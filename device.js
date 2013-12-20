@@ -160,14 +160,12 @@
         };
 
         self.init = function (err) {
+            if(err)
+                return;
+
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
-
-            console.log('starting watch', self.pin, self.path);
-            fs.watchFile(self.path + self.pin, function () {
-                console.log('file change', self.pin, pinWork.getValSync(self.pin, true), pinWork.getValSync(self.pin));
-            });
 
             if(self.direction === 'in') {
                 (function () {
@@ -287,17 +285,10 @@
             }
         };
 
-        if(globals.bbbAnalogPins.indexOf(pin) > -1) {
-            var exists = fs.existsSync(globals.analogPath + 'AIN1');
-            if(!exists) {
-                fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
-            }
-            self.init(null);
 
-        } else {
-            console.log('export', self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
-            pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
-        }
+        console.log('export', self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
+        pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
+
 
 
 
