@@ -15,9 +15,7 @@ var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 
 function Transmit(event, data) {
-    console.log('emit********A', event, data);
     if(transmit) {
-        console.log('emit********B', event, data);
         conn.emit(event, data);
     }
 
@@ -40,6 +38,7 @@ device.on('change', function (d, oldVal) {
 });
 
 device.on('changeControlled', function (d, oldVal) {
+    console.log('change controlled', d);
     if(d.workerId !== workerId) {
         conn.emit('changeControlled', d);
     } else {
