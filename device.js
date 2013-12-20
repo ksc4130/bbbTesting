@@ -280,7 +280,7 @@
                         }
 
                     });//end anSub push
-
+                    console.log('pin subs', pinSubs);
                 }());
             }
         };
