@@ -6,7 +6,6 @@
         , ko = require('knockout')
         , pinWork = require('./pinWork')
         , EventEmitter = require('events').EventEmitter
-        , Epoll = require('epoll').Epoll
         , emitter = new EventEmitter()
         , dontInitValActionTypes = [
             'switch',
