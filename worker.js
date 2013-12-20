@@ -118,11 +118,11 @@ var init = function () {
         db.devices.update({id: item.id}, {$set: {controls: item.controls}});
     });
 
-    mapped = ko.utils.arrayMap(devices, function (curDev){
-        curDev.id = uuid.v4();
-        curDev.workerId = workerId;
-        return new Device(curDev.pin, curDev);
-    });
+//    mapped = ko.utils.arrayMap(devices, function (curDev){
+//        curDev.id = uuid.v4();
+//        curDev.workerId = workerId;
+//        return new Device(curDev.pin, curDev);
+//    });
 
     conn.on('initWorker', function () {
         conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
