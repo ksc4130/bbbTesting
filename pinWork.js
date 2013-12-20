@@ -19,7 +19,7 @@
             path = globals.gpioPath + pin +'/value';
         }
         val = val ? val.toString() : '0';
-        val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return self.pin === item; })
+        val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
             ? parseFloat(val) : parseInt(val)
         fs.writeFile(path, val, function (err) {
             if(err) {
@@ -49,7 +49,7 @@
 
         fs.readFile(path, function (err, val) {
             val = val ? val.toString() : '0';
-            val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return self.pin === item; })
+            val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
                 ? parseFloat(val) : parseInt(val)
             if(err) {
                 console.log('error setting value for pin', pin);
