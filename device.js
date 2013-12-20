@@ -48,6 +48,7 @@
         self.deviceId = args.deviceId || 0;
         self.id = args.id || 0;
         self.workerId = args.workerId;
+        self.pin = pin || (args.pin || '');
         self.name = args.name || 'untitled';
         self.actionType = args.actionType;
         self.type = args.type;
@@ -61,8 +62,6 @@
         }) ? parseFloat(args.value) : parseInt(args.value);
 
         self.value = isNaN(self.value) ? pinWork.getValSync(self.pin, true) : self.value;
-
-        self.pin = pin || (args.pin || '');
 
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
             (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
@@ -169,8 +168,7 @@
 
             if(self.direction === 'in') {
                 (function () {
-                    var checkState = function (val, valO, isHighO, isLowO, fn
-                        ) {
+                    var checkState = function (val, valO, isHighO, isLowO, fn) {
                             valO = valO || self.value;
                             isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
                             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
