@@ -35,6 +35,10 @@
     };
 
     getValSync = function (pin, cleanUp) {
+        if(!pin || pin.trim() === '') {
+            console.log('getValSync bad pin', pin);
+            return null;
+        }
         var path;
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === pin;
