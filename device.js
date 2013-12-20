@@ -210,7 +210,7 @@
                             if(self.forceTrigger || isLowO != self.isLow) {
                                 self.lastLowTrigger = self.value;
                                 var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
-                                console.log('lows', self.pin, lows);
+                                //console.log('lows', self.pin, lows);
                                 ko.utils.arrayForEach(lows, function (item) {
                                     item.value = self.isLow ? 1 : 0;
                                     emitter.emit('changeControlled', item);
