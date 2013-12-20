@@ -78,41 +78,27 @@ device.on('thermo', function (d, oldVal) {
         Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, highThreshold: d.highThreshold, lowThreshold: d.lowThreshold, threshold: d.threshold, value: d.value, trigger: d.trigger});
 });
 
+conn.on('initWorker', function () {
+    console.log('init worker');
+    conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
+});
+
+conn.on('devices', function (data) {
+    console.log('device for io server');
+    devices = ko.utils.arrayMap(data, function (dev){
+        return new Device(dev);
+    });
+
+    init();
+});
+
 var init = function () {
 
-    conn.on('initWorker', function () {
-        console.log('init worker');
-        conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
-    });
+
 
     conn.on('transmit', function (data) {
         console.log('transmit'. data);
         transmit = data;
-    });
-
-    conn.on('devices', function (data) {
-        console.log('device for io server');
-        devices = ko.utils.arrayMap(data, function (dev){
-            return new Device(dev);
-        });
-
-        var hasControls = ko.utils.arrayFilter(devices, function (item) {
-            return item.controls && item.controls.length > 0;
-        });
-
-        ko.utils.arrayForEach(hasControls, function(item) {
-            item.controls = ko.utils.arrayMap(item.controls, function (con) {
-                var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
-                return {
-                    workerId: workerId,
-                    id: first.id,
-                    pin: con.pin,
-                    type: con.type,
-                    name: first.name
-                };
-            });
-            db.devices.update({id: item.id}, {$set: {controls: item.controls}});
-        });
     });
 
     conn.on('setTrigger', function(data) {
@@ -163,7 +149,8 @@ var init = function () {
 
 module.exports.init = function (args) {
     workerId = args.workerId;
-    init();
+    devices = args.devices;
+    //init();
     //isVisible: true
 //    db.devices.find({}, function (err, found) {
 //        var mapped = [];
