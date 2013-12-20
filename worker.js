@@ -125,6 +125,7 @@ var init = function () {
 //    });
 
     conn.on('initWorker', function () {
+        console('init worker');
         conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
     });
 
