@@ -85,7 +85,7 @@
         self.samples = args.samples || [];
 
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
-            return item === pin;
+            return item === self.pin;
         })) {
             self.isAnalog = true;
             self.path = globals.analogPath + pin;
