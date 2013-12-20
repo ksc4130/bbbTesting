@@ -15,8 +15,12 @@ var conn = io.connect(serverUrl);
 var secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
 
 function Transmit(event, data) {
-    if(transmit)
+    console.log('emit********A', event, data);
+    if(transmit) {
+        console.log('emit********B', event, data);
         conn.emit(event, data);
+    }
+
 }
 
 device.on('switched', function (d) {
