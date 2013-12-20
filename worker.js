@@ -178,7 +178,8 @@ var init = function () {
         var device = ko.utils.arrayFirst(devices, function (item) {
             return item.id === data.id;
         });
-        if(typeof device !== 'undefined' && device !== null) {
+        console.log('********** device by toggle', device.toggle, device);
+        if(device && typeof device !== 'undefined' && device !== null) {
             device.toggle(null);
         } else
             console.log("can't find device for id ", data.id);
