@@ -217,6 +217,8 @@
                             console.log('set ih low', self.isLow);
                         }
 
+                        console.log(self.forceTrigger);
+
 
                             //check controls and triggers
                         if(self.controls.length) {
