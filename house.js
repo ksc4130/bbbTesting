@@ -110,11 +110,11 @@ var worker = require('./worker'),
             controls: [
                 {
                     type: 'high',
-                    pin: '61'
+                    pin: '65'
                 },
                 {
                     type: 'low',
-                    pin: '65'
+                    pin: '61'
                 },
                 {
                     type: 'low',
