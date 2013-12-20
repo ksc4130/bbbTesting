@@ -41,7 +41,7 @@ var worker = require('./worker'),
             pin:'44',
             type: 'light',
             actionType: 'switch',
-            controls: ['67'],//den light
+            controls: [{pin: '67', type: 'low'}],//den light
             ready: function () {
 
             }
@@ -50,7 +50,7 @@ var worker = require('./worker'),
             pin:'31',
             type: 'light',
             actionType: 'switch',
-            controls: ['30'],//living room light
+            controls: [{pin: '30', type: 'low'}],//living room light
             ready: function () {
 
             }
@@ -59,7 +59,7 @@ var worker = require('./worker'),
             pin:'46',
             type: 'light',
             actionType: 'switch',
-            controls: ['26'],
+            controls: [{pin: '26', type: 'low'}],
             ready: function () {
 
             }
@@ -99,10 +99,22 @@ var worker = require('./worker'),
             name: 'Thermo',
             type: 'temp',
             actionType: 'thermo',
+            controls: [
+                {
+                    type: 'high',
+                    pin: '61'
+                },
+                {
+                    type: 'low',
+                    pin: '65'
+                }
+            ],
             cool: '65',
             heat: '61',//65
             trigger: 75.5,
             threshold: 1,
+            highThreshold: 3,
+            lowThreshold: 1,
             tolerance: .5,
             isVisible: true,
             ready: function () {

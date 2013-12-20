@@ -2,7 +2,6 @@
     "name": "bbbTesting",
     "description": "bbbTesting",
     "dependencies": {
-        "epoll": "*",
         "mongojs": "*",
         "knockout": "*",
         "socket.io-client": "*",

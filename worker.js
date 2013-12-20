@@ -97,6 +97,28 @@ device.on('thermo', function (d, oldVal) {
 
 var init = function () {
 
+    var hasControls = ko.utils.arrayFilter(devices, function (item) {
+        return item.controls && item.controls.length > 0;
+    });
+
+    ko.utils.arrayForEach(hasControls, function(item) {
+        item.controls = ko.utils.map(item.controls, function (con) {
+            var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
+            return {
+                workerId: workerId,
+                id: first.id,
+                pin: con.pin,
+                type: con.type
+            };
+        });
+    });
+
+    mapped = ko.utils.arrayMap(args.devices, function (curDev){
+        curDev.id = uuid.v4();
+        curDev.workerId = workerId;
+        return new Device(curDev.pin, curDev);
+    });
+
     conn.on('initWorker', function () {
         conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
     });
