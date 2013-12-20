@@ -217,7 +217,7 @@
                             console.log('set ih low', self.isLow);
                         }
 
-                        console.log(self.forceTrigger, self.trigger - self.lowThershold, lastTriggerDiff);
+                        console.log(self.forceTrigger, self.trigger, self.lowThershold, lastTriggerDiff);
 
 
                             //check controls and triggers
