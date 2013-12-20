@@ -166,7 +166,7 @@
 
             console.log('starting watch', self.pin);
             fs.watchFile(self.path + self.pin, function () {
-                console.log('file change', self.pin);
+                console.log('file change', self.pin, pinWork.getValSync(self.pin, true), pinWork.getValSync(self.pin));
             });
 
             if(self.direction === 'in') {
