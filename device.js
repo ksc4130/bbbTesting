@@ -171,7 +171,7 @@
                                     val = (val - 500) / 10;
                                     val = ((val * 9/5) + 32).toFixed(2);
                                 }
-                                console.log('sample', self.name, val);
+
                                 self.samples.push(val);
                                 if(self.samples.length === self.samplesLimit) {
                                     var average = 0.0;
@@ -180,7 +180,8 @@
                                     }
 
                                     val = (average/self.samplesLimit).toFixed(2);
-
+                                    if(self.type === 'temp')
+                                        console.log('sample', self.name, val);
                                     for(var i = 0, il = pinSubs[self.pin].length; i < il; i++) {
                                         (function (sub, val) {
                                             sub(val);
