@@ -81,21 +81,6 @@
         self.samples = args.samples || [];
 
 
-
-//        if(args.value !== '0' && args.value !== '1') {
-//            args.value = '0';
-//        }
-
-//        self.cool = args.cool;
-//        self.heat = args.heat;
-
-//        if(self.cool) {
-//            pinWork.exportPin(self.cool, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
-//        }
-//        if(self.heat) {
-//            pinWork.exportPin(self.heat, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
-//        }
-
         if(self.actionType === 'momentary') {
             self.toggle = function () {
                 self.setVal(1, function (err, fn) {

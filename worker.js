@@ -212,7 +212,7 @@ module.exports.init = function (args) {
                 return new Device(curDev.pin, curDev);
             });
             devices = mapped;
-            console.log('init found', mapped);
+            //console.log('init found', mapped);
             init();
         } else {
 
