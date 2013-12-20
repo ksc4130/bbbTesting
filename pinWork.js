@@ -12,10 +12,8 @@
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === pin;
         })) {
-            console.log('setting analog pin', pin, val);
             path = globals.analogPath + pin;
         } else {
-            console.log('setting digital pin', pin, val);
             path = globals.gpioPath + pin +'/value';
         }
         val = val ? val.toString() : '0';
@@ -40,10 +38,8 @@
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === pin;
         })) {
-            console.log('getting analog pin', pin);
             path = globals.analogPath + pin;
         } else {
-            console.log('getting digital pin', pin);
             path = globals.gpioPath + pin +'/value';
         }
 
