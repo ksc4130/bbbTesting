@@ -32,6 +32,7 @@ var worker = require('./worker'),
             name: 'Garage Door',
             type: 'overheadDoor',
             actionType: 'momentary',
+            samplesLimit: 1,
             isVisible: true,
             ready: function () {
 
@@ -42,6 +43,7 @@ var worker = require('./worker'),
             type: 'light',
             actionType: 'switch',
             controls: [{pin: '67', type: 'low'}],//den light
+            samplesLimit: 1,
             ready: function () {
 
             }
@@ -51,6 +53,7 @@ var worker = require('./worker'),
             type: 'light',
             actionType: 'switch',
             controls: [{pin: '30', type: 'low'}],//living room light
+            samplesLimit: 1,
             ready: function () {
 
             }
@@ -60,6 +63,7 @@ var worker = require('./worker'),
             type: 'light',
             actionType: 'switch',
             controls: [{pin: '26', type: 'low'}],
+            samplesLimit: 1,
             ready: function () {
 
             }
