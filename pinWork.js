@@ -1,6 +1,7 @@
 (function () {
     var fs = require('fs')
         , globals = require('./globals')
+        , ko = require('knockout')
         , setupPin
         , exportPin
         , setVal
