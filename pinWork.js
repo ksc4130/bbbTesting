@@ -68,7 +68,6 @@
         }
 
         var val = fs.readFileSync(path, {encoding: 'ascii'});
-        console.log('get val sync', val);
         val = val ? val.toString() : '0';
         val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
             ? parseFloat(val) : parseInt(val)
@@ -170,7 +169,7 @@
                 if(!exists) {
                     fs.writeFile(globals.exportPath, pin, function (err) {
                         if(err) {
-                            console.log('error exporting pin', pin);
+                            console.log('error exporting pin', pin, workingPath);
                             if(typeof fn === 'function') {
                                 fn(err);
                             }
