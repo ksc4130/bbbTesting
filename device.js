@@ -164,7 +164,7 @@
                 self.ready(self);
             }
 
-            console.log('starting watch', self.pin);
+            console.log('starting watch', self.pin, self.path);
             fs.watchFile(self.path + self.pin, function () {
                 console.log('file change', self.pin, pinWork.getValSync(self.pin, true), pinWork.getValSync(self.pin));
             });
