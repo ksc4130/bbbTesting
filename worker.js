@@ -45,6 +45,9 @@ device.on('changeControlled', function (d, oldVal) {
         var dev = ko.utils.arrayFirst(devices, function (item) {
            return item.id === d.id;
         });
+
+        if(!dev)
+            return;
         //console.log('change controlled', dev);
         dev.setVal(d.value, function (err, val) {
             if(!err) {
@@ -93,8 +96,6 @@ conn.on('devices', function (data) {
 });
 
 var init = function () {
-
-
 
     conn.on('transmit', function (data) {
         console.log('transmit'. data);
