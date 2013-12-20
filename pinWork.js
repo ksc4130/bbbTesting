@@ -119,6 +119,7 @@
 
         if(typeof direction === 'string') {
             fs.writeFile(workingPath +'/direction', direction, function (err) {
+                console.log('setup pin dir', direction, pin);
                 if(err) {
                     console.log('error setting direction for pin', pin);
                     doCallbackCheck(err);
@@ -127,6 +128,7 @@
                 }
                 if(typeof value !== 'undefined' && value !== null) {
                     fs.writeFile(workingPath +'/value', value, function (err) {
+                        console.log('setup pin val', value, pin);
                         if(err) {
                             console.log('error setting value for pin', pin);
                             doCallbackCheck(err);
@@ -139,6 +141,7 @@
                 }
                 if(typeof edge === 'string') {
                     fs.writeFile(workingPath +'/edge', edge, function (err) {
+                        console.log('setup pin edge', edge, pin);
                         if(err) {
                             console.log('error setting edge for pin', pin);
                             doCallbackCheck(err);

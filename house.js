@@ -82,26 +82,27 @@ var worker = require('./worker'),
 
             }
         },
-        {
-            pin:'65',
-            name: 'Cool',
-            type: 'cool',
-            actionType: 'onoff',
-            isVisible: false,
-            ready: function () {
-
-            }
-        },
-        {
-            pin:'61',
-            name: 'Heat',
-            type: 'heat',
-            actionType: 'onoff',
-            isVisible: false,
-            ready: function () {
-
-            }
-        },
+//        {
+//            pin:'65',
+//            name: 'Cool',
+//            type: 'cool',
+//            actionType: 'onoff',
+//            isVisible: false,
+//            ready: function () {
+//
+//            }
+//        },
+//        {
+//            pin:'61',
+//            name: 'Heat',
+//            type: 'heat',
+//            actionType: 'onoff',
+//            value: 0,
+//            isVisible: false,
+//            ready: function () {
+//
+//            }
+//        },
         {
             pin:'AIN3',
             name: 'Thermo',

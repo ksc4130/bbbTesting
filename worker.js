@@ -195,9 +195,6 @@ var init = function () {
 
 
 module.exports.init = function (args) {
-
-
-
     workerId = args.workerId;
 
     //isVisible: true
