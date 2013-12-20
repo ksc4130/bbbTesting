@@ -118,7 +118,7 @@
                 return item.workerId === self.workerId && !ko.utils.arrayFirst(globals.bbbAnalogPins, function (p) {return item.pin === p;});
             });
             ko.utils.arrayForEach(toExport, function(item) {
-                pinWork.exportPin(item.pin, 'out', 0, null, null);
+                pinWork.exportPin(item.pin, 'out', 0, 'both', null);
             });
         }
 
