@@ -247,9 +247,10 @@
                                 }
 
                                 emitter.emit('change', self, valO);
-                                if(typeof fn === 'function')
-                                    fn();
+
                             }
+                        if(typeof fn === 'function')
+                            fn();
                     };//end check state
 
                     var checkVal = function () {
