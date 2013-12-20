@@ -110,7 +110,6 @@ var init = function () {
     ko.utils.arrayForEach(hasControls, function(item) {
         item.controls = ko.utils.arrayMap(item.controls, function (con) {
             var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
-            console.log('controls mapping in worker', item.pin, con.pin, first.pin);
             return {
                 workerId: workerId,
                 id: first.id,
