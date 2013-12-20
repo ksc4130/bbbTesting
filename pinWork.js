@@ -5,7 +5,8 @@
         , setupPin
         , exportPin
         , setVal
-        , getVal;
+        , getVal
+        , getValSync;
 
     setVal = function (pin, val, fn) {
         var path;
@@ -31,6 +32,25 @@
                 fn(null, val);
             }
         });
+    };
+
+    getValSync = function (pin, cleanUp) {
+        var path;
+        if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
+            return item === pin;
+        })) {
+            path = globals.analogPath + pin;
+        } else {
+            path = globals.gpioPath + pin +'/value';
+        }
+
+        var val = fs.readFileSync(path, {encoding: 'ascii'});
+        console.log('get val sync', val);
+        val = val ? val.toString() : '0';
+        val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
+            ? parseFloat(val) : parseInt(val)
+
+        return isNaN(val) && cleanUp ? 0 : val;
     };
 
     getVal = function (pin, fn) {
@@ -138,4 +158,5 @@
     exports.setupPin = setupPin;
     exports.setVal = setVal;
     exports.getVal = getVal;
+    exports.getValSync = getValSync;
 }());
