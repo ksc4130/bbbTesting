@@ -114,7 +114,7 @@ var init = function () {
         db.devices.update({id: item.id}, {$set: {controls: item.controls}});
     });
 
-    mapped = ko.utils.arrayMap(args.devices, function (curDev){
+    mapped = ko.utils.arrayMap(devices, function (curDev){
         curDev.id = uuid.v4();
         curDev.workerId = workerId;
         return new Device(curDev.pin, curDev);
