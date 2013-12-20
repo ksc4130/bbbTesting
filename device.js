@@ -11,15 +11,13 @@
             'switch',
             'sensor'
         ],
-        inputActionTypes = [
-            'switch',
-            'sensor',
-            'thermo'
-        ],
-        outputActionTypes = [
-            'onoff',
-            'momentary'
-        ],
+        actionTypeDirections = {
+            'switch': 'in',
+            'sensor': 'in',
+            'thermo': 'in',
+            'onoff': 'out',
+            'momentary': 'out'
+        },
         edges = {
           'switch': 'both',
           'onoff': 'both',
@@ -63,8 +61,7 @@
 
         self.value = isNaN(self.value) ? pinWork.getValSync(self.pin, true) : self.value;
 
-        self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
-            (outputActionTypes.indexOf(self.actionType) > -1) ? 'out' : null;
+        self.direction =  actionTypeDirections[self.actionType];
         self.edge = edges[self.actionType];
 
         self.lastTrigger = args.lastTrigger;
@@ -159,14 +156,18 @@
         };
 
         self.init = function (err) {
-            if(err)
+
+            if(err) {
+                console.log('error on device init', self.pin, self.name);
                 return;
+            }
 
             if(typeof self.ready === 'function') {
                 self.ready(self);
             }
 
             if(self.direction === 'in') {
+                console.log('init direction in A', self.pin, self.name);
                 (function () {
                     var checkState = function (val, valO, isHighO, isLowO, fn) {
                         console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
@@ -252,6 +253,7 @@
                     };//end check state
 
                     var checkVal = function () {
+                        console.log('init direction in checkVal A', self.pin, self.name);
                         pinWork.getVal(self.pin, function (err, val) {
                             if(self.type === 'temp') {
                                 val = (val - 500) / 10;
@@ -259,7 +261,9 @@
                             }
 
                             self.samples.push(val);
+                            console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
                             if(self.samples.length === self.samplesLimit) {
+                                console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
                                 var average = 0.0;
                                 for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
                                     average += parseFloat(self.samples[iSamples]);
