@@ -177,7 +177,7 @@ module.exports.init = function (args) {
     //isVisible: true
     db.devices.find({}, function (err, found) {
         var mapped = [],
-            curDev;
+            guids = [];
 
         if(err)
             console.log('error pulling device from db', err);
@@ -188,16 +188,17 @@ module.exports.init = function (args) {
             mapped = ko.utils.arrayMap(found, function (curDev){
                 //curDev.id = uuid.v4();
                 //curDev.workerId = workerId;
+                guids.push(curDev.id);
                 return new Device(curDev.pin, curDev);
             });
-            devices = ko.utils.arrayFilter(mapped, function (item) {
-                return item.id;
-            });
+
+            console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
+            devices = mapped;
             //console.log('init found', mapped);
             init();
         } else {
             console.log('using args.devices');
-            var guids = [];
+
             mapped = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev.id = globals.guid();
                 guids.push(curDev.id);
