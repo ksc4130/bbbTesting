@@ -202,7 +202,7 @@
                             isLowO = self.isLow;
                         self.value = val;
 
-                        self.forceTrigger = !self.lastHighTrigger || !self.lastLowTrigger || !self.lastTrigger;
+                        self.forceTrigger =!self.lastTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
                         var lastTriggerDiff = Math.abs(self.lastTrigger - val);
                         var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
                         var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
