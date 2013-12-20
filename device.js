@@ -169,6 +169,7 @@
             if(self.direction === 'in') {
                 (function () {
                     var checkState = function (val, valO, isHighO, isLowO, fn) {
+                        console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
                             valO = valO || self.value;
                             isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
                             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
