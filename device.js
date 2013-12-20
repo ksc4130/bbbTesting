@@ -176,7 +176,7 @@
                             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
                             self.value = val;
 
-                            self.forceTrigger =!self.lastTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
+                            self.forceTrigger = !self.lastTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
                             var lastTriggerDiff = Math.abs(self.lastTrigger - val);
                             //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
                             //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
@@ -233,6 +233,7 @@
                                 if(self.actionType === 'switch') {
                                     //button was pressed do work
                                     //emitter.emit('switched', self);
+                                    self.forceTrigger = false;
                                     if(self.value < valO) {
                                         var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
                                         ko.utils.arrayForEach(lowSwitched, function (item) {
