@@ -40,6 +40,7 @@
         args = args || {};
 
         self.deviceId = args.deviceId || 0;
+        self.id = args.id || 0;
         self.workerId = args.workerId;
         self.name = args.name || 'untitled';
         self.actionType = args.actionType;
