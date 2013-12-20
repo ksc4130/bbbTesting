@@ -2,7 +2,7 @@
     'use strict';
 
     var fs = require('fs')
-        , globals = require('globals')
+        , globals = require('./globals')
         , ko = require('knockout')
         , pinWork = require('./pinWork')
         , EventEmitter = require('events').EventEmitter
