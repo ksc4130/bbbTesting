@@ -54,6 +54,8 @@
             return  item === self.pin;
         }) ? parseFloat(args.value) : parseInt(args.value);
 
+        self.value = isNaN(self.value) ? pinWork.getValSync(self.pin, true) : self.value;
+
         self.pin = pin || (args.pin || '');
 
         self.direction = (inputActionTypes.indexOf(self.actionType) > -1) ? 'in' :
