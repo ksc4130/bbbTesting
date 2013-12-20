@@ -93,6 +93,21 @@
 //            pinWork.exportPin(self.heat, 'out', (dontInitValActionTypes.indexOf('onoff') > -1 ? undefined : 0), 'both', null);
 //        }
 
+        if(self.actionType === 'momentary') {
+            self.toggle = function () {
+                self.setVal(1, function (err, fn) {
+                    setTimeout(function (fn) {
+                        self.setVal(0, fn);
+                    }, 150);
+                });
+            }
+        } else {
+            self.toggle = function (val, fn) {
+                var v = val || (1 - self.value);
+                self.setVal(v, fn);
+            }
+        }
+
         if(self.controls && self.controls.length > 0) {
             var toExport = ko.utils.arrayFilter(self.controls, function (item) {
                 return item.workerId === self.workerId && !ko.utils.arrayFirst(globals.bbbAnalogPins, function (p) {return item.pin === p;});
@@ -143,20 +158,7 @@
                 self.ready(self);
             }
 
-            if(self.actionType === 'onoff') {
-                self.toggle = function (val, fn) {
-                    var v = val || (1 - self.value);
-                    self.setVal(v, fn);
-                }
-            } else if(self.actionType === 'momentary') {
-                self.toggle = function () {
-                    self.setVal(1, function (err, fn) {
-                        setTimeout(function (fn) {
-                            self.setVal(0, fn);
-                        }, 150);
-                    });
-                }
-            }
+
 
             if(self.direction === 'in') {
                 (function () {
