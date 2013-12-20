@@ -47,6 +47,8 @@
         self.type = args.type;
         self.controls = args.controls;
 
+        self.isVisible = args.isVisible || false;
+
         //if it's an analog pin parse value as float else parse as int
         self.value = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return  item === self.pin;
@@ -83,7 +85,7 @@
 //        if(args.value !== '0' && args.value !== '1') {
 //            args.value = '0';
 //        }
-        //self.isVisible = args.isVisible || false;
+
 //        self.cool = args.cool;
 //        self.heat = args.heat;
 
