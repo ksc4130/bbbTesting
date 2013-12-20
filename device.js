@@ -238,7 +238,6 @@
                         }
 
                         if(self.actionType === 'thermo') {
-                            console.log('sample', self.name, val);
                             if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
                                 self.lastTrigger = self.value;
                                 self.forceTrigger = false;
