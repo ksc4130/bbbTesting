@@ -163,6 +163,8 @@
                     if(typeof fn === 'function')
                         fn(err);
                 });
+            } else {
+                fn(null);
             }
         } else {
             fs.exists(workingPath, function (exists) {
