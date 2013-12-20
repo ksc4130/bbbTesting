@@ -103,23 +103,6 @@ device.on('thermo', function (d, oldVal) {
 });
 
 var init = function () {
-
-//    watch.watchTree(globals.gpioDir, function (f, curr, prev) {
-//        if (typeof f == "object" && prev === null && curr === null) {
-//            // Finished walking the tree
-//            console.log('watching');
-//        } else if (prev === null) {
-//            // f is a new file
-//            console.log('created', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
-//        } else if (curr.nlink === 0) {
-//            // f was removed
-//            console.log('removed', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
-//        } else {
-//            // f was changed
-//            console.log('changed', JSON.stringify(f), fs.readFileSync(f, 'ascii'));
-//        }
-//    });
-
     var hasControls = ko.utils.arrayFilter(devices, function (item) {
         return item.controls && item.controls.length > 0;
     });
@@ -127,6 +110,7 @@ var init = function () {
     ko.utils.arrayForEach(hasControls, function(item) {
         item.controls = ko.utils.arrayMap(item.controls, function (con) {
             var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
+            console.log('controlls mapping in worker', item.pin, con, first);
             return {
                 workerId: workerId,
                 id: first.id,
