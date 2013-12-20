@@ -190,7 +190,7 @@ var init = function () {
             Transmit('change', {id: dev.id, value: d});
         });
     });
-}
+};
 
 
 module.exports.init = function (args) {

@@ -203,6 +203,7 @@
                                     ko.utils.arrayForEach(highs, function (item) {
                                         item.value = self.isHigh ? 1 : 0;
                                         emitter.emit('changeControlled', item);
+                                        console.log('changing controlled', item.pin, item.value);
                                     });
                                 }
 
@@ -214,7 +215,7 @@
                                     ko.utils.arrayForEach(lows, function (item) {
                                         item.value = self.isLow ? 1 : 0;
                                         emitter.emit('changeControlled', item);
-                                        console.log('changing controlled', item);
+                                        console.log('changing controlled', item.pin, item.value);
                                     });
                                 }
 
