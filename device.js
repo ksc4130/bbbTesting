@@ -206,7 +206,7 @@
                         var lastTriggerDiff = Math.abs(self.lastTrigger - val);
                         var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
                         var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
-                        console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
+                        //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
                         //set isHigh and isLow
                         if(self.forceTrigger || lastHighTriggerDiff >= self.highThershold) {
                             self.isHigh = self.value >= (self.trigger + self.highThershold);
