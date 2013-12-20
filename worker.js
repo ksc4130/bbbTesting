@@ -44,8 +44,8 @@ device.on('changeControlled', function (d, oldVal) {
         var dev = ko.utils.arrayFirst(devices, function (item) {
            return item.id === d.id;
         });
-        console.log('change controlled', dev);
-        pinWork.setVal(d.pin, d.value, function (err, val) {
+        //console.log('change controlled', dev);
+        dev.setVal(d.value, function (err, val) {
             if(!err) {
                 if(dev && dev.isVisible) {
                     Transmit('change', {id: d.id, value: d.value});
@@ -62,7 +62,7 @@ device.on('toggleControlled', function (d, oldVal) {
         var dev = ko.utils.arrayFirst(devices, function (item) {
            return item.id === d.id;
         });
-        pinWork.setVal(d.pin, d.value, function (err, val) {
+        dev.setVal(d.value, function (err, val) {
             if(!err) {
                 if(dev && dev.isVisible) {
                     Transmit('change', {id: d.id, value: d.value});
@@ -76,6 +76,7 @@ device.on('thermo', function (d, oldVal) {
     if(d.cool || d.heat) {
         var cv = d.isCool ? 1 : 0,
             hv = d.isHeat ? 1 : 0;
+        console.log('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger})
         Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger});
 
 //        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
