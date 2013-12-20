@@ -87,7 +87,7 @@ conn.on('initWorker', function () {
 });
 
 conn.on('devices', function (data) {
-    console.log('device for io server');
+    console.log('device for io server', data);
     devices = ko.utils.arrayMap(data, function (dev){
         return new Device(dev);
     });
