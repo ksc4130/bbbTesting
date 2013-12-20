@@ -110,7 +110,7 @@ var init = function () {
     ko.utils.arrayForEach(hasControls, function(item) {
         item.controls = ko.utils.arrayMap(item.controls, function (con) {
             var first = ko.utils.arrayFirst(devices, function (f) {return f.pin === con.pin});
-            console.log('controlls mapping in worker', item.pin, con, first);
+            console.log('controls mapping in worker', item.pin, con.pin, first.pin);
             return {
                 workerId: workerId,
                 id: first.id,
@@ -209,7 +209,7 @@ module.exports.init = function (args) {
             console.log('error pulling device from db', err);
 
         if(!err && found.length > 0) {
-
+            console.log('using saved devices');
 
             mapped = ko.utils.arrayMap(found, function (curDev){
                 //curDev.id = uuid.v4();
@@ -222,7 +222,7 @@ module.exports.init = function (args) {
             //console.log('init found', mapped);
             init();
         } else {
-
+            console.log('using args.devices');
             mapped = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev.id = uuid.v4();
                 curDev.workerId = workerId;
