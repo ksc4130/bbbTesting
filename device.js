@@ -167,10 +167,10 @@
             }
 
             if(self.direction === 'in') {
-                console.log('init direction in A', self.pin, self.name);
+                //console.log('init direction in A', self.pin, self.name);
                 (function () {
                     var checkState = function (val, valO, isHighO, isLowO, fn) {
-                        console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
+                        //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
                             valO = valO || self.value;
                             isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
                             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
@@ -254,7 +254,7 @@
                     };//end check state
 
                     var checkVal = function () {
-                        console.log('init direction in checkVal A', self.pin, self.name);
+                        //console.log('init direction in checkVal A', self.pin, self.name);
                         pinWork.getVal(self.pin, function (err, val) {
                             if(self.type === 'temp') {
                                 val = (val - 500) / 10;
@@ -262,9 +262,9 @@
                             }
 
                             self.samples.push(val);
-                            console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
+                            //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
                             if(self.samples.length === self.samplesLimit) {
-                                console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
+                                //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
                                 var average = 0.0;
                                 for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
                                     average += parseFloat(self.samples[iSamples]);
