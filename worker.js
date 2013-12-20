@@ -175,14 +175,9 @@ var init = function () {
     });
 
     conn.on('change', function (data) {
-        var device;
-
-        for(var i = 0, il = devices.length; i < il; i++) {
-            if(devices[i].id.toString() === data.id.toString()) {
-                device = devices[i];
-                break;
-            }
-        }
+        var device = ko.utils.arrayFirst(devices, function (item) {
+            return item.id === data.id;
+        });
         if(typeof device !== 'undefined' && device !== null) {
             device.toggle(null);
         } else
