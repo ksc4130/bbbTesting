@@ -280,6 +280,7 @@
                 fs.writeFileSync('/sys/devices/bone_capemgr.9/slots', 'cape-bone-iio');
             }
             self.init(null);
+            console.log('starting watch', self.pin);
             fs.watchFile(globals.analogPath + self.pin, function () {
                 console.log('file change', self.pin);
             });

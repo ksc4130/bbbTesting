@@ -1,3 +1,4 @@
+var ko = require('knockout');
 module.exports = (new function () {
     var self = this;
     self.secret = 'Askindl23@146Fscmaijnd523CXVWGN#63@#7efbsd23#$Rb';
@@ -22,17 +23,42 @@ module.exports = (new function () {
         'AIN4',
         'AIN5'
     ]
-    self.pins = [
-      {
+    self.pinsAll = [
+        {
         isBbb: true,
         isRpi: false,
         isAnalog: false,
+        isDigital: true,
         direction: null,
         edge: null,
         value: null,
         rail: 'P8_11',
-        gpio: 30
-      }
+        gpio: 30,
+        pin: 30
+        },
+        {
+            isBbb: true,
+            isRpi: false,
+            isAnalog: true,
+            isDigital: false,
+            direction: null,
+            edge: null,
+            value: null,
+            rail: 'P8_38',
+            gpio: null,
+            pin: 'AIN3'
+        }
     ];
+
+    self.digitalPins = {};
+    self.analogPins = {};
+
+    ko.utils.arrayForEach(self.pinsAll, function (item) {
+       if(item.isDigital) {
+           self.digitalPins[item.pin] = item;
+       } else if(item.isAnalog) {
+           self.analogPins[item.pin] = item;
+       }
+    });
     return self;
 });
