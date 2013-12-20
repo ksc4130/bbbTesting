@@ -73,9 +73,9 @@
         //self.highTrigger = args.highTrigger || 1;
         //self.lowTrigger = args.lowTrigger || 0;
 
-        self.thershold = args.thershold;
-        self.highThershold = args.highThershold || 1;
-        self.lowThershold = args.lowThershold || 0;
+        self.threshold = args.threshold;
+        self.highThreshold = args.highThreshold || 1;
+        self.lowThreshold = args.lowThreshold || 0;
 
         self.isLow = args.isLow || false;
         self.isHigh = args.isHigh || false;
@@ -182,16 +182,16 @@
                             //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
                             //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
                             //set isHigh and isLow
-                            if(self.forceTrigger || lastTriggerDiff >= self.highThershold) {
-                                self.isHigh = self.value >= (self.trigger + self.highThershold);
+                            if(self.forceTrigger || lastTriggerDiff >= self.highThreshold) {
+                                self.isHigh = self.value >= (self.trigger + self.highThreshold);
                                 //console.log('set ih high', self.isHigh);
                             }
-                            if(self.forceTrigger || lastTriggerDiff >= self.lowThershold) {
-                                self.isLow = self.value <= (self.trigger - self.lowThershold);
+                            if(self.forceTrigger || lastTriggerDiff >= self.lowThreshold) {
+                                self.isLow = self.value <= (self.trigger - self.lowThreshold);
                                 //console.log('set ih low', self.isLow);
                             }
 
-                            //console.log(self.forceTrigger, self.trigger, self.lowThershold, lastTriggerDiff, self.pin);
+                            //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
 
                         //check controls and triggers
                         if(self.controls.length) {
