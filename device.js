@@ -276,108 +276,7 @@
                         }
 
                     });//end anSub push
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-//                    if(globals.bbbAnalogPins.indexOf(self.pin) > -1) {
-//                        if(!anSubs[self.pin]) {
-//                            anSubs[self.pin] = [];
-//
-//                            var checkAn = function () {
-//                                pinWork.getVal(self.pin, function (err, val) {
-//                                    val = parseFloat(val ? val.toString() : '0');
-//                                    if(self.type === 'temp') {
-//                                        val = (val - 500) / 10;
-//                                        val = ((val * 9/5) + 32).toFixed(2);
-//                                    } else {
-//
-//                                    }
-//
-//                                    self.samples.push(val);
-//                                    if(self.samples.length === self.samplesLimit) {
-//                                        var average = 0.0;
-//                                        for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
-//                                            average += parseFloat(self.samples[iSamples]);
-//                                        }
-//
-//                                        val = (average/self.samplesLimit).toFixed(2);
-//
-//                                        for(var i = 0, il = anSubs[self.pin].length; i < il; i++) {
-//                                            (function (sub, val) {
-//                                                sub(val);
-//                                            }(anSubs[self.pin][i], val));
-//                                        }
-//                                        self.samples = [];
-//                                    }
-//                                    setTimeout(checkAn, self.sampleRate);
-//                                });//end get val
-//                            };
-//                            checkAn();
-//                        }
-//                        anSubs[self.pin].push(function (val) {
-//                            var valO = self.value;
-//                            self.value = val;
-//
-//                                if(self.actionType === 'thermo') {
-//
-//                                    if(self.forceTrigger || !self.lastTrigger || Math.abs(self.lastTrigger - val) > self.threshold) {
-//
-//                                        var cv,
-//                                            hv;
-//                                        if(self.value >= self.trigger + self.threshold) {
-//                                            cv = 1;
-//                                        } else if(self.value <= self.trigger){
-//                                            cv = 0;
-//                                        }
-//                                        if(self.value <= self.trigger - self.threshold) {
-//                                            hv = 1;
-//                                        } else if(self.value >= self.trigger){
-//                                            hv = 0;
-//                                        }
-//                                        self.isCool = (cv === 1);
-//                                        self.isHeat = (hv === 1);
-//                                        self.lastTrigger = self.value;
-//                                        self.forceTrigger = false;
-//                                        emitter.emit('thermo', self, valO);
-//                                    } else if(valO !== val) {
-//                                        emitter.emit('change', self, valO);
-//                                    }
-//
-//
-//                                } else if(valO !== val) {
-//                                    emitter.emit('change', self, valO);
-//                                }
-//
-//                        });//end anSub push
-                    //} else {
-//                        var buffer = new Buffer(1),
-//                            val,
-//                            valuefd = fs.openSync(globals.gpioPath + self.pin + '/value', 'r');
-//
-//                        var poller = new Epoll(function (err, fd, events) {
-//                            var valO = self.value;
-//                            fs.readSync(fd, buffer, 0, 1, 0);
-//                            val = parseInt(buffer.toString('ascii'));
-//                            var hasChanged = (self.value !== val);
-//                            if(self.actionType === 'switch' && val < self.value) {
-//                                //button was pressed do work
-//                                emitter.emit('switched', self);
-//                            }
-//
-//                            self.value = val;
-//                            if(hasChanged) {
-//                                emitter.emit('change', self, valO);
-//                            }
-//                        });
-//
-//                        fs.readSync(valuefd, buffer, 0, 1, 0);
-//
-//                        poller.add(valuefd, Epoll.EPOLLPRI);
-                    //}
+
                 }());
             }
         };
@@ -389,6 +288,7 @@
             }
             self.init(null);
         } else {
+            console.log('export', self.name, self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge);
             pinWork.exportPin(self.pin, self.direction, (dontInitValActionTypes.indexOf(self.actionType) > -1 ? undefined : self.value), self.edge, self.init);
         }
 
