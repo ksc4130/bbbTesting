@@ -197,13 +197,17 @@ module.exports.init = function (args) {
             init();
         } else {
             console.log('using args.devices');
+            var guids = [];
             mapped = ko.utils.arrayMap(args.devices, function (curDev){
-                curDev.id = uuid.v4();
+                curDev.id = globals.guid();
+                guids.push(curDev.id);
                 curDev.workerId = workerId;
                 db.devices.save(curDev);
 
                 return new Device(curDev.pin, curDev);
             });
+
+            console.log('guids check', mapped.length, ko.utils.arrayGetDistinctValues(guids).length);
             //db.devices.save(found, function (err) {
                 //console.log('init created', found);
                 devices = ko.utils.arrayFilter(mapped, function (item) {
