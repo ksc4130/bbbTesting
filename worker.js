@@ -75,31 +75,7 @@ device.on('toggleControlled', function (d, oldVal) {
 });
 
 device.on('thermo', function (d, oldVal) {
-    if(d.cool || d.heat) {
-        var cv = d.isCool ? 1 : 0,
-            hv = d.isHeat ? 1 : 0;
-        console.log('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger})
         Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger});
-
-//        for(var ic = 0, ilc = devices.length; ic < ilc; ic++) {
-//            if(d.cool && devices[ic].pin === d.cool) {
-//                (function (dev) {
-//                    if(dev.value !== cv) {
-//                        dev.setVal(cv);
-//                        console.log('cool', dev.value, cv);
-//                    }
-//                }(devices[ic]));
-//            }
-//            if(d.heat && devices[ic].pin === d.heat) {
-//                (function (dev) {
-//                    if(dev.value !== hv) {
-//                        console.log('heat', dev.value, cv);
-//                        dev.setVal(hv);
-//                    }
-//                }(devices[ic]));
-//            }
-//        }
-    }
 });
 
 var init = function () {

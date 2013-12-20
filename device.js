@@ -220,7 +220,7 @@
 
                         }
 
-                            if(self.actionType === 'thermo') {
+                            if(self.actionType === 'thermo'&& valO !== val) {
                                 if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
                                     self.lastTrigger = self.value;
                                     self.forceTrigger = false;
@@ -246,10 +246,9 @@
                                         });
                                     }
 
+                                } else {
+                                    emitter.emit('change', self, valO);
                                 }
-
-                                emitter.emit('change', self, valO);
-
                             }
                         if(typeof fn === 'function')
                             fn();
