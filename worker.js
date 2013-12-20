@@ -147,31 +147,22 @@ var init = function () {
     });
 
     conn.on('setTrigger', function(data) {
-        var device;
+        var device = ko.utils.arrayFirst(devices, function (item) {
+            return item.id === data.id;
+        });
 
-        for(var i = 0, il = devices.length; i < il; i++) {
-            if(devices[i].id.toString() === data.id.toString()) {
-                device = devices[i];
-                break;
-            }
-        }
-
-        if(typeof device !== 'undefined' && device !== null) {
+        if(device) {
             device.trigger = data.trigger;
             device.forceTrigger = true;
 
-            db.find('devices', {id: device.id}, function (err, cursor, cnt) {
+            db.devices.find({id: device.id}, function (err, found) {
                 if(err) {
                     console.log('updating trigger error', err);
                     return;
                 }
-                if(cnt > 0) {
-                    var found = cursor.object();
+                if(!err && found) {
                     found.trigger = data.trigger;
-                    db.save('devices', {_id: found._id, trigger: found.trigger}, function () {
-                        cursor.close();
-                        db.close();
-                    });
+                    db.devices.save({id: found.id}, {$set: {trigger: found.trigger}});
                 }
             })
         } else
