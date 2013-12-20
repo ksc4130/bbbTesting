@@ -240,12 +240,10 @@
                         if(self.actionType === 'thermo') {
                             console.log('sample', self.name, val);
                             if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
-                                console.log('sample*********A', self.name, val);
                                 self.lastTrigger = self.value;
                                 self.forceTrigger = false;
                                 emitter.emit('thermo', self, valO);
                             } else if(valO !== val) {
-                                console.log('sample************B', self.name, val);
                                 emitter.emit('change', self, valO);
                             }
                         } else if(valO !== val) {

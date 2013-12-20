@@ -129,6 +129,7 @@ var init = function () {
     });
 
     conn.on('transmit', function (data) {
+        console.log('transmit'. data);
         transmit = data;
     });
 
