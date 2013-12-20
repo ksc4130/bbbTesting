@@ -114,7 +114,8 @@ var init = function () {
                 workerId: workerId,
                 id: first.id,
                 pin: con.pin,
-                type: con.type
+                type: con.type,
+                name: first.name
             };
         });
         db.devices.update({id: item.id}, {$set: {controls: item.controls}});
