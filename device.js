@@ -125,12 +125,12 @@
 
         self.setVal = function (val, fn) {
             fn = typeof fn === 'function' ? fn : function () {};
+            var valO = self.value;
             pinWork.setVal(self.pin, val, function (err, val) {
                 if(err) {
                     fn(err, null);
                     return;
                 }
-                var valO = self.value;
                 self.value = val;
                 if(valO !== val)
                     emitter.emit('change', self, valO);
@@ -139,13 +139,13 @@
         };
 
         self.getVal = function (fn) {
+            var valO = self.value;
             fn = typeof fn === 'function' ? fn : function () {};
             pinWork.getVal(self.pin, function (err, val) {
                 if(err) {
                     fn(err, null);
                     return;
                 }
-                var valO = self.value;
                 self.value = val;
                 if(valO !== val)
                     emitter.emit('change', self, valO);

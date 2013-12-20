@@ -158,10 +158,7 @@ var init = function () {
         if(typeof device !== 'undefined' && device !== null) {
             device.trigger = data.trigger;
             device.forceTrigger = true;
-            console.log(device.id, device.trigger);
-            if(!db.isOpen) {
-                db = ejdb.open('worker', ejdb.DEFAULT_OPEN_MODE);
-            }
+
             db.find('devices', {id: device.id}, function (err, cursor, cnt) {
                 if(err) {
                     console.log('updating trigger error', err);
@@ -184,7 +181,7 @@ var init = function () {
         var device = ko.utils.arrayFirst(devices, function (item) {
             return item.id === data.id;
         });
-        console.log('********** device by toggle', device.toggle, device);
+
         if(device && typeof device !== 'undefined' && device !== null) {
             device.toggle(null);
         } else
