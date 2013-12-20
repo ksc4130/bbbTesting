@@ -196,7 +196,7 @@ var init = function () {
 
 module.exports.init = function (args) {
 
-    watch.watchTree(globals.gpioPath, function (f, curr, prev) {
+    watch.watchTree(globals.gpioDir, function (f, curr, prev) {
         if (typeof f == "object" && prev === null && curr === null) {
             // Finished walking the tree
             console.log('watching');

@@ -4,6 +4,7 @@ module.exports = (new function () {
     self.dbName = 'kyngster';
     self.collections = ['settings', 'devices'];
     self.exportPath = '/sys/class/gpio/export';
+    self.gpioDir = '/sys/class/gpio/';
     self.gpioPath = '/sys/class/gpio/gpio';
     self.analogPath = '/sys/devices/ocp.2/helper.14/'
     self.bbbAnalogPins = [
