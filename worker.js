@@ -111,6 +111,7 @@ var init = function () {
                 type: con.type
             };
         });
+        db.devices.update({id: item.id}, {$set: {controls: item.controls}});
     });
 
     mapped = ko.utils.arrayMap(args.devices, function (curDev){
@@ -215,8 +216,8 @@ module.exports.init = function (args) {
 
             console.log('init found', found);
             mapped = ko.utils.arrayMap(found, function (curDev){
-                curDev.id = uuid.v4();
-                curDev.workerId = workerId;
+                //curDev.id = uuid.v4();
+                //curDev.workerId = workerId;
                 return new Device(curDev.pin, curDev);
             });
             devices = found;
@@ -227,14 +228,15 @@ module.exports.init = function (args) {
             mapped = ko.utils.arrayMap(args.devices, function (curDev){
                 curDev.id = uuid.v4();
                 curDev.workerId = workerId;
+                db.devices.save(curDev);
                 return new Device(curDev.pin, curDev);
             });
-            db.devices.save(found, function (err) {
-                console.log('init created', found);
+            //db.devices.save(found, function (err) {
+                //console.log('init created', found);
                 devices = mapped;
 
                 init();
-            });
+            //});
 
         }
 
