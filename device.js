@@ -275,6 +275,8 @@
                                     setTimeout(checkVal, self.sampleRate);
                                 });
 
+                            } else {
+                                setTimeout(checkVal, self.sampleRate);
                             }
 
                         });//end get val
