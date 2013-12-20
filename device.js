@@ -210,7 +210,7 @@
                         //set isHigh and isLow
                         if(self.forceTrigger || lastHighTriggerDiff >= self.highThershold) {
                             self.isHigh = self.value >= (self.trigger + self.highThershold);
-                            console.log('set ih high', self.isHeat);
+                            console.log('set ih high', self.isHigh);
                         }
                         if(self.forceTrigger || lastLowTriggerDiff >= self.lowThershold) {
                             self.isLow = self.value <= (self.trigger - self.lowThershold);
