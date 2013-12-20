@@ -220,14 +220,14 @@
 
                         }
 
-                            if(self.actionType === 'thermo'&& valO !== val) {
-                                if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
+                            if(self.actionType === 'thermo' && valO !== val) {
+                                //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
                                     self.lastTrigger = self.value;
                                     self.forceTrigger = false;
                                     emitter.emit('thermo', self, valO);
-                                } else if(valO !== val) {
-                                    emitter.emit('change', self, valO);
-                                }
+                                //} else if(valO !== val) {
+                                    //emitter.emit('change', self, valO);
+                                //}
                             } else if(valO !== val) {
                                 if(self.actionType === 'switch') {
                                     //button was pressed do work
