@@ -38,13 +38,13 @@ device.on('change', function (d, oldVal) {
 });
 
 device.on('changeControlled', function (d, oldVal) {
-    console.log('change controlled', d);
     if(d.workerId !== workerId) {
         conn.emit('changeControlled', d);
     } else {
         var dev = ko.utils.arrayFirst(devices, function (item) {
            return item.id === d.id;
         });
+        console.log('change controlled', dev);
         pinWork.setVal(d.pin, d.value, function (err, val) {
             if(!err) {
                 if(dev && dev.isVisible) {
