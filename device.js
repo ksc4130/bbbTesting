@@ -202,16 +202,16 @@
                             isLowO = self.isLow;
                         self.value = val;
 
-
+                        self.forceTrigger = !self.lastHighTrigger || !self.lastLowTrigger || !self.lastTrigger;
                         var lastTriggerDiff = Math.abs(self.lastTrigger - val);
                         var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
                         var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
                         console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
                         //set isHigh and isLow
-                        if(lastHighTriggerDiff >= self.highThershold) {
+                        if(self.forceTrigger || lastHighTriggerDiff >= self.highThershold) {
                             self.isHigh = self.value >= (self.trigger + self.highThershold);
                         }
-                        if(lastLowTriggerDiff >= self.lowThershold) {
+                        if(self.forceTrigger || lastLowTriggerDiff >= self.lowThershold) {
                             self.isLow = self.value <= (self.trigger - self.lowThershold);
                         }
 
