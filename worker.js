@@ -216,14 +216,14 @@ module.exports.init = function (args) {
 
         if(!err && found.length > 0) {
 
-            console.log('init found', found);
+
             mapped = ko.utils.arrayMap(found, function (curDev){
                 //curDev.id = uuid.v4();
                 //curDev.workerId = workerId;
                 return new Device(curDev.pin, curDev);
             });
             devices = mapped;
-
+            console.log('init found', mapped);
             init();
         } else {
 
