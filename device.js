@@ -267,7 +267,7 @@
                         //console.log('init direction in checkVal A', self.pin, self.name);
                         pinWork.getVal(self.pin, function (err, val) {
                             if(err) {
-                                console.log('error in checkVal', self.pin);
+                                console.log('error in checkVal', self.pin, err);
                                 setTimeout(checkVal, self.sampleRate);
                                 return;
                             }
