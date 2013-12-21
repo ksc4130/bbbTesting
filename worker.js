@@ -128,7 +128,7 @@ var init = function () {
     });
 
     conn.on('change', function (data) {
-        console.log('*************change', data);
+        //console.log('*************change', data);
         var device = ko.utils.arrayFirst(devices, function (item) {
             return item.id === data.id;
         });
