@@ -29,20 +29,31 @@
     };
 
     setVal = function (pin, val, fn) {
-        var path;
+        var path
+            , isAnalog = false;
+
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === pin;
         })) {
             path = globals.analogPath + pin;
+            isAnalog = true;
         } else {
             path = globals.gpioPath + pin +'/value';
         }
+
+        if(isAnalog) {
+            console.log('tried to set analog value');
+            fn('oops', null);
+            return;
+        }
+
+
         val = val ? val.toString() : '0';
         val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
             ? parseFloat(val) : parseInt(val)
         fs.writeFile(path, val, function (err) {
             if(err) {
-                console.log('error setting value for pin', pin);
+                console.log('error setting value for pin', pin, 'in setVal');
                 if(typeof fn === 'function') {
                     fn(err, null);
                 }
@@ -91,7 +102,7 @@
             val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
                 ? parseFloat(val) : parseInt(val)
             if(err) {
-                console.log('error setting value for pin', pin);
+                console.log('error getting value for pin', pin);
                 if(typeof fn === 'function') {
                     fn(err, null);
                 }
@@ -131,7 +142,7 @@
                     fs.writeFile(workingPath +'/value', value, function (err) {
                         //console.log('setup pin val', value, pin);
                         if(err) {
-                            console.log('error setting value for pin', pin);
+                            console.log('error setting value for pin', pin, 'in setup');
                             doCallbackCheck(err);
                         } else {
                             doCallbackCheck(null);
