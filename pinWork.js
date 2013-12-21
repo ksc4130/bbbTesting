@@ -11,6 +11,7 @@
         , exportPin
         , setVal
         , getVal
+        , calcTempF
         , getValSync;
 
     isAnalog =  function (pin) {
@@ -189,7 +190,13 @@
         }
     };
 
+    calcTempF = function (val) {
+        val = (val - 500) / 10;
+        val = ((val * 9/5) + 32).toFixed(2);
+    };
 
+
+    exports.calcTempF = calcTempF;
     exports.isAnalog = isAnalog;
     exports.getBasePath = getBasePath;
     exports.getValuePath = getValuePath;

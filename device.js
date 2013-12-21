@@ -61,6 +61,10 @@
 
         self.value = isNaN(self.value) ? pinWork.getValSync(self.pin, true) : self.value;
 
+        if(self.type === 'temp') {
+            self.value = pinWork.calcTempF(self.value);
+        }
+
         self.direction =  actionTypeDirections[self.actionType];
         self.edge = edges[self.actionType];
 
@@ -261,8 +265,7 @@
                         //console.log('init direction in checkVal A', self.pin, self.name);
                         pinWork.getVal(self.pin, function (err, val) {
                             if(self.type === 'temp') {
-                                val = (val - 500) / 10;
-                                val = ((val * 9/5) + 32).toFixed(2);
+                                val = pinWork.calcTempF(val);
                             }
 
                             self.samples.push(val);
