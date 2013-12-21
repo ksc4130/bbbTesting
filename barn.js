@@ -22,7 +22,10 @@ var worker = require('./worker'),
         {pin: '22',
             type: 'light',
             actionType: 'switch',
-            controls: ['17'],
+            controls: [{
+                pin: '17',
+                type: 'low'
+            }],
             ready: function () {
 
             }
@@ -30,7 +33,10 @@ var worker = require('./worker'),
         {pin: '23',
             type: 'light',
             actionType: 'switch',
-            controls: ['27'],
+            controls: [{
+                pin: '27',
+                type: 'low'
+            }],
             ready: function () {
 
             }
