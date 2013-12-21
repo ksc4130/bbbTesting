@@ -108,6 +108,7 @@ var worker = require('./worker'),
             name: 'Thermo',
             type: 'temp',
             actionType: 'thermo',
+            sampleRate: 100,
             controls: [
                 {
                     type: 'high',
