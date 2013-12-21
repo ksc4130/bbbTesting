@@ -223,7 +223,7 @@
                         }
 
                             if(self.actionType === 'thermo' && valO !== val) {
-                                console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
+                                //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
                                 //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
 
                                     self.forceTrigger = false;
