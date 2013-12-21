@@ -281,17 +281,21 @@
                                     console.log('sample too high', val);
                                     setTimeout(checkVal, self.sampleRate);
                                     return;
+                                } else {
+                                    self.sampleTooHighCnt = 0;
                                 }
                             }  else {
                                 self.sampleTooHighCnt = 0;
                             }
 
-                            if(valDiff < 3) {
+                            if(valDiff < -3) {
                                 self.sampleTooLowCnt++;
                                 if(self.sampleTooLowCnt < 3) {
                                     console.log('sample too low', val);
                                     setTimeout(checkVal, self.sampleRate);
                                     return;
+                                } else {
+                                    self.sampleTooLowCnt = 0;
                                 }
                             } else {
                                 self.sampleTooLowCnt = 0;
