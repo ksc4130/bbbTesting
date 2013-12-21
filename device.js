@@ -59,7 +59,7 @@
             return  item === self.pin;
         }) ? parseFloat(args.value) : parseInt(args.value);
 
-        self.value = isNaN(self.value) ? pinWork.getValSync(self.pin, true) : self.value;
+        self.value = isNaN(self.value) ? 0 : self.value;//pinWork.getValSync(self.pin, true) : self.value;
 
         if(self.type === 'temp') {
             self.value = pinWork.calcTempF(self.value);
