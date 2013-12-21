@@ -231,13 +231,18 @@
                             if(self.actionType === 'thermo' && valO !== val) {
                                 //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
                                 //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
+                                    if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
+                                        self.isLow = isLowO;
+                                        self.isHigh = isHighO;
+                                    }
 
                                     self.forceTrigger = false;
                                     emitter.emit('thermo', self, valO);
                                 //} else if(valO !== val) {
                                     //emitter.emit('change', self, valO);
                                 //}
-                            } else if(valO !== val) {
+                            }
+                            if(self.actionType !== 'thermo' && valO !== val) {
                                 if(self.actionType === 'switch') {
                                     //button was pressed do work
                                     //emitter.emit('switched', self);
