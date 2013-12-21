@@ -82,12 +82,12 @@ device.on('thermo', function (d, oldVal) {
 });
 
 conn.on('initWorker', function () {
-    console.log('init worker');
+    //console.log('init worker');
     conn.emit('initWorker', {secret: secret, workerId: workerId,  devices: devices});
 });
 
 conn.on('devices', function (data) {
-    console.log('device for io server', data);
+    //console.log('device for io server', data);
     devices = ko.utils.arrayMap(data, function (dev){
         return new Device(dev);
     });
