@@ -87,6 +87,8 @@
         self.samplesLimit = args.samplesLimit || 10;
         self.sampleRate = args.sampleRate || 50;
         self.samples = args.samples || [];
+        self.sampleTooHighCnt = 0;
+        self.sampleTooLowCnt = 0;
 
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === self.pin;
@@ -271,6 +273,28 @@
                             }
                             if(self.type === 'temp') {
                                 val = pinWork.calcTempF(val);
+                            }
+                            var valDiff = (val - self.value);
+                            if(valDiff > 3) {
+                                self.sampleTooHighCnt++;
+                                if(self.sampleTooHighCnt < 3) {
+                                    console.log('sample too high', val);
+                                    setTimeout(checkVal, self.sampleRate);
+                                    return;
+                                }
+                            }  else {
+                                self.sampleTooHighCnt = 0;
+                            }
+
+                            if(valDiff < 3) {
+                                self.sampleTooLowCnt++;
+                                if(self.sampleTooLowCnt < 3) {
+                                    console.log('sample too low', val);
+                                    setTimeout(checkVal, self.sampleRate);
+                                    return;
+                                }
+                            } else {
+                                self.sampleTooLowCnt = 0;
                             }
 
                             self.samples.push(val);
