@@ -92,6 +92,8 @@ conn.on('devices', function (data) {
         return new Device(dev);
     });
 
+    conn.emit('devices', devices);
+
     init();
 });
 
