@@ -193,6 +193,7 @@
     calcTempF = function (val) {
         val = (val - 500) / 10;
         val = ((val * 9/5) + 32).toFixed(2);
+        return val;
     };
 
 
