@@ -176,7 +176,7 @@
                             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
                             self.value = val;
 
-                            self.forceTrigger = !self.lastTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
+                            self.forceTrigger = !self.lastTrigger || self.forceTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
                             var lastTriggerDiff = Math.abs(self.lastTrigger - val);
                             //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
                             //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
@@ -196,8 +196,9 @@
                         //check controls and triggers
                         if(self.controls.length) {
                             //handle highs
-                            if(self.forceTrigger || isHighO != self.isHigh) {
+                            if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
                                 self.lastHighTrigger = self.value;
+                                self.lastTrigger = self.value;
                                 var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
                                 ko.utils.arrayForEach(highs, function (item) {
                                     item.value = self.isHigh ? 1 : 0;
@@ -207,8 +208,9 @@
                             }
 
                             //handle lows
-                            if(self.forceTrigger || isLowO != self.isLow) {
+                            if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) {
                                 self.lastLowTrigger = self.value;
+                                self.lastTrigger = self.value;
                                 var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
                                 //console.log('lows', self.pin, lows);
                                 ko.utils.arrayForEach(lows, function (item) {
@@ -221,9 +223,9 @@
                         }
 
                             if(self.actionType === 'thermo' && valO !== val) {
-                                console.log('***************** thermo samples', self.samplesLimit, self.samples.length);
+                                console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
                                 //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
-                                    self.lastTrigger = self.value;
+
                                     self.forceTrigger = false;
                                     emitter.emit('thermo', self, valO);
                                 //} else if(valO !== val) {
