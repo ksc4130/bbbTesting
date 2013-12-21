@@ -102,7 +102,7 @@
             val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
                 ? parseFloat(val) : parseInt(val)
             if(err) {
-                console.log('error getting value for pin', pin);
+                console.log('error getting value for pin', pin, path);
                 if(typeof fn === 'function') {
                     fn(err, null);
                 }

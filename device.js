@@ -264,6 +264,11 @@
                     var checkVal = function () {
                         //console.log('init direction in checkVal A', self.pin, self.name);
                         pinWork.getVal(self.pin, function (err, val) {
+                            if(err) {
+                                console.log('error in checkVal', self.pin);
+                                setTimeout(checkVal, self.sampleRate);
+                                return;
+                            }
                             if(self.type === 'temp') {
                                 val = pinWork.calcTempF(val);
                             }
