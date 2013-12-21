@@ -31,7 +31,7 @@
 
     function Device (args) {
         if(this === global) {
-            return new Device(pin, args);
+            return new Device(args);
         }
         var self = this;
 
