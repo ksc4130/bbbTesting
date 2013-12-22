@@ -135,7 +135,7 @@
                 if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) {
                     self.lastLowTrigger = self.value;
                     self.lastTrigger = self.value;
-                    var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                    var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
                     //console.log('lows', self.pin, lows);
                     ko.utils.arrayForEach(lows, function (item) {
                         item.value = self.isLow ? 1 : 0;
