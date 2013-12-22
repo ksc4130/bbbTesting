@@ -274,7 +274,7 @@
 
         if(self.controls && self.controls.length > 0) {
             var toExport = ko.utils.arrayFilter(self.controls, function (item) {
-                return item.workerId === self.workerId && !ko.utils.arrayFirst(globals.bbbAnalogPins, function (p) {return item.pin === p;});
+                return item && item.workerId === self.workerId && !ko.utils.arrayFirst(globals.bbbAnalogPins, function (p) {return item.pin === p;});
             });
             ko.utils.arrayForEach(toExport, function(item) {
                 pinWork.exportPin(item.pin, 'out', 0, 'both', null);
