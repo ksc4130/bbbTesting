@@ -61,6 +61,7 @@ device.on('changeControlled', function (d, oldVal) {
 
 device.on('toggleControlled', function (d, oldVal) {
     if(d.workerId !== workerId) {
+        console.log('emitting toggle controlled for', d.pin, d.workerId);
         conn.emit('toggleControlled', d);
     } else {
         var dev = ko.utils.arrayFirst(devices, function (item) {
