@@ -89,6 +89,161 @@
         self.samples = args.samples || [];
         self.sampleTooHighCnt = 0;
         self.sampleTooLowCnt = 0;
+        self.sampleTooHighLowCntOut = args.sampleTooHighLowCntOut || 3;
+        self.sampleTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
+
+        self.checkState = function (val, valO, isHighO, isLowO, fn) {
+            //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
+            valO = valO || self.value;
+            isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
+            isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
+            self.value = val;
+
+            self.forceTrigger = !self.lastTrigger || self.forceTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
+            var lastTriggerDiff = Math.abs(self.lastTrigger - val);
+            //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
+            //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
+            //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
+            //set isHigh and isLow
+            if(self.forceTrigger || lastTriggerDiff >= self.highThreshold) {
+                self.isHigh = self.value >= (self.trigger + self.highThreshold);
+                //console.log('set ih high', self.isHigh);
+            }
+            if(self.forceTrigger || lastTriggerDiff >= self.lowThreshold) {
+                self.isLow = self.value <= (self.trigger - self.lowThreshold);
+                //console.log('set ih low', self.isLow);
+            }
+
+            //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
+
+            //check controls and triggers
+            if(self.controls.length) {
+                //handle highs
+                if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
+                    self.lastHighTrigger = self.value;
+                    self.lastTrigger = self.value;
+                    var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
+                    ko.utils.arrayForEach(highs, function (item) {
+                        item.value = self.isHigh ? 1 : 0;
+                        emitter.emit('changeControlled', item);
+                        //console.log('changing controlled', item.name, item.pin, item.value);
+                    });
+                }
+
+                //handle lows
+                if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) {
+                    self.lastLowTrigger = self.value;
+                    self.lastTrigger = self.value;
+                    var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                    //console.log('lows', self.pin, lows);
+                    ko.utils.arrayForEach(lows, function (item) {
+                        item.value = self.isLow ? 1 : 0;
+                        emitter.emit('changeControlled', item);
+                        //console.log('changing controlled', item.name, item.pin, item.value);
+                    });
+                }
+
+            }
+
+            self.checkVal = function () {
+                //console.log('init direction in checkVal A', self.pin, self.name);
+                pinWork.getVal(self.pin, function (err, val) {
+                    if(err) {
+                        console.log('error in checkVal', self.pin, err);
+                        setTimeout(self.checkVal, self.sampleRate);
+                        return;
+                    }
+                    if(self.type === 'temp') {
+                        val = pinWork.calcTempF(val);
+                    }
+                    var valDiff = (val - self.value);
+                    if(valDiff > self.sampleTooHighLowThreshold) {
+                        self.sampleTooHighCnt++;
+                        if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
+                            console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                            setTimeout(self.checkVal, self.sampleRate);
+                            return;
+                        } else {
+                            self.sampleTooHighCnt = 0;
+                        }
+                    }  else {
+                        self.sampleTooHighCnt = 0;
+                    }
+
+                    if(valDiff < 0 && Math.abs(valDiff) > self.sampleTooHighLowThreshold) {
+                        self.sampleTooLowCnt++;
+                        if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
+                            console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                            setTimeout(self.checkVal, self.sampleRate);
+                            return;
+                        } else {
+                            self.sampleTooLowCnt = 0;
+                        }
+                    } else {
+                        self.sampleTooLowCnt = 0;
+                    }
+
+                    self.samples.push(val);
+                    //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
+                    if(self.samples.length === self.samplesLimit) {
+                        //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
+                        var average = 0.0;
+                        for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
+                            average += parseFloat(self.samples[iSamples]);
+                        }
+
+                        val = (average/self.samplesLimit).toFixed(2);
+                        self.checkState(val, self.value, self.isHigh, self.isLow, function () {
+                            self.samples = [];
+                            setTimeout(self.checkVal, self.sampleRate);
+                        });
+
+                    } else {
+                        setTimeout(self.checkVal, self.sampleRate);
+                    }
+
+                });//end get val
+            };//end checkVal
+
+            if(self.actionType === 'thermo' && valO !== val) {
+                //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
+                //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
+                if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
+                    self.isLow = isLowO;
+                    self.isHigh = isHighO;
+                }
+
+                self.forceTrigger = false;
+                emitter.emit('thermo', self, valO);
+                //} else if(valO !== val) {
+                //emitter.emit('change', self, valO);
+                //}
+            }
+            if(self.actionType !== 'thermo' && valO !== val) {
+                if(self.actionType === 'switch') {
+                    //button was pressed do work
+                    //emitter.emit('switched', self);
+                    self.forceTrigger = false;
+                    self.lastTrigger = self.value;
+                    if(self.value < valO) {
+                        var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                        ko.utils.arrayForEach(lowSwitched, function (item) {
+                            emitter.emit('toggleControlled', item);
+                        });
+                    } if(self.value > valO) {
+                        var highSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger;});
+                        ko.utils.arrayForEach(highSwitched, function (item) {
+                            emitter.emit('toggleControlled', item);
+                        });
+                    }
+
+                } else {
+                    emitter.emit('change', self, valO);
+                }
+            }
+            if(typeof fn === 'function')
+                fn();
+        };//end check state
 
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === self.pin;
@@ -174,161 +329,7 @@
 
             if(self.direction === 'in') {
                 //console.log('init direction in A', self.pin, self.name);
-                (function () {
-                    var checkState = function (val, valO, isHighO, isLowO, fn) {
-                        //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
-                            valO = valO || self.value;
-                            isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
-                            isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
-                            self.value = val;
-
-                            self.forceTrigger = !self.lastTrigger || self.forceTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
-                            var lastTriggerDiff = Math.abs(self.lastTrigger - val);
-                            //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
-                            //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
-                            //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
-                            //set isHigh and isLow
-                            if(self.forceTrigger || lastTriggerDiff >= self.highThreshold) {
-                                self.isHigh = self.value >= (self.trigger + self.highThreshold);
-                                //console.log('set ih high', self.isHigh);
-                            }
-                            if(self.forceTrigger || lastTriggerDiff >= self.lowThreshold) {
-                                self.isLow = self.value <= (self.trigger - self.lowThreshold);
-                                //console.log('set ih low', self.isLow);
-                            }
-
-                            //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
-
-                        //check controls and triggers
-                        if(self.controls.length) {
-                            //handle highs
-                            if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
-                                self.lastHighTrigger = self.value;
-                                self.lastTrigger = self.value;
-                                var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
-                                ko.utils.arrayForEach(highs, function (item) {
-                                    item.value = self.isHigh ? 1 : 0;
-                                    emitter.emit('changeControlled', item);
-                                    //console.log('changing controlled', item.name, item.pin, item.value);
-                                });
-                            }
-
-                            //handle lows
-                            if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) {
-                                self.lastLowTrigger = self.value;
-                                self.lastTrigger = self.value;
-                                var lows = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
-                                //console.log('lows', self.pin, lows);
-                                ko.utils.arrayForEach(lows, function (item) {
-                                    item.value = self.isLow ? 1 : 0;
-                                    emitter.emit('changeControlled', item);
-                                    //console.log('changing controlled', item.name, item.pin, item.value);
-                                });
-                            }
-
-                        }
-
-                            if(self.actionType === 'thermo' && valO !== val) {
-                                //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
-                                //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
-                                    if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
-                                        self.isLow = isLowO;
-                                        self.isHigh = isHighO;
-                                    }
-
-                                    self.forceTrigger = false;
-                                    emitter.emit('thermo', self, valO);
-                                //} else if(valO !== val) {
-                                    //emitter.emit('change', self, valO);
-                                //}
-                            }
-                            if(self.actionType !== 'thermo' && valO !== val) {
-                                if(self.actionType === 'switch') {
-                                    //button was pressed do work
-                                    //emitter.emit('switched', self);
-                                    self.forceTrigger = false;
-                                    self.lastTrigger = self.value;
-                                    if(self.value < valO) {
-                                        var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
-                                        ko.utils.arrayForEach(lowSwitched, function (item) {
-                                            emitter.emit('toggleControlled', item);
-                                        });
-                                    } if(self.value > valO) {
-                                        var highSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger;});
-                                        ko.utils.arrayForEach(highSwitched, function (item) {
-                                            emitter.emit('toggleControlled', item);
-                                        });
-                                    }
-
-                                } else {
-                                    emitter.emit('change', self, valO);
-                                }
-                            }
-                        if(typeof fn === 'function')
-                            fn();
-                    };//end check state
-
-                    var checkVal = function () {
-                        //console.log('init direction in checkVal A', self.pin, self.name);
-                        pinWork.getVal(self.pin, function (err, val) {
-                            if(err) {
-                                console.log('error in checkVal', self.pin, err);
-                                setTimeout(checkVal, self.sampleRate);
-                                return;
-                            }
-                            if(self.type === 'temp') {
-                                val = pinWork.calcTempF(val);
-                            }
-                            var valDiff = (val - self.value);
-                            if(valDiff > 3) {
-                                self.sampleTooHighCnt++;
-                                if(self.sampleTooHighCnt < 3) {
-                                    console.log('sample too high', val);
-                                    setTimeout(checkVal, self.sampleRate);
-                                    return;
-                                } else {
-                                    self.sampleTooHighCnt = 0;
-                                }
-                            }  else {
-                                self.sampleTooHighCnt = 0;
-                            }
-
-                            if(valDiff < -3) {
-                                self.sampleTooLowCnt++;
-                                if(self.sampleTooLowCnt < 3) {
-                                    console.log('sample too low', val);
-                                    setTimeout(checkVal, self.sampleRate);
-                                    return;
-                                } else {
-                                    self.sampleTooLowCnt = 0;
-                                }
-                            } else {
-                                self.sampleTooLowCnt = 0;
-                            }
-
-                            self.samples.push(val);
-                            //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
-                            if(self.samples.length === self.samplesLimit) {
-                                //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
-                                var average = 0.0;
-                                for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
-                                    average += parseFloat(self.samples[iSamples]);
-                                }
-
-                                val = (average/self.samplesLimit).toFixed(2);
-                                checkState(val, self.value, self.isHigh, self.isLow, function () {
-                                    self.samples = [];
-                                    setTimeout(checkVal, self.sampleRate);
-                                });
-
-                            } else {
-                                setTimeout(checkVal, self.sampleRate);
-                            }
-
-                        });//end get val
-                    };
-                    checkVal();
-                }());
+                self.checkVal();
             }
         };
 
