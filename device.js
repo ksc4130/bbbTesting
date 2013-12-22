@@ -123,7 +123,7 @@
                 if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
                     self.lastHighTrigger = self.value;
                     self.lastTrigger = self.value;
-                    var highs = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger});
+                    var highs = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'high' && !item.trigger});
                     ko.utils.arrayForEach(highs, function (item) {
                         item.value = self.isHigh ? 1 : 0;
                         emitter.emit('changeControlled', item);
