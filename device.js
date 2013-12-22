@@ -86,6 +86,7 @@
 
         self.samplesLimit = args.samplesLimit || 10;
         self.sampleRate = args.sampleRate || 50;
+        console.log('new device sample rate', self.name, self.sampleRate);
         self.samples = args.samples || [];
         self.sampleTooHighCnt = 0;
         self.sampleTooLowCnt = 0;
