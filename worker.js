@@ -74,7 +74,7 @@ device.on('toggleControlled', function (d, oldVal) {
 
 device.on('thermo', function (d, oldVal) {
     //console.log('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger});
-        Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, highThreshold: d.highThreshold, lowThreshold: d.lowThreshold, threshold: d.threshold, value: d.value, trigger: d.trigger});
+        Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value});
 });
 
 conn.on('initWorker', function () {
@@ -108,17 +108,9 @@ var init = function () {
         if(device) {
             device.trigger = data.trigger;
             device.forceTrigger = true;
+            device.trigger = data.trigger;
+            Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, highThreshold: d.highThreshold, lowThreshold: d.lowThreshold, threshold: d.threshold, value: d.value, trigger: d.trigger});
 
-            db.devices.find({id: device.id}, function (err, found) {
-                if(err) {
-                    console.log('updating trigger error', err);
-                    return;
-                }
-                if(!err && found) {
-                    found.trigger = data.trigger;
-                    db.devices.save({id: found.id}, {$set: {trigger: found.trigger}});
-                }
-            })
         } else
             console.log("can't find device for id ", data.id);
     });
