@@ -67,9 +67,11 @@ device.on('toggleControlled', function (d, oldVal) {
         var dev = ko.utils.arrayFirst(devices, function (item) {
            return item.id === d.id;
         });
-        dev.toggle(null, function (err, d) {
-            Transmit('change', {id: dev.id, value: d});
-        });
+        if(dev) {
+            dev.toggle(null, function (err, d) {
+                Transmit('change', {id: dev.id, value: d});
+            });
+        }
     }
 });
 
