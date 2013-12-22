@@ -118,7 +118,7 @@
             //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
 
             //check controls and triggers
-            if(self.controls.length) {
+            if(self.controls && self.controls.length > 0) {
                 //handle highs
                 if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
                     self.lastHighTrigger = self.value;
