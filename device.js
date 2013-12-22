@@ -145,66 +145,6 @@
 
             }
 
-            self.checkVal = function () {
-                //console.log('init direction in checkVal A', self.pin, self.name);
-                pinWork.getVal(self.pin, function (err, val) {
-                    if(err) {
-                        console.log('error in checkVal', self.pin, err);
-                        setTimeout(self.checkVal, self.sampleRate);
-                        return;
-                    }
-                    if(self.type === 'temp') {
-                        val = pinWork.calcTempF(val);
-                    }
-                    var valDiff = (val - self.value);
-                    if(valDiff > self.sampleTooHighLowThreshold) {
-                        self.sampleTooHighCnt++;
-                        if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
-                            console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                            setTimeout(self.checkVal, self.sampleRate);
-                            return;
-                        } else {
-                            self.sampleTooHighCnt = 0;
-                        }
-                    }  else {
-                        self.sampleTooHighCnt = 0;
-                    }
-
-                    if(valDiff < 0 && Math.abs(valDiff) > self.sampleTooHighLowThreshold) {
-                        self.sampleTooLowCnt++;
-                        if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
-                            console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                            setTimeout(self.checkVal, self.sampleRate);
-                            return;
-                        } else {
-                            self.sampleTooLowCnt = 0;
-                        }
-                    } else {
-                        self.sampleTooLowCnt = 0;
-                    }
-
-                    self.samples.push(val);
-                    //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
-                    if(self.samples.length === self.samplesLimit) {
-                        //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
-                        var average = 0.0;
-                        for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
-                            average += parseFloat(self.samples[iSamples]);
-                        }
-
-                        val = (average/self.samplesLimit).toFixed(2);
-                        self.checkState(val, self.value, self.isHigh, self.isLow, function () {
-                            self.samples = [];
-                            setTimeout(self.checkVal, self.sampleRate);
-                        });
-
-                    } else {
-                        setTimeout(self.checkVal, self.sampleRate);
-                    }
-
-                });//end get val
-            };//end checkVal
-
             if(self.actionType === 'thermo' && valO !== val) {
                 //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
                 //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
@@ -244,6 +184,66 @@
             if(typeof fn === 'function')
                 fn();
         };//end check state
+
+        self.checkVal = function () {
+            //console.log('init direction in checkVal A', self.pin, self.name);
+            pinWork.getVal(self.pin, function (err, val) {
+                if(err) {
+                    console.log('error in checkVal', self.pin, err);
+                    setTimeout(self.checkVal, self.sampleRate);
+                    return;
+                }
+                if(self.type === 'temp') {
+                    val = pinWork.calcTempF(val);
+                }
+                var valDiff = (val - self.value);
+                if(valDiff > self.sampleTooHighLowThreshold) {
+                    self.sampleTooHighCnt++;
+                    if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
+                        console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                        setTimeout(self.checkVal, self.sampleRate);
+                        return;
+                    } else {
+                        self.sampleTooHighCnt = 0;
+                    }
+                }  else {
+                    self.sampleTooHighCnt = 0;
+                }
+
+                if(valDiff < 0 && Math.abs(valDiff) > self.sampleTooHighLowThreshold) {
+                    self.sampleTooLowCnt++;
+                    if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
+                        console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                        setTimeout(self.checkVal, self.sampleRate);
+                        return;
+                    } else {
+                        self.sampleTooLowCnt = 0;
+                    }
+                } else {
+                    self.sampleTooLowCnt = 0;
+                }
+
+                self.samples.push(val);
+                //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
+                if(self.samples.length === self.samplesLimit) {
+                    //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
+                    var average = 0.0;
+                    for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
+                        average += parseFloat(self.samples[iSamples]);
+                    }
+
+                    val = (average/self.samplesLimit).toFixed(2);
+                    self.checkState(val, self.value, self.isHigh, self.isLow, function () {
+                        self.samples = [];
+                        setTimeout(self.checkVal, self.sampleRate);
+                    });
+
+                } else {
+                    setTimeout(self.checkVal, self.sampleRate);
+                }
+
+            });//end get val
+        };//end checkVal
 
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === self.pin;
