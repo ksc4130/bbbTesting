@@ -17,16 +17,16 @@ var worker = require('./worker'),
 
             }
         },
-        {
-            pin:'30',
-            name: 'Living Room',
-            type: 'light',
-            actionType: 'onoff',
-            isVisible: true,
-            ready: function () {
-
-            }
-        },
+//        {
+//            pin:'30',
+//            name: 'Living Room',
+//            type: 'light',
+//            actionType: 'onoff',
+//            isVisible: true,
+//            ready: function () {
+//
+//            }
+//        },
         {
             in:'68',
             name: 'Garage Door',
@@ -82,16 +82,16 @@ var worker = require('./worker'),
 
             }
         },
-        {
-            pin:'26',
-            name: 'Garage',
-            type: 'light',
-            actionType: 'onoff',
-            isVisible: true,
-            ready: function () {
-
-            }
-        },
+//        {
+//            pin:'26',
+//            name: 'Garage',
+//            type: 'light',
+//            actionType: 'onoff',
+//            isVisible: true,
+//            ready: function () {
+//
+//            }
+//        },
         {
             pin:'65',
             name: 'Cool',
