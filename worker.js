@@ -112,7 +112,7 @@ var init = function () {
             device.trigger = data.trigger;
             device.forceTrigger = true;
             device.trigger = data.trigger;
-            Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, highThreshold: d.highThreshold, lowThreshold: d.lowThreshold, threshold: d.threshold, value: d.value, trigger: d.trigger});
+            Transmit('thermo', {id: data.id, isLow: data.isLow, isHigh: data.isHigh, highThreshold: data.highThreshold, lowThreshold: data.lowThreshold, threshold: data.threshold, value: data.value, trigger: data.trigger});
 
         } else
             console.log("can't find device for id ", data.id);
