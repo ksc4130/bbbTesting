@@ -50,7 +50,8 @@
 
         val = val ? val.toString() : '0';
         val = ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) { return pin === item; })
-            ? parseFloat(val) : parseInt(val)
+            ? parseFloat(val) : parseInt(val);
+        console.log('setting val pin:', pin, 'val:', val);
         fs.writeFile(path, val, function (err) {
             if(err) {
                 console.log('error setting value for pin', pin, 'in setVal');
