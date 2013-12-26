@@ -109,10 +109,12 @@ var init = function () {
         });
 
         if(device) {
-            device.trigger = data.trigger;
+            device.highThreshold = data.highThreshold || device.highThreshold;
+            device.lowThreshold = data.lowThreshold || device.lowThreshold;
+            device.threshold = data.threshold || device.threshold;
+            device.trigger = data.trigger || device.trigger;
             device.forceTrigger = true;
-            device.trigger = data.trigger;
-            Transmit('thermo', {id: data.id, isLow: data.isLow, isHigh: data.isHigh, highThreshold: data.highThreshold, lowThreshold: data.lowThreshold, threshold: data.threshold, value: data.value, trigger: data.trigger});
+            Transmit('thermo', {id: device.id, isLow: device.isLow, isHigh: device.isHigh, highThreshold: device.highThreshold, lowThreshold: device.lowThreshold, threshold: device.threshold, value: device.value, trigger: device.trigger});
 
         } else
             console.log("can't find device for id ", data.id);
