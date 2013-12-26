@@ -120,9 +120,10 @@
             //check controls and triggers
             if(self.controls && self.controls.length > 0) {
                 //handle highs
-                if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold)) {
+                if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
                     self.lastHighTrigger = self.value;
                     self.lastTrigger = self.value;
+                    self.forceTrigger = false;
                     var highs = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'high' && !item.trigger});
                     ko.utils.arrayForEach(highs, function (item) {
                         item.value = self.isHigh ? 1 : 0;
@@ -132,9 +133,10 @@
                 }
 
                 //handle lows
-                if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) {
+                if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
                     self.lastLowTrigger = self.value;
                     self.lastTrigger = self.value;
+                    self.forceTrigger = false;
                     var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
                     //console.log('lows', self.pin, lows);
                     ko.utils.arrayForEach(lows, function (item) {
@@ -154,7 +156,7 @@
                     self.isHigh = isHighO;
                 }
 
-                self.forceTrigger = false;
+                //self.forceTrigger = false;
                 emitter.emit('thermo', self, valO);
                 //} else if(valO !== val) {
                 //emitter.emit('change', self, valO);
