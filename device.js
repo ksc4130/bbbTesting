@@ -95,6 +95,7 @@
 
         self.checkState = function (val, valO, isHighO, isLowO, fn) {
             var forceTrigger = !self.lastTrigger || self.forceTrigger;
+            var wasTriggered = false;
             //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
             valO = valO || self.value;
             isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
@@ -129,9 +130,7 @@
                 if(forceTrigger || (isHighO !== self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
                     if(self.actionType === 'thermo')
                         console.log('thermo isHighO !== self.isHigh lastTriggerDiff >= self.highThreshold', forceTrigger);
-                    self.lastHighTrigger = self.value;
-                    self.lastTrigger = self.value;
-                    self.forceTrigger = false;
+                    wasTriggered = true;
                     var highs = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'high' && !item.trigger});
                     ko.utils.arrayForEach(highs, function (item) {
                         item.value = self.isHigh ? 1 : 0;
@@ -144,9 +143,7 @@
                 if(forceTrigger || (isLowO !== self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
                     if(self.actionType === 'thermo')
                         console.log('thermo isLowO !== self.isLow lastTriggerDiff >= self.lowThreshold', forceTrigger, isLowO !== self.isLow, lastTriggerDiff >= self.lowThreshold);
-                    self.lastLowTrigger = self.value;
-                    self.lastTrigger = self.value;
-                    self.forceTrigger = false;
+                    wasTriggered = true;
                     var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
                     //console.log('lows', self.pin, lows);
                     ko.utils.arrayForEach(lows, function (item) {
@@ -156,6 +153,12 @@
                     });
                 }
 
+            }
+
+            if(wasTriggered) {
+                self.lastLowTrigger = self.value;
+                self.lastTrigger = self.value;
+                self.forceTrigger = false;
             }
 
             if(self.actionType === 'thermo' && valO !== val) {
