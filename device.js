@@ -117,7 +117,8 @@
             }
 
             //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
-
+            if(self.actionType === 'thermo')
+                console.log('thermo checkState forceTrigger:', forceTrigger, 'self.forceTrigger:', self.forceTrigger, 'lastTriggerDiff:', lastTriggerDiff, 'highThreshold:', self.highThreshold, 'lowThreshold:', self.lowThreshold, 'isHigh:', self.isHigh, 'isHighO:', isHighO)
             //check controls and triggers
             if(self.controls && self.controls.length > 0) {
                 //handle highs
@@ -162,28 +163,25 @@
                 //} else if(valO !== val) {
                 //emitter.emit('change', self, valO);
                 //}
-            }
-            if(self.actionType !== 'thermo' && valO !== val) {
-                if(self.actionType === 'switch') {
-                    //button was pressed do work
-                    //emitter.emit('switched', self);
-                    self.forceTrigger = false;
-                    self.lastTrigger = self.value;
-                    if(self.value < valO) {
-                        var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
-                        ko.utils.arrayForEach(lowSwitched, function (item) {
-                            emitter.emit('toggleControlled', item);
-                        });
-                    } if(self.value > valO) {
-                        var highSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger;});
-                        ko.utils.arrayForEach(highSwitched, function (item) {
-                            emitter.emit('toggleControlled', item);
-                        });
-                    }
-
-                } else {
-                    emitter.emit('change', self, valO);
+            } else if(self.actionType === 'switch' && valO !== val) {
+                //button was pressed do work
+                //emitter.emit('switched', self);
+                self.forceTrigger = false;
+                self.lastTrigger = self.value;
+                if(self.value < valO) {
+                    var lowSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'low' && !item.trigger;});
+                    ko.utils.arrayForEach(lowSwitched, function (item) {
+                        emitter.emit('toggleControlled', item);
+                    });
+                } if(self.value > valO) {
+                    var highSwitched = ko.utils.arrayFilter(self.controls, function (item) {return item.type === 'high' && !item.trigger;});
+                    ko.utils.arrayForEach(highSwitched, function (item) {
+                        emitter.emit('toggleControlled', item);
+                    });
                 }
+
+            } else if(valO !== val) {
+                emitter.emit('change', self, valO);
             }
             if(typeof fn === 'function')
                 fn();
