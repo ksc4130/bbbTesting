@@ -94,23 +94,24 @@
         self.sampleTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
 
         self.checkState = function (val, valO, isHighO, isLowO, fn) {
+            var forceTrigger = !self.lastTrigger || self.forceTrigger;
             //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
             valO = valO || self.value;
             isHighO = typeof isHighO === 'boolean' ? isHighO : self.isHigh;
             isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
             self.value = val;
 
-            self.forceTrigger = !self.lastTrigger || self.forceTrigger;// !self.lastHighTrigger || !self.lastLowTrigger;
+            // !self.lastHighTrigger || !self.lastLowTrigger;
             var lastTriggerDiff = Math.abs(self.lastTrigger - val);
             //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
             //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
             //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
             //set isHigh and isLow
-            if(self.forceTrigger || lastTriggerDiff >= self.highThreshold) {
+            if(forceTrigger || lastTriggerDiff >= self.highThreshold) {
                 self.isHigh = self.value >= (self.trigger + self.highThreshold);
                 //console.log('set ih high', self.isHigh);
             }
-            if(self.forceTrigger || lastTriggerDiff >= self.lowThreshold) {
+            if(forceTrigger || lastTriggerDiff >= self.lowThreshold) {
                 self.isLow = self.value <= (self.trigger - self.lowThreshold);
                 //console.log('set ih low', self.isLow);
             }
@@ -120,7 +121,7 @@
             //check controls and triggers
             if(self.controls && self.controls.length > 0) {
                 //handle highs
-                if(self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
+                if(forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
                     self.lastHighTrigger = self.value;
                     self.lastTrigger = self.value;
                     self.forceTrigger = false;
@@ -133,7 +134,7 @@
                 }
 
                 //handle lows
-                if(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
+                if(forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
                     self.lastLowTrigger = self.value;
                     self.lastTrigger = self.value;
                     self.forceTrigger = false;
@@ -151,10 +152,10 @@
             if(self.actionType === 'thermo' && valO !== val) {
                 //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
                 //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
-                if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
-                    self.isLow = isLowO;
-                    self.isHigh = isHighO;
-                }
+//                if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
+//                    self.isLow = isLowO;
+//                    self.isHigh = isHighO;
+//                }
 
                 //self.forceTrigger = false;
                 emitter.emit('thermo', self, valO);
