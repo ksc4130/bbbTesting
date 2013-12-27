@@ -107,18 +107,20 @@
             //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
             //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
             //set isHigh and isLow
-            if(forceTrigger || lastTriggerDiff >= self.highThreshold) {
+            if(forceTrigger || (lastTriggerDiff >= self.highThreshold)) {
+                console.log('in last trigger diff >= highThresh', self.value <= (self.trigger - self.highThreshold));
                 self.isHigh = self.value >= (self.trigger + self.highThreshold);
                 //console.log('set ih high', self.isHigh);
             }
-            if(forceTrigger || lastTriggerDiff >= self.lowThreshold) {
+            if(forceTrigger || (lastTriggerDiff >= self.lowThreshold)) {
+                console.log('in last trigger diff >= lowThresh', self.value <= (self.trigger - self.lowThreshold));
                 self.isLow = self.value <= (self.trigger - self.lowThreshold);
                 //console.log('set ih low', self.isLow);
             }
 
             //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
             if(self.actionType === 'thermo')
-                console.log('thermo checkState forceTrigger:', forceTrigger, 'self.forceTrigger:', self.forceTrigger, 'lastTriggerDiff:', lastTriggerDiff, 'highThreshold:', self.highThreshold, 'lowThreshold:', self.lowThreshold, 'isHigh:', self.isHigh, 'isHighO:', isHighO)
+                console.log('thermo checkState forceTrigger:', forceTrigger, 'self.forceTrigger:', self.forceTrigger, 'lastTriggerDiff:', lastTriggerDiff, 'highThreshold:', self.highThreshold, 'lowThreshold:', self.lowThreshold, 'isHigh:', self.isHigh, 'isHighO:', isHighO, 'isLow:', self.isLow, 'isLowO:', isLowO)
             //check controls and triggers
             if(self.controls && self.controls.length > 0) {
                 //handle highs
