@@ -76,7 +76,7 @@ device.on('toggleControlled', function (d, oldVal) {
 });
 
 device.on('thermo', function (d, oldVal) {
-    console.log('thermo event', d.name, d.isHigh, d.isLow);
+    //console.log('thermo event', d.name, d.isHigh, d.isLow);
     //console.log('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value, trigger: d.trigger});
         Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value});
 });
