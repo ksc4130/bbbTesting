@@ -165,7 +165,7 @@
 //                    self.isLow = isLowO;
 //                    self.isHigh = isHighO;
 //                }
-
+                console.log('thermo event', self.name, self.isHigh, self.isLow);
                 //self.forceTrigger = false;
                 emitter.emit('thermo', self, valO);
                 //} else if(valO !== val) {
