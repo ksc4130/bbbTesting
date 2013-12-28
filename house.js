@@ -69,12 +69,12 @@ var worker = require('./worker'),
                 {
                     pin: '26',
                     type: 'low'
-                },
-                {
-                    workerId: '36af9e74-2344-44d4-bc02-1608a851e1b0',
-                    pin: '17',
-                    type: 'low'
-                }
+                }//,
+//                {
+//                    workerId: '36af9e74-2344-44d4-bc02-1608a851e1b0',
+//                    pin: '17',
+//                    type: 'low'
+//                }
             ],
             samplesLimit: 1,
             sampleRate: 25,
