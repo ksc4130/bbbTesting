@@ -139,6 +139,8 @@ var worker = require('./worker'),
             isVisible: true,
             sampleTooHighLowCntOut : 5,
             sampleTooHighLowThreshold: 5,
+            valueTooHighLowCntOut : 5,
+            valueTooHighLowThreshold: 5,
             ready: function () {
 
             }

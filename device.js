@@ -93,7 +93,43 @@
         self.sampleTooHighLowCntOut = args.sampleTooHighLowCntOut || 3;
         self.sampleTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
 
+        self.valueTooHighCnt = 0;
+        self.valueTooLowCnt = 0;
+        self.valueTooHighLowCntOut = args.sampleTooHighLowCntOut || 3;
+        self.valueTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
+
         self.checkState = function (val, valO, isHighO, isLowO, fn) {
+            var valDiff = (val - self.value);
+            if(valDiff > self.valueTooHighLowThreshold) {
+                self.valueTooHighCnt++;
+                if(self.valueTooHighCnt < self.valueTooHighLowCntOut) {
+                    console.log('value too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                    //setTimeout(self.checkVal, self.sampleRate);
+                    if(typeof fn === 'function')
+                        fn();
+                    return;
+                } else {
+                    self.valueTooHighCnt = 0;
+                }
+            }  else {
+                self.valueTooHighCnt = 0;
+            }
+
+            if(valDiff < 0 && Math.abs(valDiff) > self.valueTooHighLowThreshold) {
+                self.valueTooLowCnt++;
+                if(self.valueTooLowCnt < self.valueTooHighLowCntOut) {
+                    console.log('value too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
+                    //setTimeout(self.checkVal, self.sampleRate);
+                    if(typeof fn === 'function')
+                        fn();
+                    return;
+                } else {
+                    self.valueTooLowCnt = 0;
+                }
+            } else {
+                self.valueTooLowCnt = 0;
+            }
+
             var forceTrigger = !self.lastTrigger || self.forceTrigger;
             var wasTriggered = false;
             //console.log('checkState', self.pin, val, valO, isHighO, isLowO, fn);
