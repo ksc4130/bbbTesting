@@ -146,13 +146,13 @@
             //set isHigh and isLow
             if(forceTrigger || (lastTriggerDiff >= self.highThreshold) || (val <= self.trigger && isHighO)) {
                 if(self.actionType === 'thermo')
-                    console.log('thermo in last trigger diff >= highThresh', self.value >= (self.trigger - self.highThreshold));
+                    console.log('thermo in last trigger diff >= highThresh', self.value, self.trigger, self.highThreshold);
                 self.isHigh = self.value >= (self.trigger + self.highThreshold);
                 //console.log('set ih high', self.isHigh);
             }
             if(forceTrigger || (lastTriggerDiff >= self.lowThreshold) || (val >= self.trigger && isLowO)) {
-                //if(self.actionType === 'thermo')
-                    //console.log('thermo in last trigger diff >= lowThresh', self.value <= (self.trigger - self.lowThreshold));
+                if(self.actionType === 'thermo')
+                    console.log('thermo in last trigger diff >= lowThresh', self.value, self.trigger,  self.lowThreshold);
                 self.isLow = self.value <= (self.trigger - self.lowThreshold);
                 //console.log('set ih low', self.isLow);
             }
