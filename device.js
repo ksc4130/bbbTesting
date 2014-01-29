@@ -51,6 +51,7 @@
         self.actionType = args.actionType;
         self.type = args.type;
         self.controls = args.controls;
+        self.isDisposed = false;
 
         self.isVisible = args.isVisible || false;
 
@@ -104,7 +105,8 @@
                 self.valueTooHighCnt++;
                 if(self.valueTooHighCnt < self.valueTooHighLowCntOut) {
                     console.log('value too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                    //setTimeout(self.checkVal, self.sampleRate);
+                    //if(!self.isDisposed)
+                    // setTimeout(self.checkVal, self.sampleRate);
                     if(typeof fn === 'function')
                         fn();
                     return;
@@ -119,7 +121,8 @@
                 self.valueTooLowCnt++;
                 if(self.valueTooLowCnt < self.valueTooHighLowCntOut) {
                     console.log('value too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                    //setTimeout(self.checkVal, self.sampleRate);
+                    //if(!self.isDisposed)
+                    // setTimeout(self.checkVal, self.sampleRate);
                     if(typeof fn === 'function')
                         fn();
                     return;
@@ -239,7 +242,8 @@
             pinWork.getVal(self.pin, function (err, val) {
                 if(err) {
                     console.log('error in checkVal', self.pin, err);
-                    setTimeout(self.checkVal, self.sampleRate);
+                    if(!self.isDisposed)
+                        setTimeout(self.checkVal, self.sampleRate);
                     return;
                 }
                 if(self.type === 'temp') {
@@ -250,7 +254,8 @@
                     self.sampleTooHighCnt++;
                     if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
                         console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                        setTimeout(self.checkVal, self.sampleRate);
+                        if(!self.isDisposed)
+                            setTimeout(self.checkVal, self.sampleRate);
                         return;
                     } else {
                         self.sampleTooHighCnt = 0;
@@ -263,7 +268,8 @@
                     self.sampleTooLowCnt++;
                     if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
                         console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                        setTimeout(self.checkVal, self.sampleRate);
+                        if(!self.isDisposed)
+                            setTimeout(self.checkVal, self.sampleRate);
                         return;
                     } else {
                         self.sampleTooLowCnt = 0;
@@ -284,11 +290,13 @@
                     val = (average/self.samplesLimit).toFixed(2);
                     self.checkState(val, self.value, self.isHigh, self.isLow, function () {
                         self.samples = [];
-                        setTimeout(self.checkVal, self.sampleRate);
+                        if(!self.isDisposed)
+                            setTimeout(self.checkVal, self.sampleRate);
                     });
 
                 } else {
-                    setTimeout(self.checkVal, self.sampleRate);
+                    if(!self.isDisposed)
+                        setTimeout(self.checkVal, self.sampleRate);
                 }
 
             });//end get val
@@ -308,7 +316,8 @@
         if(self.actionType === 'momentary') {
             self.toggle = function () {
                 self.setVal(1, function (err, fn) {
-                    setTimeout(function (fn) {
+                    if(!self.isDisposed)
+                        setTimeout(function (fn) {
                         self.setVal(0, fn);
                     }, 150);
                 });
@@ -380,6 +389,10 @@
                 //console.log('init direction in A', self.pin, self.name);
                 self.checkVal();
             }
+        };
+
+        self.dispose = function () {
+            self.isDisposed = true;
         };
 
 

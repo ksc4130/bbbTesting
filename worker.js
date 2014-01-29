@@ -87,6 +87,11 @@ conn.on('initWorker', function () {
 });
 
 conn.on('devices', function (data) {
+    if(devices && devices.length > 0) {
+        devices.forEach(function (item) {
+            item.dispose();
+        });
+    }
     //console.log('device for io server', data);
     devices = ko.utils.arrayMap(data, function (dev){
         return new Device(dev);
