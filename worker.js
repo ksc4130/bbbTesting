@@ -108,6 +108,16 @@ var init = function () {
     conn.on('transmit', function (data) {
         console.log('transmit'. data);
         transmit = data;
+        if(data) {
+            devices.forEach(function (d) {
+                if(d.isVisible) {
+                    if(d.actionType === 'thermo')
+                        Transmit('thermo', {id: d.id, isLow: d.isLow, isHigh: d.isHigh, value: d.value});
+                    else
+                        Transmit('change', {id: d.id, value: d.value});
+                }
+            });
+        }
     });
 
     conn.on('setTrigger', function(data) {
