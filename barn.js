@@ -22,10 +22,13 @@ var worker = require('./worker'),
         {pin: '22',
             type: 'light',
             actionType: 'switch',
+            isVisible: false,
             controls: [{
                 pin: '17',
                 type: 'low'
             }],
+            samplesLimit: 1,
+            sampleRate: 25,
             ready: function () {
 
             }
@@ -33,10 +36,13 @@ var worker = require('./worker'),
         {pin: '23',
             type: 'light',
             actionType: 'switch',
+            isVisible: false,
             controls: [{
                 pin: '27',
                 type: 'low'
             }],
+            samplesLimit: 1,
+            sampleRate: 25,
             ready: function () {
 
             }
@@ -45,7 +51,9 @@ var worker = require('./worker'),
             name: 'Barn Motion',
             type: 'motion',
             actionType: 'sensor',
-            isVisible: true
+            isVisible: true,
+            samplesLimit: 1,
+            sampleRate: 25
         }
     ];
 
