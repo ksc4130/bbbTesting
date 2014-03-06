@@ -99,7 +99,7 @@
             //handle highs
             if(forceTrigger || (isHighO !== self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
                 if(self.actionType === 'thermo')
-                    console.log('thermo isHighO !== self.isHigh lastTriggerDiff >= self.highThreshold', forceTrigger);
+                    console.log('thermo isHighO !== self.isHigh lastTriggerDiff >= self.highThreshold forceTrigger', forceTrigger, 'isHighO', isHighO, 'self.isHigh', self.isHigh, 'lastTriggerDiff', lastTriggerDiff, 'self.highThreshold', self.highThreshold);
                 wasTriggered = true;
                 var highs = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'high' && !item.trigger});
                 ko.utils.arrayForEach(highs, function (item) {
@@ -111,8 +111,8 @@
 
             //handle lows
             if(forceTrigger || (isLowO !== self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
-                if(self.actionType === 'thermo')
-                    console.log('thermo isLowO !== self.isLow lastTriggerDiff >= self.lowThreshold', forceTrigger, isLowO !== self.isLow, lastTriggerDiff >= self.lowThreshold);
+                //if(self.actionType === 'thermo')
+                    //console.log('thermo isLowO !== self.isLow lastTriggerDiff >= self.lowThreshold', forceTrigger, isLowO !== self.isLow, lastTriggerDiff >= self.lowThreshold);
                 wasTriggered = true;
                 var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
                 //console.log('lows', self.pin, lows);
@@ -290,7 +290,7 @@
         self.lastTrigger = args.lastTrigger;
         self.lastHighTrigger = args.lastTrigger;
         self.lastLowTrigger = args.lastTrigger;
-        self.forceTrigger = args.forceTrigger || false;
+        self.forceTrigger = args.forceTrigger || true;
 
         self.trigger = args.trigger;
         //self.highTrigger = args.highTrigger || 1;
