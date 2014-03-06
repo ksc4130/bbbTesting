@@ -36,8 +36,6 @@
             self.valueTooHighCnt++;
             if(self.valueTooHighCnt < self.valueTooHighLowCntOut) {
                 console.log('value too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                //if(!self.isDisposed)
-                // setTimeout(self.checkVal, self.sampleRate);
                 if(typeof fn === 'function')
                     fn();
                 return;
@@ -52,8 +50,6 @@
             self.valueTooLowCnt++;
             if(self.valueTooLowCnt < self.valueTooHighLowCntOut) {
                 console.log('value too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-                //if(!self.isDisposed)
-                // setTimeout(self.checkVal, self.sampleRate);
                 if(typeof fn === 'function')
                     fn();
                 return;
@@ -72,16 +68,12 @@
         isLowO =  typeof isLowO === 'boolean' ? isLowO : self.isLow;
         self.value = val;
 
-        // !self.lastHighTrigger || !self.lastLowTrigger;
         var lastTriggerDiff = Math.abs(self.lastTrigger - val);
-        //var lastHighTriggerDiff = Math.abs(self.lastHighTrigger - val);
-        //var lastLowTriggerDiff = Math.abs(self.lastHighTrigger - val);
-        //console.log('trigger diff', lastHighTriggerDiff, lastLowTriggerDiff, lastTriggerDiff);
         //set isHigh and isLow
         if(forceTrigger || (lastTriggerDiff >= self.highThreshold) || (val <= self.trigger && isHighO)) {
             if(self.actionType === 'thermo')
-                console.log('thermo in last trigger diff >= highThresh', 'value', self.value, 'trigger', self.trigger, 'highThresh', self.highThreshold, '(self.trigger + self.highThreshold)', (parseFloat(self.trigger) + parseFloat(self.highThreshold)));
-            self.isHigh = parseFloat(self.value) >= (parseFloat(self.trigger) + parseFloat(self.highThreshold));
+                console.log('thermo in last trigger diff >= highThresh', 'value', self.value, 'trigger', self.trigger, 'highThresh', self.highThreshold, '(self.trigger + self.highThreshold)', (self.trigger + self.highThreshold));
+            self.isHigh = parseFloat(self.value) >= (self.trigger + self.highThreshold);
             console.log('set ih high', self.isHigh);
         }
         if(forceTrigger || (lastTriggerDiff >= self.lowThreshold) || (val >= self.trigger && isLowO)) {
@@ -90,10 +82,6 @@
             self.isLow = self.value <= (self.trigger - self.lowThreshold);
             //console.log('set ih low', self.isLow);
         }
-
-        //console.log(self.forceTrigger, self.trigger, self.lowThreshold, lastTriggerDiff, self.pin);
-        //if(self.actionType === 'thermo')
-        //console.log('thermo checkState forceTrigger:', forceTrigger, 'self.forceTrigger:', self.forceTrigger, 'lastTriggerDiff:', lastTriggerDiff, 'highThreshold:', self.highThreshold, 'lowThreshold:', self.lowThreshold, 'isHigh:', self.isHigh, 'isHighO:', isHighO, 'isLow:', self.isLow, 'isLowO:', isLowO)
         //check controls and triggers
         if(self.controls && self.controls.length > 0) {
             //handle highs
@@ -105,7 +93,6 @@
                 ko.utils.arrayForEach(highs, function (item) {
                     item.value = self.isHigh ? 1 : 0;
                     emitter.emit('changeControlled', item);
-                    //console.log('changing controlled', item.name, item.pin, item.value);
                 });
             }
 
@@ -115,11 +102,9 @@
                     //console.log('thermo isLowO !== self.isLow lastTriggerDiff >= self.lowThreshold', forceTrigger, isLowO !== self.isLow, lastTriggerDiff >= self.lowThreshold);
                 wasTriggered = true;
                 var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
-                //console.log('lows', self.pin, lows);
                 ko.utils.arrayForEach(lows, function (item) {
                     item.value = self.isLow ? 1 : 0;
                     emitter.emit('changeControlled', item);
-                    //console.log('changing controlled', item.name, item.pin, item.value);
                 });
             }
 
@@ -132,21 +117,8 @@
         }
 
         if(self.actionType === 'thermo' && valO !== val) {
-            //console.log('***************** thermo samples', val, self.sampleRate, self.samplesLimit, self.samples.length);
-            //if(self.forceTrigger || (self.isLow !== isLowO || self.isHigh !== isHighO)) {
-//                if(!(self.forceTrigger || (isLowO != self.isLow && lastTriggerDiff >= self.lowThreshold)) && ! (self.forceTrigger || (isHighO != self.isHigh && lastTriggerDiff >= self.highThreshold))) {
-//                    self.isLow = isLowO;
-//                    self.isHigh = isHighO;
-//                }
-
-            //self.forceTrigger = false;
             emitter.emit('thermo', self, valO);
-            //} else if(valO !== val) {
-            //emitter.emit('change', self, valO);
-            //}
         } else if(self.actionType === 'switch' && valO !== val) {
-            //button was pressed do work
-            //emitter.emit('switched', self);
             self.forceTrigger = false;
             self.lastTrigger = self.value;
             if(self.value < valO) {
@@ -173,7 +145,6 @@
         if(!self.pin) {
             console.log('check val !pin', self.pin, self.name);
         }
-        //console.log('init direction in checkVal A', self.pin, self.name);
         pinWork.getVal(self.pin, function (err, val) {
             if(err) {
                 console.log('error in checkVal', self.pin, err);
@@ -220,9 +191,7 @@
             }
 
             self.samples.push(val);
-            //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
             if(self.samples.length === self.samplesLimit) {
-                //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
                 var average = 0.0;
                 for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
                     average += parseFloat(self.samples[iSamples]);
