@@ -126,10 +126,10 @@ var init = function () {
         });
 
         if(device) {
-            device.highThreshold = data.highThreshold || device.highThreshold;
-            device.lowThreshold = data.lowThreshold || device.lowThreshold;
-            device.threshold = data.threshold || device.threshold;
-            device.trigger = data.trigger || device.trigger;
+            device.highThreshold = parseFloat(data.highThreshold || device.highThreshold);
+            device.lowThreshold = parseFloat(data.lowThreshold || device.lowThreshold);
+            device.threshold = parseFloat(data.threshold || device.threshold);
+            device.trigger = parseFloat(data.trigger || device.trigger);
             device.forceTrigger = true;
             Transmit('thermo', {id: device.id, isLow: device.isLow, isHigh: device.isHigh, highThreshold: device.highThreshold, lowThreshold: device.lowThreshold, threshold: device.threshold, value: device.value, trigger: device.trigger});
 
