@@ -31,7 +31,7 @@
 
     Device.prototype.checkState = function (val, valO, isHighO, isLowO, fn) {
         var self = this;
-        var valDiff = (val - self.value);
+        var valDiff = (parseFloat(val) - parseFloat(self.value));
         if(valDiff > self.valueTooHighLowThreshold) {
             self.valueTooHighCnt++;
             if(self.valueTooHighCnt < self.valueTooHighLowCntOut) {
@@ -287,100 +287,35 @@
         self.direction =  actionTypeDirections[self.actionType];
         self.edge = edges[self.actionType];
 
-        self.lastTrigger = args.lastTrigger;
-        self.lastHighTrigger = args.lastTrigger;
-        self.lastLowTrigger = args.lastTrigger;
+        self.lastTrigger = parseFloat(args.lastTrigger);
+//        self.lastHighTrigger = args.lastTrigger;
+//        self.lastLowTrigger = args.lastTrigger;
         self.forceTrigger = args.forceTrigger || true;
 
-        self.trigger = args.trigger;
+        self.trigger = parseFloat(args.trigger);
         //self.highTrigger = args.highTrigger || 1;
         //self.lowTrigger = args.lowTrigger || 0;
 
-        self.threshold = args.threshold;
-        self.highThreshold = args.highThreshold || 1;
-        self.lowThreshold = args.lowThreshold || 0;
+        self.threshold = parseFloat(args.threshold);
+        self.highThreshold = parseFloat(args.highThreshold || 1);
+        self.lowThreshold = parseFloat(args.lowThreshold || 0);
 
         self.isLow = args.isLow || false;
         self.isHigh = args.isHigh || false;
 
-        self.samplesLimit = args.samplesLimit || 10;
-        self.sampleRate = args.sampleRate || 50;
+        self.samplesLimit = parseFloat(args.samplesLimit || 10);
+        self.sampleRate = parseFloat(args.sampleRate || 50);
         console.log('new device sample rate', self.name, self.sampleRate);
         self.samples = args.samples || [];
         self.sampleTooHighCnt = 0;
         self.sampleTooLowCnt = 0;
-        self.sampleTooHighLowCntOut = args.sampleTooHighLowCntOut || 3;
-        self.sampleTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
+        self.sampleTooHighLowCntOut = parseFloat(args.sampleTooHighLowCntOut || 3);
+        self.sampleTooHighLowThreshold = parseFloat(args.sampleTooHighLowCntOut || 3);
 
         self.valueTooHighCnt = 0;
         self.valueTooLowCnt = 0;
-        self.valueTooHighLowCntOut = args.sampleTooHighLowCntOut || 3;
-        self.valueTooHighLowThreshold = args.sampleTooHighLowCntOut || 3;
-
-//        self.checkVal = function () {
-//            //console.log('init direction in checkVal A', self.pin, self.name);
-//            pinWork.getVal(self.pin, function (err, val) {
-//                if(err) {
-//                    console.log('error in checkVal', self.pin, err);
-//                    if(!self.isDisposed)
-//                        setTimeout(self.checkVal, self.sampleRate);
-//                    return;
-//                }
-//                if(self.type === 'temp') {
-//                    val = pinWork.calcTempF(val);
-//                }
-//                var valDiff = (val - self.value);
-//                if(valDiff > self.sampleTooHighLowThreshold) {
-//                    self.sampleTooHighCnt++;
-//                    if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
-//                        console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-//                        if(!self.isDisposed)
-//                            setTimeout(self.checkVal, self.sampleRate);
-//                        return;
-//                    } else {
-//                        self.sampleTooHighCnt = 0;
-//                    }
-//                }  else {
-//                    self.sampleTooHighCnt = 0;
-//                }
-//
-//                if(valDiff < 0 && Math.abs(valDiff) > self.sampleTooHighLowThreshold) {
-//                    self.sampleTooLowCnt++;
-//                    if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
-//                        console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
-//                        if(!self.isDisposed)
-//                            setTimeout(self.checkVal, self.sampleRate);
-//                        return;
-//                    } else {
-//                        self.sampleTooLowCnt = 0;
-//                    }
-//                } else {
-//                    self.sampleTooLowCnt = 0;
-//                }
-//
-//                self.samples.push(val);
-//                //console.log('samples A', self.pin, self.name, self.samples.length, self.samplesLimit);
-//                if(self.samples.length === self.samplesLimit) {
-//                    //console.log('samples B', self.pin, self.name, self.samples.length, self.samplesLimit);
-//                    var average = 0.0;
-//                    for(var iSamples = 0, ilSamples = self.samplesLimit; iSamples < ilSamples; iSamples++) {
-//                        average += parseFloat(self.samples[iSamples]);
-//                    }
-//
-//                    val = (average/self.samplesLimit).toFixed(2);
-//                    self.checkState(val, self.value, self.isHigh, self.isLow, function () {
-//                        self.samples = [];
-//                        if(!self.isDisposed)
-//                            setTimeout(self.checkVal, self.sampleRate);
-//                    });
-//
-//                } else {
-//                    if(!self.isDisposed)
-//                        setTimeout(self.checkVal, self.sampleRate);
-//                }
-//
-//            });//end get val
-//        };//end checkVal
+        self.valueTooHighLowCntOut = parseFloat(args.sampleTooHighLowCntOut || 3);
+        self.valueTooHighLowThreshold = parseFloat(args.sampleTooHighLowCntOut || 3);
 
         if(ko.utils.arrayFirst(globals.bbbAnalogPins, function (item) {
             return item === self.pin;
@@ -391,7 +326,6 @@
             self.isAnalog = false;
             self.path = globals.gpioPath + self.pin +'/value';
         }
-
 
         if(self.actionType === 'momentary') {
             self.toggle = function () {
@@ -431,7 +365,7 @@
                     fn(err, null);
                     return;
                 }
-                self.value = val;
+                self.value = parseFloat(val);
                 if(valO !== val)
                     emitter.emit('change', self, valO);
                 fn(null, val);
@@ -446,7 +380,7 @@
                     fn(err, null);
                     return;
                 }
-                self.value = val;
+                self.value = parseFloat(val);
                 if(valO !== val)
                     emitter.emit('change', self, valO);
 
