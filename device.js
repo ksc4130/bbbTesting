@@ -173,7 +173,7 @@
         if(!self.pin) {
             console.log('check val !pin', self.pin, self.name);
         }
-        console.log('init direction in checkVal A', self.pin, self.name);
+        //console.log('init direction in checkVal A', self.pin, self.name);
         pinWork.getVal(self.pin, function (err, val) {
             if(err) {
                 console.log('error in checkVal', self.pin, err);
