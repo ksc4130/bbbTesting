@@ -178,7 +178,9 @@
             if(err) {
                 console.log('error in checkVal', self.pin, err);
                 if(!self.isDisposed)
-                    setTimeout(self.checkVal, self.sampleRate);
+                    setTimeout(function () {
+                        self.checkVal.call(self);
+                    }, self.sampleRate);
                 return;
             }
             if(self.type === 'temp') {
@@ -190,7 +192,9 @@
                 if(self.sampleTooHighCnt < self.sampleTooHighLowCntOut) {
                     console.log('sample too high val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
                     if(!self.isDisposed)
-                        setTimeout(self.checkVal, self.sampleRate);
+                        setTimeout(function () {
+                            self.checkVal.call(self);
+                        }, self.sampleRate);
                     return;
                 } else {
                     self.sampleTooHighCnt = 0;
@@ -204,7 +208,9 @@
                 if(self.sampleTooLowCnt < self.sampleTooHighLowCntOut) {
                     console.log('sample too low val:', val, 'valDiff:', valDiff, 'sampleRate:', self.sampleRate);
                     if(!self.isDisposed)
-                        setTimeout(self.checkVal, self.sampleRate);
+                        setTimeout(function () {
+                            self.checkVal.call(self);
+                        }, self.sampleRate);
                     return;
                 } else {
                     self.sampleTooLowCnt = 0;
@@ -226,12 +232,16 @@
                 self.checkState(val, self.value, self.isHigh, self.isLow, function () {
                     self.samples = [];
                     if(!self.isDisposed)
-                        setTimeout(self.checkVal, self.sampleRate);
+                        setTimeout(function () {
+                            self.checkVal.call(self);
+                        }, self.sampleRate);
                 });
 
             } else {
                 if(!self.isDisposed)
-                    setTimeout(self.checkVal, self.sampleRate);
+                    setTimeout(function () {
+                        self.checkVal.call(self);
+                    }, self.sampleRate);
             }
 
         });//end get val
