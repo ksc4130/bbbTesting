@@ -34,7 +34,7 @@
     };
 
     Device.prototype.fnIsLow = function () {
-        return this.value <= (this.trigger + this.lowThreshold);
+        return this.value <= (this.trigger - this.lowThreshold);
     };
 
     Device.prototype.checkState = function (val, valO, isHighO, isLowO, fn) {
