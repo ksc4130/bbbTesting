@@ -29,6 +29,14 @@
         pinSubs = {},
         digSubs = {};
 
+    Device.prototype.fnIsHigh = function () {
+        return this.value >= (this.trigger + this.highThreshold);
+    };
+
+    Device.prototype.fnIsLow = function () {
+        return this.value <= (this.trigger + this.lowThreshold);
+    };
+
     Device.prototype.checkState = function (val, valO, isHighO, isLowO, fn) {
         var self = this;
         var valDiff = (parseFloat(val) - parseFloat(self.value));
@@ -72,15 +80,15 @@
         //set isHigh and isLow
         if(forceTrigger || (lastTriggerDiff >= self.highThreshold) || (val <= self.trigger && isHighO)) {
             var trigPlusThresh = (self.trigger + self.highThreshold);
-            if(self.actionType === 'thermo')
-                console.log('thermo in last trigger diff >= highThresh', 'type of trig', typeof self.trigger, 'type of high thresh', typeof self.highThreshold, 'value', self.value, 'trigger', self.trigger, 'highThresh', self.highThreshold, 'trigPlusThresh', trigPlusThresh);
-            self.isHigh = parseFloat(self.value) >= trigPlusThresh;
-            console.log('set ih high', self.isHigh);
+//            if(self.actionType === 'thermo')
+//                console.log('thermo in last trigger diff >= highThresh', 'type of trig', typeof self.trigger, 'type of high thresh', typeof self.highThreshold, 'value', self.value, 'trigger', self.trigger, 'highThresh', self.highThreshold, 'trigPlusThresh', trigPlusThresh);
+            self.isHigh = self.fnIsHigh();//parseFloat(self.value) >= trigPlusThresh;
+            //console.log('set ih high', self.isHigh);
         }
         if(forceTrigger || (lastTriggerDiff >= self.lowThreshold) || (val >= self.trigger && isLowO)) {
             //if(self.actionType === 'thermo')
                 //console.log('thermo in last trigger diff >= lowThresh', self.value, self.trigger,  self.lowThreshold);
-            self.isLow = self.value <= (self.trigger - self.lowThreshold);
+            self.isLow = self.fnIsLow();//self.value <= (self.trigger - self.lowThreshold);
             //console.log('set ih low', self.isLow);
         }
         //check controls and triggers
@@ -89,6 +97,7 @@
             if(forceTrigger || (isHighO !== self.isHigh && lastTriggerDiff >= self.highThreshold) && self.actionType !== 'switch') {
                 if(self.actionType === 'thermo')
                     console.log('thermo isHighO !== self.isHigh lastTriggerDiff >= self.highThreshold forceTrigger', forceTrigger, 'isHighO', isHighO, 'self.isHigh', self.isHigh, 'lastTriggerDiff', lastTriggerDiff, 'self.highThreshold', self.highThreshold);
+                self.lastHighTrigger = self.value;
                 wasTriggered = true;
                 var highs = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'high' && !item.trigger});
                 ko.utils.arrayForEach(highs, function (item) {
@@ -101,6 +110,7 @@
             if(forceTrigger || (isLowO !== self.isLow && lastTriggerDiff >= self.lowThreshold) && self.actionType !== 'switch') {
                 //if(self.actionType === 'thermo')
                     //console.log('thermo isLowO !== self.isLow lastTriggerDiff >= self.lowThreshold', forceTrigger, isLowO !== self.isLow, lastTriggerDiff >= self.lowThreshold);
+                self.lastLowTrigger = self.value;
                 wasTriggered = true;
                 var lows = ko.utils.arrayFilter(self.controls, function (item) {return item && item.type === 'low' && !item.trigger;});
                 ko.utils.arrayForEach(lows, function (item) {
@@ -112,7 +122,6 @@
         }
 
         if(wasTriggered) {
-            self.lastLowTrigger = self.value;
             self.lastTrigger = self.value;
             self.forceTrigger = false;
         }
