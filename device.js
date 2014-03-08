@@ -76,7 +76,7 @@
                 console.log('thermo in last trigger diff >= highThresh', 'type of trig', typeof self.trigger, 'type of high thresh', typeof self.highThreshold, 'value', self.value, 'trigger', self.trigger, 'highThresh', self.highThreshold, 'trigPlusThresh', trigPlusThresh);
             self.isHigh = parseFloat(self.value) >= trigPlusThresh;
             console.log('set ih high', self.isHigh);
-        }trigPlusThresh
+        }
         if(forceTrigger || (lastTriggerDiff >= self.lowThreshold) || (val >= self.trigger && isLowO)) {
             //if(self.actionType === 'thermo')
                 //console.log('thermo in last trigger diff >= lowThresh', self.value, self.trigger,  self.lowThreshold);
