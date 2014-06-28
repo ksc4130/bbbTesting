@@ -113,47 +113,48 @@ var worker = require('./worker'),
 
             }
         },
-        {
-            pin:'AIN3',
-            name: 'Thermo',
-            type: 'temp',
-            actionType: 'thermo',
-            sampleRate: 100,
-            controls: [
-                {
-                    type: 'high',
-                    pin: '65'
-                },
-                {
-                    type: 'low',
-                    pin: '61'
-                }
-            ],
-            cool: '65',
-            heat: '61',//65
-            trigger: 75.5,
-            threshold: 1,
-            highThreshold: 3,
-            lowThreshold: 1,
-            tolerance: .5,
-            isVisible: true,
-            sampleTooHighLowCntOut : 5,
-            sampleTooHighLowThreshold: 5,
-            valueTooHighLowCntOut : 5,
-            valueTooHighLowThreshold: 5,
-            ready: function () {
-
-            }
-        }//,
-//        {pin:'AIN3', {
-//            name: 'Temp',
+//        {
+//            pin:'AIN3',
+//            name: 'Thermo',
 //            type: 'temp',
-//            actionType: 'sensor',
+//            actionType: 'thermo',
+//            sampleRate: 100,
+//            controls: [
+//                {
+//                    type: 'high',
+//                    pin: '65'
+//                },
+//                {
+//                    type: 'low',
+//                    pin: '61'
+//                }
+//            ],
+//            cool: '65',
+//            heat: '61',//65
+//            trigger: 75.5,
+//            threshold: 1,
+//            highThreshold: 3,
+//            lowThreshold: 1,
+//            tolerance: .5,
 //            isVisible: true,
+//            sampleTooHighLowCntOut : 5,
+//            sampleTooHighLowThreshold: 5,
+//            valueTooHighLowCntOut : 5,
+//            valueTooHighLowThreshold: 5,
 //            ready: function () {
 //
 //            }
-//        }),
+//        }
+        //,
+        {pin:'AIN3',
+            name: 'Temp',
+            type: 'temp',
+            actionType: 'sensor',
+            isVisible: true,
+            ready: function () {
+
+            }
+        }//),
 //        {pin:'AIN1', {
 //            name: 'Light',
 //            type: 'light',
