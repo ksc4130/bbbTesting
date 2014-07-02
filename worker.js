@@ -9,7 +9,8 @@ var device = require('./device')
     , Device = device.Device
     , workerId
     , devices = []
-    transmit = false;
+    ,devsPath = './devs.txt'
+    ,transmit = false;
 
 var serverUrl = 'http://kyngster.com:4131';
 var conn = io.connect(serverUrl);
@@ -20,6 +21,14 @@ function Transmit(event, data) {
         conn.emit(event, data);
     }
 
+}
+
+function saveDevices() {
+    var devs = JSON.stringify(devices);
+    fs.writeFile(devsPath, devs, function (err) {
+        if(err)
+            console.log('error writing devs file', err);
+    });
 }
 
 device.on('switched', function (d) {
@@ -132,7 +141,7 @@ var init = function () {
             device.trigger = parseFloat(data.trigger || device.trigger);
             device.forceTrigger = true;
             Transmit('thermo', {id: device.id, isLow: device.isLow, isHigh: device.isHigh, highThreshold: device.highThreshold, lowThreshold: device.lowThreshold, threshold: device.threshold, value: device.value, trigger: device.trigger});
-
+            saveDevices();
         } else
             console.log("can't find device for id ", data.id);
     });
@@ -145,6 +154,7 @@ var init = function () {
 
         if(device && typeof device !== 'undefined' && device !== null) {
             device.toggle(null);
+            saveDevices();
         } else
             console.log("can't find device for id ", data.id);
 
@@ -162,8 +172,20 @@ var init = function () {
 
 
 module.exports.init = function (args) {
-    workerId = args.workerId;
-    devices = args.devices;
+
+    fs.exists(devsPath, function (exists) {
+        workerId = args.workerId;
+        if(exists) {
+            console.log('using saved devices');
+            fs.readFile(devsPath, function (err, data) {
+                var devs = JSON.parse(data);
+                devices = devs;
+            });
+        } else {
+            devices = args.devices;
+        }
+    });
+
     //init();
     //isVisible: true
 //    db.devices.find({}, function (err, found) {
