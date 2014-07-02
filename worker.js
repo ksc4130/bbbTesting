@@ -9,8 +9,10 @@ var device = require('./device')
     , Device = device.Device
     , workerId
     , devices = []
+    ,savedDevs = []
     ,devsPath = './devs.txt'
-    ,transmit = false;
+    ,transmit = false
+    ,isUsingSavedDevs = false;
 
 var serverUrl = 'http://kyngster.com:4131';
 var conn = io.connect(serverUrl);
@@ -105,6 +107,19 @@ conn.on('devices', function (data) {
     }
     //console.log('device for io server', data);
     devices = ko.utils.arrayMap(data, function (dev){
+        var savedDev;
+        if(isUsingSavedDevs) {
+            console.log('is using saved dev');
+            savedDev = ko.utils.arrayFirst(savedDevs, function (item) {
+                return item.id === dev.id;
+            });
+
+            if(savedDev) {
+                console.log('found saved dev', savedDev);
+                dev.trigger = savedDev.trigger;
+            }
+        }
+
         return new Device(dev);
     });
 
@@ -178,8 +193,10 @@ module.exports.init = function (args) {
         workerId = args.workerId;
         if(exists) {
             console.log('using saved devices');
+            isUsingSavedDevs = true;
             fs.readFile(devsPath, function (err, data) {
                 var devs = JSON.parse(data);
+                savedDevs = devs;
                 devices = devs;
             });
         } else {
