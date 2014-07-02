@@ -117,6 +117,7 @@ conn.on('devices', function (data) {
             if(savedDev) {
                 console.log('found saved dev', savedDev);
                 dev.trigger = savedDev.trigger;
+                dev.value = savedDev.value;
             }
         }
 
