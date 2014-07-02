@@ -117,11 +117,16 @@ conn.on('devices', function (data) {
             if(savedDev) {
                 console.log('found saved dev', savedDev);
                 dev.trigger = savedDev.trigger;
-                dev.setVal(savedDev.value);
             }
         }
 
-        return new Device(dev);
+        var toReturn = new Device(dev);
+
+        if(savedDev) {
+            toReturn.setVal(savedDev.value);
+        }
+
+        return toReturn;
     });
 
     conn.emit('devices', devices);
