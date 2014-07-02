@@ -25,6 +25,7 @@ function Transmit(event, data) {
 
 function saveDevices() {
     var devs = JSON.stringify(devices);
+    console.log('saving devices');
     fs.writeFile(devsPath, devs, function (err) {
         if(err)
             console.log('error writing devs file', err);
